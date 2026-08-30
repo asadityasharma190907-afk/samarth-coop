@@ -13,7 +13,15 @@ Citizens book a cooperative worker (electrician, plumber, etc.). Samarth ranks a
 
 ---
 
-## Team Setup (No Docker Required)
+## Team Setup (Manual Dev Setup — Local PostgreSQL)
+
+### Step 0: Install PostgreSQL 15 & Create Database (One-time setup per machine)
+Install PostgreSQL 15: [https://www.postgresql.org/download/](https://www.postgresql.org/download/)  
+Create the local database in terminal or pgAdmin:
+```sql
+CREATE USER samarth WITH PASSWORD 'samarth';
+CREATE DATABASE samarth OWNER samarth;
+```
 
 ### Backend (FastAPI + Python)
 
@@ -31,15 +39,18 @@ source venv/bin/activate
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Set up the database (SQLite for local dev — zero install!)
-cp .env.example .env
+# 3. Copy .env template & run migrations
+copy .env.example .env    # Windows
+# cp .env.example .env    # Mac/Linux
+
 alembic upgrade head
 
-# 4. Seed test data
+# 4. Seed test data (first run only)
 python app/seed.py
 
 # 5. Start the server
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload --port 8000
+# Health check: http://localhost:8000/health
 # API docs: http://localhost:8000/docs
 ```
 
@@ -53,7 +64,7 @@ npm install
 
 # 2. Start the dev server
 npm run dev
-# App: http://localhost:5173
+# App running at: http://localhost:3000
 ```
 
 ### Run Backend Tests
@@ -71,15 +82,16 @@ pytest
 samarth/
 ├── backend/
 │   ├── app/
-│   │   ├── main.py          ← FastAPI app entry point
-│   │   ├── database.py      ← Database connection
-│   │   ├── models/          ← SQLAlchemy ORM models
+│   │   ├── main.py          ← FastAPI app entry point (health & CORS)
+│   │   ├── database.py      ← Database connection & session factory
+│   │   ├── config.py        ← Pydantic settings
+│   │   ├── models/          ← SQLAlchemy ORM models (users, worker_profiles, bookings, booking_offers)
 │   │   ├── schemas/         ← Pydantic request/response models
 │   │   ├── routers/         ← API route handlers
 │   │   ├── services/        ← Business logic (dispatch.py lives here)
 │   │   └── seed.py          ← Test data seeder
 │   ├── tests/               ← pytest tests
-│   ├── alembic/             ← Database migrations
+│   ├── alembic/             ← Database migrations (0001_initial_schema.py)
 │   ├── .env.example         ← Environment variable template
 │   └── requirements.txt
 ├── frontend/
@@ -89,31 +101,11 @@ samarth/
 │   │   ├── pages/           ← Page-level components
 │   │   ├── hooks/           ← TanStack Query data hooks
 │   │   └── lib/api.ts       ← Typed API client
+│   ├── index.html
+│   ├── vite.config.ts
 │   └── package.json
-├── .github/workflows/       ← CI/CD (GitHub Actions)
-├── docs/                    ← Setup guides and architecture notes
 └── AGENTS.md                ← Instructions for AI coding assistants
 ```
-
----
-
-## Dispatch Algorithm
-
-```
-Score = (5000 − WeeklyEarnings) × 2
-      + (1000 × Rating)        ← null rating defaults to 4.0
-      − (500 × Distance_km)    ← Haversine, max 5km radius
-      − ReliabilityPenalty     ← 3000 points if acceptance rate < 50% (after 5+ offers)
-```
-
-**Seed data expected ranking:**
-
-| Worker | Weekly Earnings | Rating | Distance | Score |
-|---|---|---|---|---|
-| Suresh Kumar | ₹200 | 4.2 | 2.5 km | ~12,550 |
-| Priya Gupta | ₹0 | 4.0 (default) | 4.0 km | ~12,000 |
-| Anil Yadav | ₹2,000 | 4.5 | 1.5 km | ~9,750 |
-| Meena Verma | ₹4,500 | 4.9 | 0.3 km | ~5,750 |
 
 ---
 
@@ -125,12 +117,3 @@ Score = (5000 − WeeklyEarnings) × 2
 4. **No background jobs** (no Celery). Offer expiry is checked lazily on each request.
 5. **No hardcoded hex colors** in CSS. Use design tokens from `frontend/src/tokens.css`.
 6. **No UI library** (no MUI, shadcn). Build components from the design tokens.
-
----
-
-## Links
-
-- [Planning docs](./_bmad-output/planning-artifacts/)
-- [All issues](https://github.com/asadityasharma190907-afk/samarth-coop/issues)
-- [Sprint status](./_bmad-output/implementation-artifacts/sprint-status.yaml)
-- [Architecture decisions](./_bmad-output/planning-artifacts/architecture/architecture-Samarth-2026-08-29/ARCHITECTURE-SPINE.md)

@@ -30,7 +30,7 @@
 - **Backend:** FastAPI (Python 3.11) + SQLAlchemy + Alembic + PostgreSQL 15
 - **Frontend:** React 18 + Vite + TanStack Query v5 + vanilla CSS (no UI framework)
 - **Auth:** JWT (HS256) + bcrypt (cost 12). No session cookies.
-- **Dev environment:** Docker Compose only. `docker-compose up` is the one-and-only local dev command.
+- **Dev environment:** Manual local setup. PostgreSQL 15 installed locally on each machine. Backend via Python venv + uvicorn. Frontend via npm. **Cloning the repo does NOT auto-install anything — each developer runs the setup steps once.**
 - **Migrations:** Alembic only. Never use `Base.metadata.create_all()` in production paths.
 - **Design tokens:** All in `frontend/src/tokens.css` as CSS custom properties. No hardcoded hex values in component CSS.
 
@@ -76,8 +76,8 @@ WHERE worker_id = :worker_id
 **Before ANY React component is committed:**
 
 ```bash
-# Start the backend + DB
-docker-compose up db backend
+# Start the backend (from backend/ directory, venv activated)
+uvicorn app.main:app --reload --port 8000
 
 # Verify the dispatch ranking in Swagger
 curl "http://localhost:8000/workers?skill=electrician&lat=26.9124&lng=75.7873"
@@ -90,22 +90,53 @@ This gate must pass before Epic 3 begins.
 
 ## Running the Project
 
+> **Cloning the repo does NOT run any commands.** Every teammate must complete the one-time setup below.
+
+### Step 0: Install & create PostgreSQL database (one time per machine)
 ```bash
-# Full local dev environment
-docker-compose up
-
-# Seed the database (first run)
-docker-compose exec backend python app/seed.py
-
-# Run backend tests
-docker-compose exec backend pytest
-
-# Alembic migrations
-docker-compose exec backend alembic upgrade head
-
-# Frontend (if running outside Docker)
-cd frontend && npm install && npm run dev
+# 1. Install PostgreSQL 15: https://www.postgresql.org/download/
+# 2. Create the database (run in psql or pgAdmin):
+psql -U postgres
+CREATE USER samarth WITH PASSWORD 'samarth';
+CREATE DATABASE samarth OWNER samarth;
+\q
 ```
+
+```bash
+# ── BACKEND SETUP (one time) ──────────────────────────────
+cd backend
+python -m venv venv
+# Windows:
+venv\Scripts\activate
+# Mac/Linux:
+source venv/bin/activate
+
+pip install -r requirements.txt
+
+# Copy .env.example — NO EDITS NEEDED, credentials match the DB created above
+copy .env.example .env   # Windows
+# cp .env.example .env   # Mac/Linux
+
+# Run migrations (creates all 4 tables)
+alembic upgrade head
+
+# Seed the database (first run only)
+python app/seed.py
+
+# Start the backend dev server
+uvicorn app.main:app --reload --port 8000
+
+# ── BACKEND TESTS ─────────────────────────────────────────
+pytest
+
+# ── FRONTEND SETUP (separate terminal) ───────────────────
+cd frontend
+npm install
+npm run dev
+# Runs on http://localhost:3000
+```
+
+**Database:** Local PostgreSQL 15. `.env.example` is pre-filled with `samarth`/`samarth` credentials — teammates just copy it as-is after creating the DB above.
 
 ---
 
@@ -135,7 +166,7 @@ Meena is closest and best-rated — she ranks last. This is intentional and is t
 ## Known Pitfalls (from architecture review)
 
 - **Pitfall:** Using `datetime.now()` instead of `NOW()` in SQL for weekly earnings boundary. Use `date_trunc('week', NOW())` in the SQL query to ensure PostgreSQL's timezone-aware week boundary is used.
-- **Pitfall:** Auto-importing SQLAlchemy models in `main.py` before Alembic runs. Always use `alembic upgrade head` before app startup in Docker entrypoint.
+- **Pitfall:** Auto-importing SQLAlchemy models in `main.py` before Alembic runs. Always run `alembic upgrade head` manually before starting uvicorn on a fresh database.
 - **Pitfall:** React `useEffect` + `useState` for server state. Use TanStack Query hooks in `frontend/src/hooks/` — not raw `useEffect`.
 - **Pitfall:** Hardcoding `job_price` as a local variable in a test rather than using the snapshotted value from the `bookings` table. Always read `booking.job_price`, never recompute it.
 
