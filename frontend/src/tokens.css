@@ -1,36 +1,143 @@
-/* Design Tokens — Samarth Cooperative Gig Services Platform */
+/* Samarth Design System Tokens — tokens.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 :root {
-  /* Colors */
-  --brand-primary: #1A6B47;
-  --brand-primary-hover: #145538;
-  --brand-accent: #F4A623;
-  --surface-bg: #F8FAF9;
-  --surface-card: #FFFFFF;
-  --text-main: #1C2826;
-  --text-muted: #657571;
-  --border-light: #E2E8E6;
-  
+  /* Brand Palette */
+  --color-brand-primary: #1A6B47;
+  --color-brand-primary-light: #2E9E6E;
+  --color-brand-primary-dark: #0F4A30;
+  --color-brand-accent: #F4A623;
+  --color-brand-accent-light: #F7BD5A;
+
+  /* Surface Palette */
+  --color-surface-bg: #F8FAF9;
+  --color-surface-card: #FFFFFF;
+  --color-surface-elevated: #FFFFFF;
+  --color-surface-overlay: rgba(26, 107, 71, 0.06);
+
+  /* Text Palette */
+  --color-text-primary: #111827;
+  --color-text-secondary: #4B5563;
+  --color-text-muted: #9CA3AF;
+  --color-text-on-brand: #FFFFFF;
+  --color-text-on-accent: #1A1A1A;
+
+  /* Borders */
+  --color-border-default: #E5E7EB;
+  --color-border-subtle: #F3F4F6;
+
   /* Status Colors */
-  --status-pending: #F5A623;
-  --status-assigned: #2D9CDB;
-  --status-completed: #27AE60;
-  --status-cancelled: #EB5757;
+  --color-status-success: #16A34A;
+  --color-status-warning: #D97706;
+  --color-status-error: #DC2626;
+  --color-status-info: #2563EB;
 
-  /* Typography */
-  --font-family-base: 'Inter', sans-serif;
-  --font-family-mono: 'JetBrains Mono', monospace;
+  /* Dispatch Rank Colors */
+  --color-dispatch-high: #1A6B47;
+  --color-dispatch-mid: #F4A623;
+  --color-dispatch-low: #9CA3AF;
 
-  /* Spacing & Radius */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
+  /* Special / Welfare Fund */
+  --color-welfare-fund: #7C3AED;
+
+  /* Typography Fonts */
+  --font-sans: 'Inter', 'Noto Sans Devanagari', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Typography Font Sizes & Line Heights */
+  --font-size-display: 2.25rem;
+  --line-height-display: 2.75rem;
+  --font-size-h1: 1.875rem;
+  --line-height-h1: 2.25rem;
+  --font-size-h2: 1.5rem;
+  --line-height-h2: 2rem;
+  --font-size-h3: 1.25rem;
+  --line-height-h3: 1.75rem;
+  --font-size-h4: 1.125rem;
+  --line-height-h4: 1.5rem;
+  --font-size-body-lg: 1.0625rem;
+  --line-height-body-lg: 1.625rem;
+  --font-size-body: 0.9375rem;
+  --line-height-body: 1.5rem;
+  --font-size-body-sm: 0.875rem;
+  --line-height-body-sm: 1.375rem;
+  --font-size-caption: 0.75rem;
+  --line-height-caption: 1.125rem;
+  --font-size-overline: 0.6875rem;
+  --line-height-overline: 1rem;
+
+  /* Font Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Border Radii */
+  --rounded-none: 0;
+  --rounded-sm: 4px;
+  --rounded-md: 8px;
+  --rounded-lg: 12px;
+  --rounded-xl: 16px;
+  --rounded-2xl: 24px;
+  --rounded-full: 9999px;
+
+  /* Spacing */
+  --spacing-unit: 4px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+
+  /* Elevation / Shadows */
+  --shadow-0: none;
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-2: 0 4px 16px rgba(26, 107, 71, 0.12);
+  --shadow-3: 0 8px 32px rgba(0, 0, 0, 0.12);
+
+  /* Component Preset Variables */
+  --button-primary-bg: var(--color-brand-primary);
+  --button-primary-text: var(--color-text-on-brand);
+  --button-primary-hover-bg: var(--color-brand-primary-light);
+  --button-primary-radius: var(--rounded-lg);
+
+  --button-secondary-bg: transparent;
+  --button-secondary-border: 2px solid var(--color-brand-primary);
+  --button-secondary-text: var(--color-brand-primary);
+  --button-secondary-hover-bg: var(--color-surface-overlay);
+  --button-secondary-radius: var(--rounded-lg);
+
+  --button-danger-bg: transparent;
+  --button-danger-border: 2px solid var(--color-status-error);
+  --button-danger-text: var(--color-status-error);
+  --button-danger-hover-bg: rgba(220, 38, 38, 0.06);
+  --button-danger-radius: var(--rounded-lg);
+
+  --card-bg: var(--color-surface-card);
+  --card-border: 1px solid var(--color-border-default);
+  --card-radius: var(--rounded-xl);
+  --card-shadow: var(--shadow-1);
+
+  --welfare-counter-bg: linear-gradient(135deg, var(--color-welfare-fund), #9333EA);
+  --welfare-counter-text: var(--color-text-on-brand);
+  --welfare-counter-radius: var(--rounded-2xl);
+}
+
+/* Base Body Styles */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: var(--font-family-base);
-  background-color: var(--surface-bg);
-  color: var(--text-main);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  background-color: var(--color-surface-bg);
+  color: var(--color-text-primary);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
