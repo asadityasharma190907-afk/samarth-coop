@@ -1,0 +1,36 @@
+/* Design Tokens — Samarth Cooperative Gig Services Platform */
+:root {
+  /* Colors */
+  --brand-primary: #1A6B47;
+  --brand-primary-hover: #145538;
+  --brand-accent: #F4A623;
+  --surface-bg: #F8FAF9;
+  --surface-card: #FFFFFF;
+  --text-main: #1C2826;
+  --text-muted: #657571;
+  --border-light: #E2E8E6;
+  
+  /* Status Colors */
+  --status-pending: #F5A623;
+  --status-assigned: #2D9CDB;
+  --status-completed: #27AE60;
+  --status-cancelled: #EB5757;
+
+  /* Typography */
+  --font-family-base: 'Inter', sans-serif;
+  --font-family-mono: 'JetBrains Mono', monospace;
+
+  /* Spacing & Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family-base);
+  background-color: var(--surface-bg);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+}

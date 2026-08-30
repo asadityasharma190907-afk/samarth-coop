@@ -99,10 +99,11 @@ sources:
 
 ---
 
-### AD-10: Containerisation — Docker Compose for Development
-**Binds:** Local development uses Docker Compose to run PostgreSQL, the FastAPI backend, and serve the React SPA.  
-**Prevents:** "Works on my machine" divergence — a developer running a local Postgres instance with different config than the compose setup.  
-**Rule:** `docker-compose.yml` is the canonical local dev environment. The FastAPI app and the React dev server both run in Docker. No one-off local Postgres installs. Production deployment is TBD (Render / Railway / Docker on VPS — deferred to post-hackathon).
+### AD-10: Local Development — Manual Setup (No Docker)
+**Binds:** Local development uses a Python virtualenv for the backend and `npm run dev` for the frontend. PostgreSQL 15 is installed locally or via a free cloud provider (Neon.tech).
+**Prevents:** Docker complexity causing onboarding friction for team members unfamiliar with containers.
+**Rule:** Each developer runs backend and frontend as native processes. The canonical startup is: `cd backend && source venv/bin/activate && alembic upgrade head && uvicorn app.main:app --reload` and `cd frontend && npm run dev`. A `.env` file (not committed) holds `DATABASE_URL` and `SECRET_KEY`. `.env.example` is committed as the template. No Dockerfiles or docker-compose.yml.
+**[UPDATED]** — Docker removed by team decision to reduce onboarding complexity for hackathon.
 
 ---
 
@@ -220,7 +221,7 @@ PATCH  /admin/workers/{id}/verify        Toggle verified flag (FR-15)
                 │ SQLAlchemy ORM
 ┌───────────────▼────────────────────┐
 │        PostgreSQL 15                │  ← 4 tables (AD-9)
-│        (Docker Compose)             │  ← Alembic migrations (AD-2)
+│        (local install or Neon.tech)  │  ← Alembic migrations (AD-2)
 └────────────────────────────────────┘
 ```
 
@@ -248,8 +249,8 @@ samarth/
 │   │   └── seed.py                # Seed data script
 │   ├── alembic/                   # Database migrations
 │   ├── tests/                     # Pytest tests
-│   ├── Dockerfile
-│   └── requirements.txt
+│   ├── requirements.txt
+│   └── .env.example               # Template: DATABASE_URL, SECRET_KEY, ALGORITHM, etc.
 ├── frontend/
 │   ├── src/
 │   │   ├── main.tsx
@@ -261,9 +262,7 @@ samarth/
 │   │   └── lib/                   # API client (api.ts — typed fetch wrappers over OpenAPI contract)
 │   ├── index.html
 │   ├── vite.config.ts
-│   ├── Dockerfile
 │   └── package.json
-├── docker-compose.yml
 └── docs/                          # Planning artifacts (briefs, PRD, architecture, UX)
 ```
 
