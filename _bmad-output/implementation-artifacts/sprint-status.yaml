@@ -49,11 +49,11 @@ development_status:
 # â”€â”€ GATE: GET /workers must return Suresh > Priya > Anil > Meena before Epic 3 begins â”€â”€
 # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-  epic-2: in-progress
+  epic-2: done
   2-1-seed-data-script: done
   2-2-weekly-earnings-subquery: done
   2-3-reliability-penalty-computation: done
-  2-4-dispatch-score-endpoint: backlog
+  2-4-dispatch-score-endpoint: done
   epic-2-retrospective: optional
 
 # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€

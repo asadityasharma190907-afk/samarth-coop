@@ -72,3 +72,86 @@ def compute_reliability_penalty(worker_id: UUID, db: Session) -> bool:
     # Check if acceptance rate is strictly less than 50%
     return (accepted / len(recent)) < 0.5
 
+
+# Math imports for haversine
+from math import radians, sin, cos, sqrt, atan2
+from app.models.user import User
+from app.models.worker_profile import WorkerProfile
+from typing import List
+
+
+def haversine_km(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
+    R = 6371.0
+    dlat = radians(lat2 - lat1)
+    dlng = radians(lng2 - lng1)
+    a = sin(dlat/2)**2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlng/2)**2
+    return R * 2 * atan2(sqrt(a), sqrt(1-a))
+
+
+def compute_dispatch_score(
+    weekly_earnings: Decimal,
+    rating: float | None,
+    distance_km: float,
+    reliability_penalty: bool
+) -> Decimal:
+    effective_rating = Decimal(str(rating)) if rating is not None else Decimal("4.0")
+    penalty = Decimal("3000") if reliability_penalty else Decimal("0")
+    return (
+        (Decimal("5000") - weekly_earnings) * 2
+        + Decimal("1000") * effective_rating
+        - Decimal("500") * Decimal(str(distance_km))
+        - penalty
+    )
+
+
+def get_ranked_workers(skill: str, lat: float, lng: float, db: Session) -> List[dict]:
+    # Query worker profiles with user detail
+    profiles = (
+        db.query(WorkerProfile, User)
+        .join(User, WorkerProfile.user_id == User.id)
+        .filter(
+            WorkerProfile.skill == skill,
+            WorkerProfile.verified == True,
+            WorkerProfile.availability == True
+        )
+        .all()
+    )
+
+    ranked = []
+    for profile, user in profiles:
+        distance_km = haversine_km(lat, lng, float(profile.lat), float(profile.lng))
+        if distance_km > 5.0:
+            continue
+
+        weekly_earnings = compute_weekly_earnings(profile.user_id, db)
+        reliability_penalty = compute_reliability_penalty(profile.user_id, db)
+        
+        rating_val = float(profile.rating) if profile.rating is not None else None
+        
+        dispatch_score = compute_dispatch_score(
+            weekly_earnings=weekly_earnings,
+            rating=rating_val,
+            distance_km=distance_km,
+            reliability_penalty=reliability_penalty
+        )
+
+        ranked.append({
+            "worker_id": profile.user_id,
+            "name": user.name,
+            "phone": user.phone,
+            "skill": profile.skill,
+            "lat": profile.lat,
+            "lng": profile.lng,
+            "rating": profile.rating,
+            "distance_km": distance_km,
+            "weekly_earnings": weekly_earnings,
+            "dispatch_score": dispatch_score,
+            "rating_is_default": profile.rating is None,
+            "reliability_penalty_applied": reliability_penalty
+        })
+
+    # Sort by dispatch_score desc
+    ranked.sort(key=lambda x: x["dispatch_score"], reverse=True)
+    return ranked
+
+

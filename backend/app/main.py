@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth
+from app.routers import auth, workers
 
 app = FastAPI(
     title="Samarth API",
@@ -18,6 +18,8 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+app.include_router(workers.router, prefix="/workers", tags=["Workers"])
+
 
 
 @app.get("/health", tags=["Health"])
