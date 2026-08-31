@@ -23,6 +23,10 @@ class WorkerRegisterRequest(BaseRegisterRequest):
 
 RegisterRequest = Annotated[Union[CitizenRegisterRequest, WorkerRegisterRequest], Field(discriminator="role")]
 
+class LoginRequest(BaseModel):
+    phone: str = Field(..., min_length=10, max_length=15, json_schema_extra={"example": "9876543210"})
+    password: str = Field(..., min_length=6, json_schema_extra={"example": "secure123"})
+
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
