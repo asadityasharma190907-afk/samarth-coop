@@ -23,6 +23,10 @@ class CreateBookingRequest(BaseModel):
     description: str | None = Field(None, description="Optional job description")
 
 
+class RatingRequest(BaseModel):
+    rating: int = Field(ge=1, le=5, description="Rating from 1 to 5 stars")
+
+
 class BookingResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 

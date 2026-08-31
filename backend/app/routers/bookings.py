@@ -13,8 +13,9 @@ from app.schemas.bookings import (
     AssignedWorkerDetail,
     BookingResponse,
     CreateBookingRequest,
+    RatingRequest,
 )
-from app.services.booking import complete_booking, create_booking
+from app.services.booking import complete_booking, create_booking, submit_rating
 from app.services.dispatch import haversine_km
 
 router = APIRouter()
@@ -85,4 +86,15 @@ def complete_booking_endpoint(
     db: Session = Depends(get_db),
 ):
     booking = complete_booking(booking_id, current_user.id, db)  # type: ignore
+    return BookingResponse.model_validate(booking)
+
+
+@router.post("/{booking_id}/rating", response_model=BookingResponse)
+def rate_booking(
+    booking_id: UUID,
+    payload: RatingRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    booking = submit_rating(booking_id, payload.rating, current_user.id, db)  # type: ignore
     return BookingResponse.model_validate(booking)

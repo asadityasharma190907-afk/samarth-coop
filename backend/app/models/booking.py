@@ -1,6 +1,16 @@
 import uuid
 
-from sqlalchemy import Column, DateTime, ForeignKey, Numeric, String, Text, func, text
+from sqlalchemy import (
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    Numeric,
+    String,
+    Text,
+    func,
+    text,
+)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
@@ -24,6 +34,7 @@ class Booking(Base):
     description = Column(Text, nullable=True)
     job_price = Column(Numeric(10, 2), nullable=False)
     platform_fee = Column(Numeric(10, 2), nullable=True)
+    rating = Column(Integer, nullable=True)
     status = Column(
         String(20), nullable=False, default="pending", server_default=text("'pending'")
     )

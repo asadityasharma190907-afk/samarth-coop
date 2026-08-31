@@ -358,3 +358,140 @@ def test_complete_unassigned_booking(citizen_token, seeded_worker):
         f"/bookings/{booking_id}/complete", headers=worker_headers
     )
     assert comp_response.status_code == 400
+
+
+def test_rate_booking_success(citizen_token, seeded_worker):
+    token, _ = citizen_token
+    citizen_headers = {"Authorization": f"Bearer {token}"}
+
+    worker_token = create_access_token(
+        data={"user_id": str(seeded_worker), "role": "worker"}
+    )
+    worker_headers = {"Authorization": f"Bearer {worker_token}"}
+
+    payload = {
+        "skill": "electrician",
+        "lat": 26.9124,
+        "lng": 75.7873,
+    }
+    response = client.post("/bookings", json=payload, headers=citizen_headers)
+    booking_id = response.json()["booking_id"]
+
+    db = TestingSessionLocal()
+    try:
+        offer = (
+            db.query(BookingOffer).filter_by(booking_id=uuid.UUID(booking_id)).first()
+        )
+        offer.status = "accepted"  # type: ignore
+        booking = db.query(Booking).filter_by(id=uuid.UUID(booking_id)).first()
+        booking.status = "assigned"  # type: ignore
+        booking.worker_id = seeded_worker
+        db.commit()
+    finally:
+        db.close()
+
+    client.put(f"/bookings/{booking_id}/complete", headers=worker_headers)
+
+    rate_payload = {"rating": 5}
+    rate_response = client.post(
+        f"/bookings/{booking_id}/rating", json=rate_payload, headers=citizen_headers
+    )
+    assert rate_response.status_code == 200
+
+    db = TestingSessionLocal()
+    try:
+        profile = db.query(WorkerProfile).filter_by(user_id=seeded_worker).first()
+        assert float(profile.rating) == 5.0  # type: ignore
+        assert profile.rating_count == 1
+
+        booking = db.query(Booking).filter_by(id=uuid.UUID(booking_id)).first()
+        assert booking.rating == 5
+    finally:
+        db.close()
+
+
+def test_rate_booking_invalid_value(citizen_token):
+    token, _ = citizen_token
+    citizen_headers = {"Authorization": f"Bearer {token}"}
+    booking_id = str(uuid.uuid4())
+
+    rate_payload = {"rating": 6}
+    rate_response = client.post(
+        f"/bookings/{booking_id}/rating", json=rate_payload, headers=citizen_headers
+    )
+    assert rate_response.status_code == 422
+
+
+def test_rate_booking_double_rating(citizen_token, seeded_worker):
+    token, citizen_id = citizen_token
+    citizen_headers = {"Authorization": f"Bearer {token}"}
+
+    db = TestingSessionLocal()
+    booking_id = uuid.uuid4()
+    try:
+        booking = Booking(
+            id=booking_id,
+            citizen_id=citizen_id,
+            worker_id=seeded_worker,
+            skill="electrician",
+            lat=26.9,
+            lng=75.7,
+            job_price=500,
+            status="completed",
+            rating=4,
+        )
+        db.add(booking)
+        db.commit()
+    finally:
+        db.close()
+
+    rate_payload = {"rating": 5}
+    rate_response = client.post(
+        f"/bookings/{booking_id!s}/rating",
+        json=rate_payload,
+        headers=citizen_headers,
+    )
+    assert rate_response.status_code == 409
+
+
+def test_rate_booking_uncompleted(citizen_token, seeded_worker):
+    token, citizen_id = citizen_token
+    citizen_headers = {"Authorization": f"Bearer {token}"}
+
+    db = TestingSessionLocal()
+    booking_id = uuid.uuid4()
+    try:
+        booking = Booking(
+            id=booking_id,
+            citizen_id=citizen_id,
+            worker_id=seeded_worker,
+            skill="electrician",
+            lat=26.9,
+            lng=75.7,
+            job_price=500,
+            status="pending",
+        )
+        db.add(booking)
+        db.commit()
+    finally:
+        db.close()
+
+    rate_payload = {"rating": 5}
+    rate_response = client.post(
+        f"/bookings/{booking_id!s}/rating",
+        json=rate_payload,
+        headers=citizen_headers,
+    )
+    assert rate_response.status_code == 400
+
+
+def test_rate_booking_unauthorized(citizen_token):
+    token, _ = citizen_token
+    citizen_headers = {"Authorization": f"Bearer {token}"}
+    fake_id = str(uuid.uuid4())
+
+    rate_payload = {"rating": 5}
+    rate_response = client.post(
+        f"/bookings/{fake_id}/rating", json=rate_payload, headers=citizen_headers
+    )
+    assert rate_response.status_code == 404
