@@ -7,6 +7,7 @@ from sqlalchemy.pool import StaticPool
 from app.main import app
 from app.database import Base, get_db
 from app.models.user import User
+from app.models.worker_profile import WorkerProfile
 from app.services.auth import verify_password
 
 # Use SQLite in-memory database for testing
@@ -89,3 +90,48 @@ def test_register_missing_fields_validation_error():
     }
     response = client.post("/auth/register", json=payload)
     assert response.status_code == 422
+
+
+def test_register_worker_success():
+    payload = {
+        "name": "Suresh Kumar",
+        "phone": "9111111111",
+        "password": "worker123",
+        "role": "worker",
+        "skill": "electrician",
+        "lat": 26.9280,
+        "lng": 75.8100
+    }
+    response = client.post("/auth/register", json=payload)
+    assert response.status_code == 201
+    data = response.json()
+    assert "access_token" in data
+    assert data["role"] == "worker"
+
+    db = TestingSessionLocal()
+    user = db.query(User).filter(User.phone == "9111111111").first()
+    assert user is not None
+    assert user.role == "worker"
+    
+    profile = db.query(WorkerProfile).filter(WorkerProfile.user_id == user.id).first()
+    assert profile is not None
+    assert profile.skill == "electrician"
+    assert profile.verified is False
+    assert profile.availability is True
+    assert profile.rating is None
+    db.close()
+
+
+def test_register_worker_invalid_skill():
+    payload = {
+        "name": "Suresh Kumar",
+        "phone": "9111111112",
+        "password": "worker123",
+        "role": "worker",
+        "skill": "hacker",  # invalid
+        "lat": 26.9280,
+        "lng": 75.8100
+    }
+    response = client.post("/auth/register", json=payload)
+    assert response.status_code == 422
+
