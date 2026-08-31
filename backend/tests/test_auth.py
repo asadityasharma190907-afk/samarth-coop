@@ -135,3 +135,100 @@ def test_register_worker_invalid_skill():
     response = client.post("/auth/register", json=payload)
     assert response.status_code == 422
 
+
+def test_login_success():
+    # Register a user first
+    register_payload = {
+        "name": "Login Test User",
+        "phone": "9000000000",
+        "password": "password123",
+        "role": "citizen"
+    }
+    client.post("/auth/register", json=register_payload)
+
+    # Now login
+    login_payload = {
+        "phone": "9000000000",
+        "password": "password123"
+    }
+    response = client.post("/auth/login", json=login_payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert "access_token" in data
+    assert data["token_type"] == "bearer"
+    assert data["role"] == "citizen"
+    assert "user_id" in data
+
+
+def test_login_wrong_password():
+    register_payload = {
+        "name": "Login Test User 2",
+        "phone": "9000000001",
+        "password": "password123",
+        "role": "citizen"
+    }
+    client.post("/auth/register", json=register_payload)
+
+    login_payload = {
+        "phone": "9000000001",
+        "password": "wrongpassword"
+    }
+    response = client.post("/auth/login", json=login_payload)
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Incorrect phone number or password"
+
+
+def test_login_unregistered_phone():
+    login_payload = {
+        "phone": "9999999999",
+        "password": "password123"
+    }
+    response = client.post("/auth/login", json=login_payload)
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Incorrect phone number or password"
+
+
+def test_login_missing_fields():
+    login_payload = {
+        "phone": "9000000000"
+    }
+    response = client.post("/auth/login", json=login_payload)
+    assert response.status_code == 422
+
+
+# Dummy protected route for testing dependencies
+from fastapi import Depends
+from app.dependencies import get_current_user
+
+@app.get("/test-protected")
+def dummy_protected_route(user: User = Depends(get_current_user)):
+    return {"user_id": str(user.id), "phone": user.phone}
+
+def test_protected_route_success():
+    # Register and login to get token
+    register_payload = {
+        "name": "Protected Test User",
+        "phone": "9000000002",
+        "password": "password123",
+        "role": "citizen"
+    }
+    client.post("/auth/register", json=register_payload)
+    
+    login_response = client.post("/auth/login", json={
+        "phone": "9000000002",
+        "password": "password123"
+    })
+    token = login_response.json()["access_token"]
+    
+    # Access protected route
+    headers = {"Authorization": f"Bearer {token}"}
+    response = client.get("/test-protected", headers=headers)
+    assert response.status_code == 200
+    assert response.json()["phone"] == "9000000002"
+
+def test_protected_route_invalid_token():
+    headers = {"Authorization": "Bearer invalid.token.here"}
+    response = client.get("/test-protected", headers=headers)
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Could not validate credentials"
+
