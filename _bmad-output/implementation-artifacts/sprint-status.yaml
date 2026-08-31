@@ -37,7 +37,7 @@ development_status:
   1-2-design-token-system: done
   1-3-citizen-registration-api: done
   1-4-worker-registration-api: done
-  1-5-login-api: backlog
+  1-5-login-api: done
   1-6-citizen-registration-login-ui: backlog
   1-7-worker-registration-login-ui: backlog
   epic-1-retrospective: optional
