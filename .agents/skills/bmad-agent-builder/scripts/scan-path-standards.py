@@ -26,7 +26,6 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-
 # Patterns to detect
 # Double-prefix: {project-root}/{config-variable} — config vars already contain project-root
 DOUBLE_PREFIX_RE = re.compile(r'\{project-root\}/\{[^}]+\}')

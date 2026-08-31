@@ -7,7 +7,9 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.models.booking import Booking
+from app.models.booking_offer import BookingOffer
 from app.models.user import User
+from app.models.worker_profile import WorkerProfile
 from app.services.auth import create_access_token, hash_password
 
 client = TestClient(app)
@@ -34,7 +36,37 @@ def citizen_token():
         db.close()
 
 
-def test_create_booking_authenticated(citizen_token):
+@pytest.fixture
+def seeded_worker():
+    db = TestingSessionLocal()
+    try:
+        worker = User(
+            name="Suresh Worker",
+            phone="9888888888",
+            password_hash=hash_password("password123"),
+            role="worker",
+        )
+        db.add(worker)
+        db.commit()
+        db.refresh(worker)
+
+        profile = WorkerProfile(
+            user_id=worker.id,
+            skill="electrician",
+            lat=26.9125,
+            lng=75.7874,
+            rating=4.5,
+            verified=True,
+            availability=True,
+        )
+        db.add(profile)
+        db.commit()
+        return worker.id
+    finally:
+        db.close()
+
+
+def test_create_booking_authenticated(citizen_token, seeded_worker):
     token, citizen_id = citizen_token
     headers = {"Authorization": f"Bearer {token}"}
     payload = {
@@ -66,6 +98,13 @@ def test_create_booking_authenticated(citizen_token):
         assert booking.status == "pending"
         assert booking.job_price == Decimal("500.00")
         assert booking.platform_fee == Decimal("25.00")
+        
+        # Verify offer is created
+        offer = db.query(BookingOffer).filter(BookingOffer.booking_id == booking_uuid).first()
+        assert offer is not None
+        assert offer.worker_id == seeded_worker
+        assert offer.status == "offered"
+        assert offer.rank_at_offer == 1
     finally:
         db.close()
 
@@ -123,3 +162,56 @@ def test_create_booking_validation_error(citizen_token):
         headers=headers,
     )
     assert response.status_code == 422
+
+
+def test_create_booking_no_workers_cancelled(citizen_token):
+    token, _ = citizen_token
+    headers = {"Authorization": f"Bearer {token}"}
+    payload = {
+        "skill": "electrician",
+        "lat": 26.9124,
+        "lng": 75.7873,
+        "description": "Fix ceiling fan",
+    }
+    # No worker seeded, so should cancel
+    response = client.post("/bookings", json=payload, headers=headers)
+    assert response.status_code == 201
+    data = response.json()
+    assert data["status"] == "cancelled"
+
+    db = TestingSessionLocal()
+    try:
+        booking_uuid = uuid.UUID(data["booking_id"])
+        offers_count = db.query(BookingOffer).filter(BookingOffer.booking_id == booking_uuid).count()
+        assert offers_count == 0
+    finally:
+        db.close()
+
+
+def test_get_booking_offers_audit_trail(citizen_token, seeded_worker):
+    token, _ = citizen_token
+    headers = {"Authorization": f"Bearer {token}"}
+    
+    # Create booking which triggers offer dispatch
+    payload = {
+        "skill": "electrician",
+        "lat": 26.9124,
+        "lng": 75.7873,
+        "description": "Fix ceiling fan in living room",
+    }
+    response = client.post("/bookings", json=payload, headers=headers)
+    booking_id = response.json()["booking_id"]
+
+    # Fetch audit trail
+    response = client.get(f"/booking-offers/booking/{booking_id}")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    
+    offer = data[0]
+    assert offer["booking_id"] == booking_id
+    assert offer["worker_id"] == str(seeded_worker)
+    assert offer["rank_at_offer"] == 1
+    assert offer["status"] == "offered"
+    assert "dispatch_score" in offer
+    assert "expires_at" in offer

@@ -5,7 +5,6 @@ Run from the repo root: python create_issues.py
 """
 
 import subprocess
-import sys
 import time
 
 REPO = "asadityasharma190907-afk/samarth-coop"
