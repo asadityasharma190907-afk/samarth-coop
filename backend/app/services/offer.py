@@ -147,6 +147,7 @@ def accept_offer(offer_id: UUID, worker_id: UUID, db: Session) -> None:
 
     # Assign booking
     booking.status = "assigned"  # type: ignore
+    booking.worker_id = worker_id  # type: ignore
 
     # Update offer
     offer.status = "accepted"  # type: ignore
