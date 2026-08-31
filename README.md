@@ -74,11 +74,13 @@ npm run lint:es
 npm run test
 ```
 
-### Run Backend Tests
+### Run Backend Tests & Linting
 
 ```bash
 cd backend
 pytest
+ruff check .
+ruff format --check .
 ```
 
 ### Run Local QA Checks (Pre-push)
@@ -100,6 +102,21 @@ We have automated this check so it runs before every `git push`. Because git hoo
 git config core.hooksPath .githooks
 ```
 Once run, your pushes will automatically be blocked if QA checks fail locally.
+
+### Run Frontend Linting & Build
+
+```bash
+cd frontend
+npm run lint
+npm run build
+```
+
+---
+
+## Deployment & CI
+
+- **Backend & Frontend CI:** Automatically run tests, linting, and builds via GitHub Actions on PRs and pushes to `master`, `main`, and `develop`.
+- **Render Production Deploy:** The deploy workflow triggers via Render Deploy Hook. Add `RENDER_DEPLOY_HOOK_URL` in repository **Settings > Secrets and variables > Actions**. If not configured, the workflow gracefully skips without failing.
 
 ---
 

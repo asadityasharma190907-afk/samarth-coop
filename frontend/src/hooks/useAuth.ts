@@ -20,12 +20,12 @@ export function useAuth() {
 
 export function useLoginMutation() {
   return useMutation({
-    mutationFn: (data: any) => api.post('/auth/login', data),
+    mutationFn: (data: unknown) => api.post('/auth/login', data),
   });
 }
 
 export function useRegisterMutation() {
   return useMutation({
-    mutationFn: (data: any) => api.post('/auth/register', data),
+    mutationFn: (data: unknown) => api.post('/auth/register', data),
   });
 }

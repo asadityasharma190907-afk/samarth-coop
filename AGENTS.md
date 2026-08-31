@@ -169,6 +169,7 @@ Meena is closest and best-rated — she ranks last. This is intentional and is t
 - **Pitfall:** Auto-importing SQLAlchemy models in `main.py` before Alembic runs. Always run `alembic upgrade head` manually before starting uvicorn on a fresh database.
 - **Pitfall:** React `useEffect` + `useState` for server state. Use TanStack Query hooks in `frontend/src/hooks/` — not raw `useEffect`.
 - **Pitfall:** Hardcoding `job_price` as a local variable in a test rather than using the snapshotted value from the `bookings` table. Always read `booking.job_price`, never recompute it.
+- **Pitfall:** Using PostgreSQL-specific `NOW()` in Alembic migration `server_default` definitions. Standard SQL `CURRENT_TIMESTAMP` must be used instead so that table generation and inserts work on both PostgreSQL and SQLite without failures.
 
 ---
 

@@ -13,6 +13,10 @@ jobs:
     steps:
       - name: Trigger Render deploy
         run: |
+          if [ -z "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]; then
+            echo "::warning::RENDER_DEPLOY_HOOK_URL secret is not configured. Skipping deploy trigger."
+            exit 0
+          fi
           curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" \
             -H "Content-Type: application/json"
 

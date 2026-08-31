@@ -8,7 +8,7 @@ interface RoleCardProps {
   onClick: () => void;
 }
 
-export function RoleCard({ role: _role, title, description, selected, onClick }: RoleCardProps) {
+export function RoleCard({ title, description, selected, onClick }: RoleCardProps) {
   return (
     <div
       onClick={onClick}
@@ -16,9 +16,7 @@ export function RoleCard({ role: _role, title, description, selected, onClick }:
         flex: 1,
         cursor: 'pointer',
         padding: 'var(--spacing-md)',
-        border: selected
-          ? '2px solid var(--color-brand-primary)'
-          : '1px solid var(--color-border-default)',
+        border: selected ? '2px solid var(--color-brand-primary)' : '1px solid var(--color-border-default)',
         borderRadius: 'var(--rounded-lg)',
         backgroundColor: selected ? 'var(--color-surface-overlay)' : 'var(--color-surface-card)',
         boxShadow: selected ? 'var(--shadow-2)' : 'var(--shadow-0)',
@@ -27,27 +25,23 @@ export function RoleCard({ role: _role, title, description, selected, onClick }:
         flexDirection: 'column',
         alignItems: 'center',
         textAlign: 'center',
-        gap: 'var(--spacing-sm)',
+        gap: 'var(--spacing-sm)'
       }}
     >
-      <h3
-        style={{
-          margin: 0,
-          fontSize: 'var(--font-size-h4)',
-          fontWeight: 'var(--font-weight-semibold)',
-          color: selected ? 'var(--color-brand-primary-dark)' : 'var(--color-text-primary)',
-        }}
-      >
+      <h3 style={{
+        margin: 0,
+        fontSize: 'var(--font-size-h4)',
+        fontWeight: 'var(--font-weight-semibold)',
+        color: selected ? 'var(--color-brand-primary-dark)' : 'var(--color-text-primary)'
+      }}>
         {title}
       </h3>
-      <p
-        style={{
-          margin: 0,
-          fontSize: 'var(--font-size-caption)',
-          color: 'var(--color-text-secondary)',
-          lineHeight: 'var(--line-height-caption)',
-        }}
-      >
+      <p style={{
+        margin: 0,
+        fontSize: 'var(--font-size-caption)',
+        color: 'var(--color-text-secondary)',
+        lineHeight: 'var(--line-height-caption)'
+      }}>
         {description}
       </p>
     </div>
