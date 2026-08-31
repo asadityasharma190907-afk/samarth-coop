@@ -1,4 +1,3 @@
-from typing import List
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -11,7 +10,7 @@ from app.schemas.offers import OfferResponse
 router = APIRouter()
 
 
-@router.get("/booking/{booking_id}", response_model=List[OfferResponse])
+@router.get("/booking/{booking_id}", response_model=list[OfferResponse])
 def get_booking_offers(booking_id: UUID, db: Session = Depends(get_db)):
     offers = (
         db.query(BookingOffer)
