@@ -32,8 +32,9 @@ import argparse
 import json
 import re
 import sys
-import tomllib
 from pathlib import Path
+
+import tomllib
 
 # Top-level TOML blocks that indicate a customization surface.
 SURFACE_KEYS = ("agent", "workflow")

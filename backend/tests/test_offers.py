@@ -1,4 +1,3 @@
-import uuid
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 
@@ -68,7 +67,7 @@ def worker_with_offer():
             booking_id=booking.id,
             worker_id=worker.id,
             rank_at_offer=1,
-            dispatch_score=Decimal("10000"),
+            dispatch_score=Decimal(10000),
             status="offered",
             expires_at=datetime.now(timezone.utc) + timedelta(minutes=2),
         )
@@ -112,7 +111,7 @@ def test_accept_offer_success(worker_with_offer):
 
 
 def test_accept_offer_already_assigned(worker_with_offer):
-    token, worker_id, booking_id, offer_id = worker_with_offer
+    token, _, _, offer_id = worker_with_offer
     headers = {"Authorization": f"Bearer {token}"}
 
     # Manually set booking to assigned to simulate double-accept
@@ -134,7 +133,7 @@ def test_accept_offer_already_assigned(worker_with_offer):
 
 
 def test_accept_expired_offer(worker_with_offer):
-    token, worker_id, booking_id, offer_id = worker_with_offer
+    token, _, _, offer_id = worker_with_offer
     headers = {"Authorization": f"Bearer {token}"}
 
     # Manually expire the offer

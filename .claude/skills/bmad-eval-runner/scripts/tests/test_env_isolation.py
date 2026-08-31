@@ -15,8 +15,8 @@ from pathlib import Path
 SCRIPTS_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SCRIPTS_DIR))
 
-import run_evals  # noqa: E402
-import run_triggers  # noqa: E402
+import run_evals
+import run_triggers
 
 BUILDERS = [run_evals.build_case_env, run_triggers.build_case_env]
 

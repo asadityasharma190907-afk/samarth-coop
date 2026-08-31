@@ -201,10 +201,8 @@ def find_unpinned_stack(body: str, offset: int) -> list[dict]:
 def _table_cells(row: str) -> list[str]:
     """Split a markdown table row into trimmed cells, dropping the leading/trailing pipe."""
     s = row.strip()
-    if s.startswith("|"):
-        s = s[1:]
-    if s.endswith("|"):
-        s = s[:-1]
+    s = s.removeprefix("|")
+    s = s.removesuffix("|")
     return [c.strip() for c in s.split("|")]
 
 
