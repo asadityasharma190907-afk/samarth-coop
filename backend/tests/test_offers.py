@@ -250,3 +250,97 @@ def test_cascade_exhaustion_cancels_booking(worker_with_offer):
         assert old_offer.status == "declined"
     finally:
         db.close()
+
+
+def test_lazy_expiry_on_read(worker_with_offer):
+    _, _, booking_id, offer_id = worker_with_offer
+
+    # Add a second worker to catch the cascade
+    db = TestingSessionLocal()
+    try:
+        worker2 = User(
+            name="Priya Worker 2",
+            phone="9777777778",
+            password_hash=hash_password("password123"),
+            role="worker",
+        )
+        db.add(worker2)
+        db.commit()
+        db.refresh(worker2)
+
+        profile2 = WorkerProfile(
+            user_id=worker2.id,
+            skill="electrician",
+            lat=26.9125,
+            lng=75.7874,
+            rating=4.0,
+            verified=True,
+            availability=True,
+        )
+        db.add(profile2)
+        db.commit()
+
+        # Manually expire the first offer
+        offer = db.query(BookingOffer).filter_by(id=offer_id).first()
+        assert offer is not None
+        offer.expires_at = datetime.now(timezone.utc) - timedelta(minutes=5)  # type: ignore
+        db.commit()
+        worker2_id = worker2.id
+    finally:
+        db.close()
+
+    # Read the offers (triggers lazy expiry)
+    response = client.get(f"/booking-offers/booking/{booking_id}")
+    assert response.status_code == 200
+
+    data = response.json()
+    assert len(data) == 2
+
+    # The first offer should be expired
+    assert data[0]["id"] == str(offer_id)
+    assert data[0]["status"] == "expired"
+
+    # The second offer should be offered
+    assert data[1]["worker_id"] == str(worker2_id)
+    assert data[1]["status"] == "offered"
+    assert data[1]["rank_at_offer"] == 2
+
+
+def test_lazy_expiry_on_action(worker_with_offer):
+    token, _, booking_id, offer_id = worker_with_offer
+
+    # Manually expire the first offer
+    db = TestingSessionLocal()
+    try:
+        offer = db.query(BookingOffer).filter_by(id=offer_id).first()
+        assert offer is not None
+        offer.expires_at = datetime.now(timezone.utc) - timedelta(minutes=5)  # type: ignore
+        db.commit()
+    finally:
+        db.close()
+
+    # Act on the offer (triggers lazy expiry)
+    headers = {"Authorization": f"Bearer {token}"}
+    response = client.put(
+        f"/booking-offers/{offer_id}",
+        json={"action": "accept"},
+        headers=headers,
+    )
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Offer has expired"
+
+    db = TestingSessionLocal()
+    try:
+        # According to the lazy expiry, it should also update status
+        offer = db.query(BookingOffer).filter_by(id=offer_id).first()
+        assert offer is not None
+        assert offer.status == "expired"
+
+        booking = db.query(Booking).filter_by(id=booking_id).first()
+        assert booking is not None
+        assert (
+            booking.status == "cancelled"
+        )  # Because there are no more workers to cascade to
+    finally:
+        db.close()
