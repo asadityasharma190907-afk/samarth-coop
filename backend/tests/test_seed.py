@@ -8,24 +8,14 @@ from app.models.user import User
 from app.models.worker_profile import WorkerProfile
 from app.models.booking import Booking
 from app.seed import seed_data
-
-SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
-
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+from conftest import TestingSessionLocal
 
 
 @pytest.fixture(autouse=True)
-def setup_db(monkeypatch):
-    Base.metadata.create_all(bind=engine)
-    # Monkeypatch SessionLocal in seed to use TestingSessionLocal
+def setup_db_monkeypatch(monkeypatch):
+    # Monkeypatch SessionLocal in seed to use TestingSessionLocal from conftest
     monkeypatch.setattr("app.seed.SessionLocal", TestingSessionLocal)
     yield
-    Base.metadata.drop_all(bind=engine)
 
 
 def test_seed_data_success():
