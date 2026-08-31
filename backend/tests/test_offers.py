@@ -111,7 +111,7 @@ def test_accept_offer_success(worker_with_offer):
 
 
 def test_accept_offer_already_assigned(worker_with_offer):
-    token, _, _, offer_id = worker_with_offer
+    token, _, booking_id, offer_id = worker_with_offer
     headers = {"Authorization": f"Bearer {token}"}
 
     # Manually set booking to assigned to simulate double-accept
