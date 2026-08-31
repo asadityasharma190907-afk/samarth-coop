@@ -471,3 +471,82 @@ def test_get_ranked_workers_excludes_out_of_radius():
         db.close()
 
 
+def test_get_ranked_workers_reliability_penalty_applied():
+    db = TestingSessionLocal()
+    try:
+        citizen = User(name="Ravi", phone="9555555555", password_hash="hash", role="citizen")
+        db.add(citizen)
+        db.flush()
+
+        # Worker A (Reliable)
+        wA_u = User(name="Reliable Worker", phone="9111111111", password_hash="hash", role="worker")
+        db.add(wA_u)
+        db.flush()
+        wA_p = WorkerProfile(
+            user_id=wA_u.id, skill="electrician", lat=Decimal("26.9280"), lng=Decimal("75.8100"),
+            rating=Decimal("4.0"), availability=True, verified=True
+        )
+        db.add(wA_p)
+
+        # Worker B (Unreliable - gets penalty)
+        wB_u = User(name="Unreliable Worker", phone="9222222222", password_hash="hash", role="worker")
+        db.add(wB_u)
+        db.flush()
+        wB_p = WorkerProfile(
+            user_id=wB_u.id, skill="electrician", lat=Decimal("26.9280"), lng=Decimal("75.8100"),
+            rating=Decimal("4.0"), availability=True, verified=True
+        )
+        db.add(wB_p)
+        db.flush()
+
+        # Seed booking to attach offers to
+        booking = Booking(
+            citizen_id=citizen.id,
+            skill="electrician",
+            lat=Decimal("26.9280"),
+            lng=Decimal("75.8100"),
+            job_price=Decimal("500.00"),
+            status="pending",
+        )
+        db.add(booking)
+        db.flush()
+
+        # Seed 5 offers for Worker B, all declined (0% acceptance rate -> penalty applied)
+        for i in range(5):
+            offer = BookingOffer(
+                booking_id=booking.id,
+                worker_id=wB_u.id,
+                rank_at_offer=1,
+                dispatch_score=Decimal("1000.00"),
+                status="declined",
+                expires_at=datetime.now(timezone.utc) + timedelta(minutes=10),
+                created_at=datetime.now(timezone.utc) - timedelta(minutes=i)
+            )
+            db.add(offer)
+
+        db.commit()
+
+        # Get ranked workers
+        workers = get_ranked_workers("electrician", 26.9280, 75.8100, db)
+
+        # Both should be present since they are at the center (0 distance) and verified/available
+        assert len(workers) == 2
+
+        # Worker A should be 1st, Worker B should be 2nd
+        assert workers[0]["name"] == "Reliable Worker"
+        assert workers[1]["name"] == "Unreliable Worker"
+
+        # Verify score difference is exactly 3000
+        score_A = float(workers[0]["dispatch_score"])
+        score_B = float(workers[1]["dispatch_score"])
+        assert abs(score_A - score_B - 3000.0) < 0.01
+
+        # Verify flags
+        assert workers[0]["reliability_penalty_applied"] is False
+        assert workers[1]["reliability_penalty_applied"] is True
+
+    finally:
+        db.close()
+
+
+

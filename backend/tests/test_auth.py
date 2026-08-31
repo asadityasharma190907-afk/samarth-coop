@@ -201,3 +201,23 @@ def test_protected_route_invalid_token():
     assert response.status_code == 401
     assert response.json()["detail"] == "Could not validate credentials"
 
+
+def test_register_worker_out_of_bounds_coords():
+    payload = {
+        "name": "Suresh Kumar",
+        "phone": "9111111115",
+        "password": "worker123",
+        "role": "worker",
+        "skill": "electrician",
+        "lat": 95.0,  # Invalid latitude > 90
+        "lng": 75.8100
+    }
+    response = client.post("/auth/register", json=payload)
+    assert response.status_code == 422
+
+    payload["lat"] = 26.9280
+    payload["lng"] = 185.0  # Invalid longitude > 180
+    response = client.post("/auth/register", json=payload)
+    assert response.status_code == 422
+
+
