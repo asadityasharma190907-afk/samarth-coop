@@ -62,8 +62,8 @@ development_status:
 # FRs: FR-7, FR-8, FR-9, FR-10, FR-11 | UX-DRs: UX-DR2, UX-DR3, UX-DR6
 # â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-  epic-3: backlog
-  3-1-create-booking-api: backlog
+  epic-3: in-progress
+  3-1-create-booking-api: done
   3-2-initial-offer-dispatch: backlog
   3-3-worker-accept-row-lock: backlog
   3-4-worker-decline-cascade: backlog
