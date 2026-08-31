@@ -1,0 +1,64 @@
+.audit-table-container {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-card);
+}
+
+.audit-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.audit-table th,
+.audit-table td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-size: var(--font-size-body-sm);
+}
+
+.audit-table th {
+  background-color: var(--color-surface-bg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.audit-table tr:last-child td {
+  border-bottom: none;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--color-brand-primary);
+}
+
+.status-badge {
+  padding: 2px 8px;
+  border-radius: var(--rounded-full);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  text-transform: capitalize;
+}
+
+.status-offered {
+  background-color: #DBEAFE;
+  color: #1E40AF;
+}
+
+.status-accepted {
+  background-color: #D1FAE5;
+  color: #065F46;
+}
+
+.status-declined {
+  background-color: #FEE2E2;
+  color: #991B1B;
+}
+
+.status-expired {
+  background-color: #F3F4F6;
+  color: #374151;
+}
