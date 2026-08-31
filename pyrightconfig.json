@@ -1,9 +1,10 @@
 {
-  "venvPath": ".",
-  "venv": "backend/venv",
+  "venvPath": "backend",
+  "venv": "venv",
   "extraPaths": [
     "backend",
     "backend/app",
-    "backend/tests"
+    "backend/tests",
+    "backend/venv/Lib/site-packages"
   ]
 }

@@ -22,7 +22,7 @@ frontend/.vite/
 .dockerignore
 
 # IDE
-.vscode/settings.json
+.vscode/
 .idea/
 *.swp
 
