@@ -9,6 +9,7 @@ import { Book } from './pages/Book';
 import { BookingStatus } from './pages/BookingStatus';
 import { WorkerOffers } from './pages/WorkerOffers';
 import { WorkerWallet } from './pages/WorkerWallet';
+import { Federation } from './pages/Federation';
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/worker/offers" element={<WorkerOffers />} />
           <Route path="/worker/wallet" element={<WorkerWallet />} />
           <Route path="/worker/profile" element={<WorkerDashboard />} />
+          <Route path="/federation" element={<Federation />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>

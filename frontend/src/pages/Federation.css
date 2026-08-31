@@ -1,0 +1,116 @@
+.federation-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+}
+
+.federation-header {
+  margin-bottom: var(--spacing-2xl);
+  text-align: center;
+}
+
+.federation-header h1 {
+  font-size: var(--font-size-display);
+  color: var(--color-brand-primary-dark);
+  margin-bottom: var(--spacing-sm);
+}
+
+.federation-header p {
+  font-size: var(--font-size-h4);
+  color: var(--color-text-secondary);
+}
+
+.stats-grid {
+  display: flex;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-3xl);
+  flex-wrap: wrap;
+}
+
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--spacing-2xl);
+}
+
+.bookings-section h2,
+.audit-section h2 {
+  font-size: var(--font-size-h3);
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text-primary);
+}
+
+.audit-subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-body);
+  margin-top: -12px;
+  margin-bottom: var(--spacing-md);
+}
+
+.bookings-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: var(--spacing-sm);
+}
+
+.booking-item {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--rounded-md);
+  padding: var(--spacing-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.booking-item:hover {
+  border-color: var(--color-brand-primary-light);
+  box-shadow: var(--shadow-1);
+}
+
+.booking-item.active {
+  border-color: var(--color-brand-primary);
+  background-color: var(--color-surface-overlay);
+}
+
+.booking-info {
+  font-size: var(--font-size-body);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.booking-info span {
+  font-weight: var(--font-weight-medium);
+  text-transform: capitalize;
+}
+
+.booking-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.time {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+}
+
+.empty-audit-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  background: var(--color-surface-card);
+  border: 1px dashed var(--color-border-default);
+  border-radius: var(--rounded-lg);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .dashboard-content {
+    grid-template-columns: 1fr;
+  }
+}
