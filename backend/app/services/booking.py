@@ -162,8 +162,8 @@ def submit_rating(
         new_rating = Decimal(rating_val)
     else:
         new_rating = (
-            (current_rating * Decimal(current_count)) + Decimal(rating_val)
-        ) / Decimal(current_count + 1)
+            (current_rating * Decimal(current_count)) + Decimal(rating_val)  # type: ignore
+        ) / Decimal(current_count + 1)  # type: ignore
 
     worker_profile.rating = new_rating.quantize(Decimal("0.1"))  # type: ignore
     worker_profile.rating_count = current_count + 1  # type: ignore

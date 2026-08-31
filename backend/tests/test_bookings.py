@@ -381,8 +381,10 @@ def test_rate_booking_success(citizen_token, seeded_worker):
         offer = (
             db.query(BookingOffer).filter_by(booking_id=uuid.UUID(booking_id)).first()
         )
+        assert offer is not None
         offer.status = "accepted"  # type: ignore
         booking = db.query(Booking).filter_by(id=uuid.UUID(booking_id)).first()
+        assert booking is not None
         booking.status = "assigned"  # type: ignore
         booking.worker_id = seeded_worker
         db.commit()
@@ -400,10 +402,12 @@ def test_rate_booking_success(citizen_token, seeded_worker):
     db = TestingSessionLocal()
     try:
         profile = db.query(WorkerProfile).filter_by(user_id=seeded_worker).first()
+        assert profile is not None
         assert float(profile.rating) == 5.0  # type: ignore
         assert profile.rating_count == 1
 
         booking = db.query(Booking).filter_by(id=uuid.UUID(booking_id)).first()
+        assert booking is not None
         assert booking.rating == 5
     finally:
         db.close()
