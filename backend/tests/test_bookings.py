@@ -1,12 +1,14 @@
-import pytest
 import uuid
 from decimal import Decimal
-from fastapi.testclient import TestClient
-from app.main import app
-from app.models.user import User
-from app.models.booking import Booking
-from app.services.auth import hash_password, create_access_token
+
+import pytest
 from conftest import TestingSessionLocal
+from fastapi.testclient import TestClient
+
+from app.main import app
+from app.models.booking import Booking
+from app.models.user import User
+from app.services.auth import create_access_token, hash_password
 
 client = TestClient(app)
 
@@ -24,7 +26,9 @@ def citizen_token():
         db.add(citizen)
         db.commit()
         db.refresh(citizen)
-        token = create_access_token(data={"user_id": str(citizen.id), "role": "citizen"})
+        token = create_access_token(
+            data={"user_id": str(citizen.id), "role": "citizen"}
+        )
         return token, citizen.id
     finally:
         db.close()

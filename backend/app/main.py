@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth, bookings, workers
 
+from app.routers import auth, bookings, workers
 
 app = FastAPI(
     title="Samarth API",

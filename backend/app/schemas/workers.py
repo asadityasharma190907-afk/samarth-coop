@@ -4,7 +4,6 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict
 
 
-
 class WorkerResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

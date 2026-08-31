@@ -25,7 +25,6 @@ def upgrade() -> None:
     if bind.dialect.name == "postgresql":
         op.execute('CREATE EXTENSION IF NOT EXISTS "pgcrypto";')
 
-
     # 1. users
     op.create_table(
         "users",
