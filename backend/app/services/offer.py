@@ -10,6 +10,34 @@ from app.models.worker_profile import WorkerProfile
 from app.services.dispatch import get_ranked_workers
 
 
+def check_and_expire_offer(offer: BookingOffer, db: Session) -> bool:
+    if offer.status != "offered":
+        return False
+
+    offer_expires_at = offer.expires_at
+    if offer_expires_at.tzinfo is None:
+        offer_expires_at = offer_expires_at.replace(tzinfo=timezone.utc)
+
+    if datetime.now(timezone.utc) > offer_expires_at:
+        # Lock the booking to prevent race condition during cascade
+        booking = (
+            db.query(Booking).filter_by(id=offer.booking_id).with_for_update().first()
+        )
+        if not booking or booking.status != "pending":
+            return False
+
+        # Re-check offer status inside lock
+        db.refresh(offer)
+        if offer.status != "offered":
+            return False
+
+        offer.status = "expired"  # type: ignore
+        cascade_to_next(booking, offer, db)
+        return True
+
+    return False
+
+
 def cascade_to_next(booking: Booking, current_offer: BookingOffer, db: Session) -> None:
     already_offered = (
         db.query(BookingOffer.worker_id).filter_by(booking_id=booking.id).all()
@@ -55,6 +83,11 @@ def decline_offer(offer_id: UUID, worker_id: UUID, db: Session) -> None:
             detail="Offer does not belong to this worker",
         )
 
+    if check_and_expire_offer(offer, db):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Offer has expired"
+        )
+
     if offer.status != "offered":
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -94,15 +127,7 @@ def accept_offer(offer_id: UUID, worker_id: UUID, db: Session) -> None:
             detail="Offer does not belong to this worker",
         )
 
-    # Check if expired
-    offer_expires_at = offer.expires_at
-    if offer_expires_at.tzinfo is None:
-        offer_expires_at = offer_expires_at.replace(tzinfo=timezone.utc)
-
-    if datetime.now(timezone.utc) > offer_expires_at:
-        # We can update status to expired if we want, but AD-8 says lazy check.
-        offer.status = "expired"  # type: ignore
-        db.commit()
+    if check_and_expire_offer(offer, db):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Offer has expired"
         )

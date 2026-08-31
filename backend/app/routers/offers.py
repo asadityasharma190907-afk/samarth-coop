@@ -9,7 +9,7 @@ from app.dependencies import get_current_user
 from app.models.booking_offer import BookingOffer
 from app.models.user import User
 from app.schemas.offers import OfferActionRequest, OfferResponse
-from app.services.offer import accept_offer, decline_offer
+from app.services.offer import accept_offer, check_and_expire_offer, decline_offer
 
 router = APIRouter()
 
@@ -22,6 +22,21 @@ def get_booking_offers(booking_id: UUID, db: Session = Depends(get_db)):
         .order_by(BookingOffer.rank_at_offer.asc())
         .all()
     )
+
+    # Lazy check for expiry on read
+    expired_any = False
+    for offer in offers:
+        if check_and_expire_offer(offer, db):
+            expired_any = True
+
+    if expired_any:
+        # Re-fetch offers to include newly cascaded ones
+        offers = (
+            db.query(BookingOffer)
+            .filter(BookingOffer.booking_id == booking_id)
+            .order_by(BookingOffer.rank_at_offer.asc())
+            .all()
+        )
     if not offers:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
