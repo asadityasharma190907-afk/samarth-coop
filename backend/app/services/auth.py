@@ -2,7 +2,12 @@ from datetime import datetime, timedelta, timezone
 from typing import Optional
 import bcrypt
 from jose import jwt
+from fastapi import HTTPException, status
+from sqlalchemy.orm import Session
 from app.config import settings
+from app.models.user import User
+from app.models.worker_profile import WorkerProfile
+from app.schemas.auth import CitizenRegisterRequest, WorkerRegisterRequest
 
 
 def hash_password(password: str) -> str:
@@ -27,3 +32,54 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
+
+
+def register_citizen(db: Session, payload: CitizenRegisterRequest) -> User:
+    existing_user = db.query(User).filter(User.phone == payload.phone).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Phone number already registered"
+        )
+    
+    hashed_pwd = hash_password(payload.password)
+    new_user = User(
+        name=payload.name,
+        phone=payload.phone,
+        password_hash=hashed_pwd,
+        role=payload.role
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+
+
+def register_worker(db: Session, payload: WorkerRegisterRequest) -> User:
+    existing_user = db.query(User).filter(User.phone == payload.phone).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Phone number already registered"
+        )
+    
+    hashed_pwd = hash_password(payload.password)
+    new_user = User(
+        name=payload.name,
+        phone=payload.phone,
+        password_hash=hashed_pwd,
+        role=payload.role
+    )
+    db.add(new_user)
+    db.flush()
+
+    worker_profile = WorkerProfile(
+        user_id=new_user.id,
+        skill=payload.skill,
+        lat=payload.lat,
+        lng=payload.lng
+    )
+    db.add(worker_profile)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
