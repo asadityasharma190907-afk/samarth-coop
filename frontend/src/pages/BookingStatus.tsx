@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ShieldCheck, Star, MapPin, Search } from 'lucide-react';
 import { useBooking } from '../hooks/useBooking';
+import { WelfareFundChip } from '../components/WelfareFundChip';
 import './BookingStatus.css';
 
 export function BookingStatus() {
@@ -102,9 +103,12 @@ export function BookingStatus() {
           <p className="status-subtitle mb-6">
             Thank you for using Samarth!
           </p>
-          <button className="btn-primary" onClick={() => navigate('/book')}>
-            Book Another Service
-          </button>
+          <WelfareFundChip amount={booking.platform_fee || 0} />
+          <div className="mt-8">
+            <button className="btn-primary" onClick={() => navigate('/book')}>
+              Book Another Service
+            </button>
+          </div>
         </div>
       )}
     </div>

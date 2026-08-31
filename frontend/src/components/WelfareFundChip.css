@@ -1,0 +1,28 @@
+.welfare-chip-wrapper {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.welfare-chip-wrapper.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.welfare-chip {
+  background: linear-gradient(135deg, var(--color-welfare-fund), #9333EA);
+  border-radius: var(--rounded-2xl);
+  padding: 12px 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2);
+}
+
+.welfare-chip-text {
+  color: var(--color-text-on-brand);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-body);
+}
