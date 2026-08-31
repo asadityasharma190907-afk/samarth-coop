@@ -17,14 +17,4 @@ def post_booking(
     db: Session = Depends(get_db),
 ):
     booking = create_booking(current_user, booking_in, db)
-    return BookingResponse(
-        booking_id=booking.id,
-        status=booking.status,
-        job_price=booking.job_price,
-        platform_fee=booking.platform_fee,
-        skill=booking.skill,
-        lat=booking.lat,
-        lng=booking.lng,
-        description=booking.description,
-        created_at=booking.created_at,
-    )
+    return BookingResponse.model_validate(booking)

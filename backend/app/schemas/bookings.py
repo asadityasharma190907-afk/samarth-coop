@@ -13,9 +13,9 @@ class CreateBookingRequest(BaseModel):
 
 
 class BookingResponse(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
-    booking_id: UUID
+    booking_id: UUID = Field(validation_alias="id")
     status: str
     job_price: Decimal
     platform_fee: Optional[Decimal] = None
