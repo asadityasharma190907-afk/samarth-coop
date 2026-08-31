@@ -7,6 +7,7 @@ import { Dashboard } from './pages/Dashboard';
 import { WorkerDashboard } from './pages/WorkerDashboard';
 import { Book } from './pages/Book';
 import { BookingStatus } from './pages/BookingStatus';
+import { WorkerOffers } from './pages/WorkerOffers';
 
 const queryClient = new QueryClient();
 
@@ -23,7 +24,7 @@ export default function App() {
           <Route path="/booking/:id" element={<BookingStatus />} />
           <Route path="/worker/dashboard" element={<WorkerDashboard />} />
           {/* Add placeholders for other worker tabs to prevent 404s when navigating */}
-          <Route path="/worker/offers" element={<WorkerDashboard />} />
+          <Route path="/worker/offers" element={<WorkerOffers />} />
           <Route path="/worker/wallet" element={<WorkerDashboard />} />
           <Route path="/worker/profile" element={<WorkerDashboard />} />
         </Routes>

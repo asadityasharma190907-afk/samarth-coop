@@ -18,5 +18,13 @@ class OfferResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class WorkerOfferDetail(OfferResponse):
+    job_price: Decimal
+    skill: str
+    lat: Decimal
+    lng: Decimal
+    distance_km: float
+
+
 class OfferActionRequest(BaseModel):
     action: str

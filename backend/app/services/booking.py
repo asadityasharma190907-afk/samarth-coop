@@ -1,11 +1,14 @@
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
+from uuid import UUID
 
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.models.booking import Booking
 from app.models.booking_offer import BookingOffer
 from app.models.user import User
+from app.models.worker_profile import WorkerProfile
 from app.schemas.bookings import CreateBookingRequest
 from app.services.dispatch import get_ranked_workers
 
@@ -30,11 +33,11 @@ def get_category_price(skill: str) -> Decimal:
 
 def dispatch_first_offer(booking: Booking, db: Session) -> None:
     ranked_workers = get_ranked_workers(
-        booking.skill, float(booking.lat), float(booking.lng), db
+        str(booking.skill), float(str(booking.lat)), float(str(booking.lng)), db
     )
 
     if not ranked_workers:
-        booking.status = "cancelled"
+        booking.status = "cancelled"  # type: ignore
         db.commit()
         return
 
@@ -76,3 +79,46 @@ def create_booking(
     dispatch_first_offer(new_booking, db)
     db.refresh(new_booking)
     return new_booking
+
+
+def complete_booking(booking_id: UUID, worker_id: UUID, db: Session) -> Booking:
+    # Row lock for the booking
+    booking = db.query(Booking).filter_by(id=booking_id).with_for_update().first()
+
+    if not booking:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Booking not found"
+        )
+
+    if booking.status != "assigned":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Only assigned bookings can be completed",
+        )
+
+    # Verify that the worker trying to complete is the assigned worker
+    accepted_offer = (
+        db.query(BookingOffer)
+        .filter_by(booking_id=booking_id, status="accepted")
+        .first()
+    )
+
+    if not accepted_offer or accepted_offer.worker_id != worker_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Booking is not assigned to this worker",
+        )
+
+    # 95/5 Split computation
+    platform_fee = (booking.job_price * Decimal("0.05")).quantize(Decimal("0.01"))
+    booking.platform_fee = platform_fee
+    booking.status = "completed"  # type: ignore
+
+    # Make the worker available again
+    worker_profile = db.query(WorkerProfile).filter_by(user_id=worker_id).first()
+    if worker_profile:
+        worker_profile.availability = True  # type: ignore
+
+    db.commit()
+    db.refresh(booking)
+    return booking
