@@ -21,6 +21,7 @@ export interface Booking {
   description?: string;
   created_at: string;
   assigned_worker?: AssignedWorkerDetail;
+  rating?: number | null;
 }
 
 export interface CreateBookingPayload {
