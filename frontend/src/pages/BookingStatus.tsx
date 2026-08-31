@@ -1,14 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ShieldCheck, Star, MapPin, Search } from 'lucide-react';
+import { MapPin, Search, Star } from 'lucide-react';
 import { useBooking } from '../hooks/useBooking';
 import { WelfareFundChip } from '../components/WelfareFundChip';
+import { VerifiedBadge } from '../components/VerifiedBadge';
+import { StarRating } from '../components/StarRating';
+import { api } from '../lib/api';
 import './BookingStatus.css';
 
 export function BookingStatus() {
   const { id } = useParams<{ id: string }>();
   const { data: booking, isLoading, isError } = useBooking(id);
   const navigate = useNavigate();
+  const [ratingSubmitted, setRatingSubmitted] = useState(false);
+  const [isSubmittingRating, setIsSubmittingRating] = useState(false);
+
+  const handleRate = async (rating: number) => {
+    if (!id || isSubmittingRating) return;
+    setIsSubmittingRating(true);
+    try {
+      await api.post(`/bookings/${id}/rating`, { rating });
+      setRatingSubmitted(true);
+    } catch (err: any) {
+      alert(err.message || 'Failed to submit rating');
+    } finally {
+      setIsSubmittingRating(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -60,9 +78,7 @@ export function BookingStatus() {
               <p className="worker-skill">{booking.assigned_worker.skill}</p>
             </div>
             {booking.assigned_worker.verified && (
-              <span className="badge-verified">
-                <ShieldCheck size={14} /> Society Verified
-              </span>
+              <VerifiedBadge />
             )}
           </div>
 
@@ -104,6 +120,19 @@ export function BookingStatus() {
             Thank you for using Samarth!
           </p>
           <WelfareFundChip amount={booking.platform_fee || 0} />
+          
+          <div className="mt-8 mb-4">
+            {!booking.rating && !ratingSubmitted ? (
+              <div className="rating-section">
+                <p className="rating-prompt">Rate your experience</p>
+                <StarRating onRate={handleRate} disabled={isSubmittingRating} />
+              </div>
+            ) : (
+              <div className="text-status-success font-medium">
+                Rating submitted. Thank you.
+              </div>
+            )}
+          </div>
           <div className="mt-8">
             <button className="btn-primary" onClick={() => navigate('/book')}>
               Book Another Service

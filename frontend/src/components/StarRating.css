@@ -1,0 +1,25 @@
+.star-rating {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.star-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--color-gray-300);
+  transition: all 0.2s ease;
+}
+
+.star-btn:focus {
+  outline: none;
+}
+
+.star-btn.active {
+  color: #FBBF24; /* Amber 400 */
+}
+
+.star-btn.disabled {
+  cursor: default;
+}

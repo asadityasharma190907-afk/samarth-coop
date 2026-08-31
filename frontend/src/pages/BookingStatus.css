@@ -97,17 +97,19 @@
   margin: 0;
 }
 
-.badge-verified {
-  background-color: #ECFDF5;
-  color: var(--color-status-success);
-  border: 1px solid #BBF7D0;
-  border-radius: var(--rounded-full);
-  padding: 4px 10px;
-  font-size: var(--font-size-caption);
-  font-weight: var(--font-weight-semibold);
-  display: inline-flex;
+.rating-section {
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 4px;
+}
+
+.rating-prompt {
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
 }
 
 .worker-stats {
