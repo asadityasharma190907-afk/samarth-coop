@@ -285,7 +285,6 @@ def test_lazy_expiry_on_read(worker_with_offer):
         assert offer is not None
         offer.expires_at = datetime.now(timezone.utc) - timedelta(minutes=5)  # type: ignore
         db.commit()
-        worker2_id = worker2.id
     finally:
         db.close()
 
@@ -297,11 +296,11 @@ def test_lazy_expiry_on_read(worker_with_offer):
     assert len(data) == 2
 
     # The first offer should be expired
-    assert data[0]["id"] == str(offer_id)
+    assert data[0]["worker_name"] == "Suresh Worker"
     assert data[0]["status"] == "expired"
 
     # The second offer should be offered
-    assert data[1]["worker_id"] == str(worker2_id)
+    assert data[1]["worker_name"] == "Priya Worker 2"
     assert data[1]["status"] == "offered"
     assert data[1]["rank_at_offer"] == 2
 

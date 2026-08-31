@@ -217,12 +217,11 @@ def test_get_booking_offers_audit_trail(citizen_token, seeded_worker):
     assert len(data) == 1
 
     offer = data[0]
-    assert offer["booking_id"] == booking_id
-    assert offer["worker_id"] == str(seeded_worker)
+    assert offer["worker_name"] == "Suresh Worker"
     assert offer["rank_at_offer"] == 1
     assert offer["status"] == "offered"
     assert "dispatch_score" in offer
-    assert "expires_at" in offer
+    assert "created_at" in offer
 
 
 def test_complete_booking_success(citizen_token, seeded_worker):

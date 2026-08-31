@@ -10,17 +10,23 @@ from app.models.booking import Booking
 from app.models.booking_offer import BookingOffer
 from app.models.user import User
 from app.models.worker_profile import WorkerProfile
-from app.schemas.offers import OfferActionRequest, OfferResponse, WorkerOfferDetail
+from app.schemas.offers import (
+    AuditTrailEntry,
+    OfferActionRequest,
+    OfferResponse,
+    WorkerOfferDetail,
+)
 from app.services.dispatch import haversine_km
 from app.services.offer import accept_offer, check_and_expire_offer, decline_offer
 
 router = APIRouter()
 
 
-@router.get("/booking/{booking_id}", response_model=list[OfferResponse])
+@router.get("/booking/{booking_id}", response_model=list[AuditTrailEntry])
 def get_booking_offers(booking_id: UUID, db: Session = Depends(get_db)):
     offers = (
-        db.query(BookingOffer)
+        db.query(BookingOffer, User)
+        .join(User, User.id == BookingOffer.worker_id)
         .filter(BookingOffer.booking_id == booking_id)
         .order_by(BookingOffer.rank_at_offer.asc())
         .all()
@@ -28,14 +34,15 @@ def get_booking_offers(booking_id: UUID, db: Session = Depends(get_db)):
 
     # Lazy check for expiry on read
     expired_any = False
-    for offer in offers:
+    for offer, _ in offers:
         if check_and_expire_offer(offer, db):
             expired_any = True
 
     if expired_any:
         # Re-fetch offers to include newly cascaded ones
         offers = (
-            db.query(BookingOffer)
+            db.query(BookingOffer, User)
+            .join(User, User.id == BookingOffer.worker_id)
             .filter(BookingOffer.booking_id == booking_id)
             .order_by(BookingOffer.rank_at_offer.asc())
             .all()
@@ -46,7 +53,18 @@ def get_booking_offers(booking_id: UUID, db: Session = Depends(get_db)):
             detail="No offers found for this booking",
         )
 
-    return [OfferResponse.model_validate(offer) for offer in offers]
+    result = []
+    for offer, user in offers:
+        result.append(
+            AuditTrailEntry(
+                worker_name=user.name,  # type: ignore
+                rank_at_offer=offer.rank_at_offer,  # type: ignore
+                dispatch_score=offer.dispatch_score,  # type: ignore
+                status=offer.status,  # type: ignore
+                created_at=offer.created_at,  # type: ignore
+            )
+        )
+    return result
 
 
 @router.get("/worker", response_model=list[WorkerOfferDetail])

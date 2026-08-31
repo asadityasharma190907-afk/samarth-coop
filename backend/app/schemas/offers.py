@@ -18,6 +18,16 @@ class OfferResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class AuditTrailEntry(BaseModel):
+    worker_name: str
+    rank_at_offer: int
+    dispatch_score: Decimal
+    status: str
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class WorkerOfferDetail(OfferResponse):
     job_price: Decimal
     skill: str
