@@ -165,7 +165,7 @@ def test_create_booking_validation_error(citizen_token):
 
 
 def test_create_booking_no_workers_cancelled(citizen_token):
-    token, citizen_id = citizen_token
+    token, _ = citizen_token
     headers = {"Authorization": f"Bearer {token}"}
     payload = {
         "skill": "electrician",
@@ -189,7 +189,7 @@ def test_create_booking_no_workers_cancelled(citizen_token):
 
 
 def test_get_booking_offers_audit_trail(citizen_token, seeded_worker):
-    token, citizen_id = citizen_token
+    token, _ = citizen_token
     headers = {"Authorization": f"Bearer {token}"}
     
     # Create booking which triggers offer dispatch
