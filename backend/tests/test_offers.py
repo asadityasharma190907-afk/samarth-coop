@@ -75,10 +75,8 @@ def worker_with_offer():
         db.commit()
         db.refresh(offer)
 
-        token = create_access_token(
-            data={"user_id": str(worker.id), "role": "worker"}
-        )
-        
+        token = create_access_token(data={"user_id": str(worker.id), "role": "worker"})
+
         return token, worker.id, booking.id, offer.id
     finally:
         db.close()
@@ -87,7 +85,7 @@ def worker_with_offer():
 def test_accept_offer_success(worker_with_offer):
     token, worker_id, booking_id, offer_id = worker_with_offer
     headers = {"Authorization": f"Bearer {token}"}
-    
+
     response = client.put(
         f"/booking-offers/{offer_id}",
         json={"action": "accept"},
@@ -101,11 +99,11 @@ def test_accept_offer_success(worker_with_offer):
         booking = db.query(Booking).filter_by(id=booking_id).first()
         assert booking is not None
         assert booking.status == "assigned"
-        
+
         offer = db.query(BookingOffer).filter_by(id=offer_id).first()
         assert offer is not None
         assert offer.status == "accepted"
-        
+
         profile = db.query(WorkerProfile).filter_by(user_id=worker_id).first()
         assert profile is not None
         assert profile.availability == False
@@ -169,8 +167,8 @@ def test_accept_expired_offer(worker_with_offer):
 
 
 def test_decline_offer_success_cascade(worker_with_offer):
-    token, worker_id, booking_id, offer_id = worker_with_offer
-    
+    token, _, booking_id, offer_id = worker_with_offer
+
     # Add a second worker to catch the cascade
     db = TestingSessionLocal()
     try:
@@ -183,7 +181,7 @@ def test_decline_offer_success_cascade(worker_with_offer):
         db.add(worker2)
         db.commit()
         db.refresh(worker2)
-        
+
         profile2 = WorkerProfile(
             user_id=worker2.id,
             skill="electrician",
@@ -198,26 +196,26 @@ def test_decline_offer_success_cascade(worker_with_offer):
         worker2_id = worker2.id
     finally:
         db.close()
-        
+
     headers = {"Authorization": f"Bearer {token}"}
     response = client.put(
         f"/booking-offers/{offer_id}",
         json={"action": "decline"},
         headers=headers,
     )
-    
+
     assert response.status_code == 200
-    
+
     db = TestingSessionLocal()
     try:
         booking = db.query(Booking).filter_by(id=booking_id).first()
         assert booking is not None
         assert booking.status == "pending"
-        
+
         old_offer = db.query(BookingOffer).filter_by(id=offer_id).first()
         assert old_offer is not None
         assert old_offer.status == "declined"
-        
+
         # Check new offer
         new_offer = db.query(BookingOffer).filter_by(worker_id=worker2_id).first()
         assert new_offer is not None
@@ -229,24 +227,24 @@ def test_decline_offer_success_cascade(worker_with_offer):
 
 
 def test_cascade_exhaustion_cancels_booking(worker_with_offer):
-    token, worker_id, booking_id, offer_id = worker_with_offer
+    token, _, booking_id, offer_id = worker_with_offer
     headers = {"Authorization": f"Bearer {token}"}
-    
+
     # Only 1 worker in DB, declining should exhaust options
     response = client.put(
         f"/booking-offers/{offer_id}",
         json={"action": "decline"},
         headers=headers,
     )
-    
+
     assert response.status_code == 200
-    
+
     db = TestingSessionLocal()
     try:
         booking = db.query(Booking).filter_by(id=booking_id).first()
         assert booking is not None
         assert booking.status == "cancelled"
-        
+
         old_offer = db.query(BookingOffer).filter_by(id=offer_id).first()
         assert old_offer is not None
         assert old_offer.status == "declined"

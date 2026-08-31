@@ -25,9 +25,9 @@ def get_booking_offers(booking_id: UUID, db: Session = Depends(get_db)):
     if not offers:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="No offers found for this booking"
+            detail="No offers found for this booking",
         )
-    
+
     return [OfferResponse.model_validate(offer) for offer in offers]
 
 
@@ -36,15 +36,15 @@ def update_offer_status(
     offer_id: UUID,
     action_req: OfferActionRequest,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     action = action_req.action.lower()
     if action not in ["accept", "decline"]:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Only 'accept' and 'decline' actions are supported"
+            detail="Only 'accept' and 'decline' actions are supported",
         )
-    
+
     if action == "accept":
         accept_offer(offer_id, cast(UUID, current_user.id), db)
         return {"status": "success", "message": "Offer accepted and booking assigned"}

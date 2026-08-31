@@ -98,9 +98,13 @@ def test_create_booking_authenticated(citizen_token, seeded_worker):
         assert booking.status == "pending"
         assert booking.job_price == Decimal("500.00")
         assert booking.platform_fee == Decimal("25.00")
-        
+
         # Verify offer is created
-        offer = db.query(BookingOffer).filter(BookingOffer.booking_id == booking_uuid).first()
+        offer = (
+            db.query(BookingOffer)
+            .filter(BookingOffer.booking_id == booking_uuid)
+            .first()
+        )
         assert offer is not None
         assert offer.worker_id == seeded_worker
         assert offer.status == "offered"
@@ -182,7 +186,11 @@ def test_create_booking_no_workers_cancelled(citizen_token):
     db = TestingSessionLocal()
     try:
         booking_uuid = uuid.UUID(data["booking_id"])
-        offers_count = db.query(BookingOffer).filter(BookingOffer.booking_id == booking_uuid).count()
+        offers_count = (
+            db.query(BookingOffer)
+            .filter(BookingOffer.booking_id == booking_uuid)
+            .count()
+        )
         assert offers_count == 0
     finally:
         db.close()
@@ -191,7 +199,7 @@ def test_create_booking_no_workers_cancelled(citizen_token):
 def test_get_booking_offers_audit_trail(citizen_token, seeded_worker):
     token, _ = citizen_token
     headers = {"Authorization": f"Bearer {token}"}
-    
+
     # Create booking which triggers offer dispatch
     payload = {
         "skill": "electrician",
@@ -207,7 +215,7 @@ def test_get_booking_offers_audit_trail(citizen_token, seeded_worker):
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 1
-    
+
     offer = data[0]
     assert offer["booking_id"] == booking_id
     assert offer["worker_id"] == str(seeded_worker)
