@@ -14,7 +14,7 @@ from app.schemas.bookings import (
     BookingResponse,
     CreateBookingRequest,
 )
-from app.services.booking import create_booking
+from app.services.booking import complete_booking, create_booking
 from app.services.dispatch import haversine_km
 
 router = APIRouter()
@@ -67,12 +67,22 @@ def get_booking(booking_id: UUID, db: Session = Depends(get_db)):
                 )
 
                 response_obj.assigned_worker = AssignedWorkerDetail(
-                    id=worker.id,
-                    name=worker.name,
+                    id=worker.id,  # type: ignore
+                    name=worker.name,  # type: ignore
                     skill=str(profile.skill),
-                    rating=profile.rating,
+                    rating=profile.rating,  # type: ignore
                     verified=bool(profile.verified),
                     distance_km=round(distance, 1),
                 )
 
     return response_obj
+
+
+@router.put("/{booking_id}/complete", response_model=BookingResponse)
+def complete_booking_endpoint(
+    booking_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    booking = complete_booking(booking_id, current_user.id, db)  # type: ignore
+    return BookingResponse.model_validate(booking)

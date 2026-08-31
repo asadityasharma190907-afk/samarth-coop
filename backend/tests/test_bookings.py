@@ -223,3 +223,138 @@ def test_get_booking_offers_audit_trail(citizen_token, seeded_worker):
     assert offer["status"] == "offered"
     assert "dispatch_score" in offer
     assert "expires_at" in offer
+
+
+def test_complete_booking_success(citizen_token, seeded_worker):
+    token, _ = citizen_token
+    worker_token = create_access_token(
+        data={"user_id": str(seeded_worker), "role": "worker"}
+    )
+    worker_headers = {"Authorization": f"Bearer {worker_token}"}
+    citizen_headers = {"Authorization": f"Bearer {token}"}
+
+    # Create booking
+    payload = {
+        "skill": "electrician",
+        "lat": 26.9124,
+        "lng": 75.7873,
+        "description": "Fix ceiling fan",
+    }
+    response = client.post("/bookings", json=payload, headers=citizen_headers)
+    booking_id = response.json()["booking_id"]
+
+    db = TestingSessionLocal()
+    try:
+        # Find offer and assign booking manually (simulate accept)
+        offer = (
+            db.query(BookingOffer).filter_by(booking_id=uuid.UUID(booking_id)).first()
+        )
+        assert offer is not None
+        offer.status = "accepted"  # type: ignore
+        booking = db.query(Booking).filter_by(id=uuid.UUID(booking_id)).first()
+        assert booking is not None
+        booking.status = "assigned"  # type: ignore
+
+        # Make worker unavailable
+        profile = db.query(WorkerProfile).filter_by(user_id=seeded_worker).first()
+        assert profile is not None
+        profile.availability = False  # type: ignore
+        db.commit()
+    finally:
+        db.close()
+
+    # Complete booking
+    comp_response = client.put(
+        f"/bookings/{booking_id}/complete", headers=worker_headers
+    )
+    assert comp_response.status_code == 200
+    comp_data = comp_response.json()
+    assert comp_data["status"] == "completed"
+
+    db = TestingSessionLocal()
+    try:
+        booking = db.query(Booking).filter_by(id=uuid.UUID(booking_id)).first()
+        assert booking is not None
+        assert booking.status == "completed"
+        assert booking.platform_fee == Decimal("25.00")
+
+        profile = db.query(WorkerProfile).filter_by(user_id=seeded_worker).first()
+        assert profile is not None
+        assert profile.availability == True
+    finally:
+        db.close()
+
+
+def test_complete_booking_forbidden(citizen_token, seeded_worker):
+    token, _ = citizen_token
+    citizen_headers = {"Authorization": f"Bearer {token}"}
+
+    db = TestingSessionLocal()
+    try:
+        other_worker = User(
+            name="Other Worker",
+            phone="9999999999",
+            password_hash="fake",
+            role="worker",
+        )
+        db.add(other_worker)
+        db.commit()
+        db.refresh(other_worker)
+        other_worker_id = other_worker.id
+    finally:
+        db.close()
+
+    other_worker_token = create_access_token(
+        data={"user_id": str(other_worker_id), "role": "worker"}
+    )
+    other_worker_headers = {"Authorization": f"Bearer {other_worker_token}"}
+
+    payload = {
+        "skill": "electrician",
+        "lat": 26.9124,
+        "lng": 75.7873,
+    }
+    response = client.post("/bookings", json=payload, headers=citizen_headers)
+    booking_id = response.json()["booking_id"]
+
+    db = TestingSessionLocal()
+    try:
+        offer = (
+            db.query(BookingOffer).filter_by(booking_id=uuid.UUID(booking_id)).first()
+        )
+        assert offer is not None
+        offer.status = "accepted"  # type: ignore
+        booking = db.query(Booking).filter_by(id=uuid.UUID(booking_id)).first()
+        assert booking is not None
+        booking.status = "assigned"  # type: ignore
+        db.commit()
+    finally:
+        db.close()
+
+    comp_response = client.put(
+        f"/bookings/{booking_id}/complete", headers=other_worker_headers
+    )
+    assert comp_response.status_code == 403
+
+
+def test_complete_unassigned_booking(citizen_token, seeded_worker):
+    token, _ = citizen_token
+    citizen_headers = {"Authorization": f"Bearer {token}"}
+    worker_token = create_access_token(
+        data={"user_id": str(seeded_worker), "role": "worker"}
+    )
+    worker_headers = {"Authorization": f"Bearer {worker_token}"}
+
+    payload = {
+        "skill": "electrician",
+        "lat": 26.9124,
+        "lng": 75.7873,
+    }
+    response = client.post("/bookings", json=payload, headers=citizen_headers)
+    booking_id = response.json()["booking_id"]
+
+    # booking is pending, try to complete
+    comp_response = client.put(
+        f"/bookings/{booking_id}/complete", headers=worker_headers
+    )
+    assert comp_response.status_code == 400
