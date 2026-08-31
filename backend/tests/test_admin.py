@@ -25,9 +25,7 @@ def admin_token():
         db.add(admin)
         db.commit()
         db.refresh(admin)
-        token = create_access_token(
-            data={"user_id": str(admin.id), "role": "admin"}
-        )
+        token = create_access_token(data={"user_id": str(admin.id), "role": "admin"})
         return token, admin.id
     finally:
         db.close()
@@ -148,23 +146,17 @@ def test_unverified_worker_excluded_from_dispatch(admin_token, test_worker):
     headers = {"Authorization": f"Bearer {token}"}
 
     # Worker is verified initially, should be in pool
-    response = client.get(
-        "/workers?skill=electrician&lat=26.9124&lng=75.7873"
-    )
+    response = client.get("/workers?skill=electrician&lat=26.9124&lng=75.7873")
     assert response.status_code == 200
     workers = response.json()
     assert any(w["worker_id"] == str(test_worker) for w in workers)
 
     # Unverify worker
     payload = {"verified": False}
-    client.patch(
-        f"/admin/workers/{test_worker}/verify", json=payload, headers=headers
-    )
+    client.patch(f"/admin/workers/{test_worker}/verify", json=payload, headers=headers)
 
     # Worker should not be in pool
-    response = client.get(
-        "/workers?skill=electrician&lat=26.9124&lng=75.7873"
-    )
+    response = client.get("/workers?skill=electrician&lat=26.9124&lng=75.7873")
     assert response.status_code == 200
     workers = response.json()
     assert not any(w["worker_id"] == str(test_worker) for w in workers)

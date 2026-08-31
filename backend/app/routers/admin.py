@@ -26,4 +26,7 @@ def verify_worker(
         )
 
     profile = toggle_verification(worker_id=id, verified=payload.verified, db=db)
-    return {"message": "Worker verification updated successfully", "verified": profile.verified}
+    return {
+        "message": "Worker verification updated successfully",
+        "verified": profile.verified,
+    }
