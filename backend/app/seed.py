@@ -17,6 +17,7 @@ def seed_data():
     try:
         # Seed user phone numbers
         seed_phones = [
+            "9000000000",  # Admin User
             "9111111111",  # Suresh Kumar
             "9222222222",  # Priya Gupta
             "9333333333",  # Anil Yadav
@@ -45,6 +46,16 @@ def seed_data():
             print(f"Cleaned up {len(existing_users)} existing seed user(s).")
 
         default_password_hash = hash_password("password123")
+
+        # 0. Create Admin
+        admin_user = User(
+            name="Admin User",
+            phone="9000000000",
+            password_hash=default_password_hash,
+            role="admin",
+        )
+        db.add(admin_user)
+        db.flush()
 
         # 1. Create Citizens
         ravi = User(
@@ -186,6 +197,7 @@ def seed_data():
         db.commit()
 
         print("Successfully seeded database:")
+        print("  - 1 Admin (Admin User)")
         print("  - 2 Citizens (Ravi Sharma, Priya Customer)")
         print("  - 4 Workers (Suresh Kumar, Priya Gupta, Anil Yadav, Meena Verma)")
         print("  - 3 Completed Bookings for weekly earnings calculation")
