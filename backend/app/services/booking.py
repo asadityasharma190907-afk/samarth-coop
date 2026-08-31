@@ -122,3 +122,55 @@ def complete_booking(booking_id: UUID, worker_id: UUID, db: Session) -> Booking:
     db.commit()
     db.refresh(booking)
     return booking
+
+
+def submit_rating(
+    booking_id: UUID, rating_val: int, citizen_id: UUID, db: Session
+) -> Booking:
+    booking = db.query(Booking).filter_by(id=booking_id, citizen_id=citizen_id).first()
+
+    if not booking:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Booking not found"
+        )
+
+    if booking.status != "completed":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Only completed bookings can be rated",
+        )
+
+    if booking.rating is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Booking has already been rated",
+        )
+
+    worker_profile = (
+        db.query(WorkerProfile).filter_by(user_id=booking.worker_id).first()
+    )
+    if not worker_profile:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Worker profile not found"
+        )
+
+    # Running average calculation
+    current_rating = worker_profile.rating
+    current_count = worker_profile.rating_count or 0
+
+    if current_rating is None:
+        new_rating = Decimal(rating_val)
+    else:
+        new_rating = (
+            (current_rating * Decimal(current_count)) + Decimal(rating_val)
+        ) / Decimal(current_count + 1)
+
+    worker_profile.rating = new_rating.quantize(Decimal("0.1"))  # type: ignore
+    worker_profile.rating_count = current_count + 1  # type: ignore
+
+    booking.rating = rating_val  # type: ignore
+
+    db.commit()
+    db.refresh(booking)
+
+    return booking

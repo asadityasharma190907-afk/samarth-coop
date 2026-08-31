@@ -5,6 +5,7 @@ from sqlalchemy import (
     Column,
     DateTime,
     ForeignKey,
+    Integer,
     Numeric,
     String,
     func,
@@ -35,6 +36,7 @@ class WorkerProfile(Base):
     lat = Column(Numeric(9, 6), nullable=False)
     lng = Column(Numeric(9, 6), nullable=False)
     rating = Column(Numeric(2, 1), nullable=True)
+    rating_count = Column(Integer, default=0, server_default=text("0"))
     availability = Column(Boolean, default=True, server_default=text("TRUE"))
     verified = Column(Boolean, default=False, server_default=text("FALSE"))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
