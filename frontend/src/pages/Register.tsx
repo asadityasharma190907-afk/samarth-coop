@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRegisterMutation } from '../hooks/useAuth';
 import { RoleCard } from '../components/RoleCard';
+import { SkillChips } from '../components/SkillChips';
+import { LocationInput } from '../components/LocationInput';
 
 export function Register() {
   const navigate = useNavigate();
@@ -13,9 +15,8 @@ export function Register() {
   const [password, setPassword] = useState('');
   const [skill, setSkill] = useState('electrician'); // Default worker skill
   
-  // Jaipur center lat/lng for demo worker registration
-  const lat = 26.9280;
-  const lng = 75.8100;
+  const [lat, setLat] = useState<number>(0);
+  const [lng, setLng] = useState<number>(0);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +37,11 @@ export function Register() {
     registerMutation.mutate(payload, {
       onSuccess: (data) => {
         localStorage.setItem('samarth_token', data.access_token);
-        navigate('/dashboard');
+        if (role === 'worker') {
+          navigate('/worker/dashboard');
+        } else {
+          navigate('/dashboard');
+        }
       }
     });
   };
@@ -103,26 +108,16 @@ export function Register() {
         </div>
 
         {role === 'worker' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
-            <label style={{ fontSize: 'var(--font-size-body-sm)', fontWeight: 'var(--font-weight-medium)' }}>Skill</label>
-            <select
-              value={skill}
-              onChange={(e) => setSkill(e.target.value)}
-              required
-              style={{
-                padding: '12px',
-                border: '1px solid var(--color-border-default)',
-                borderRadius: 'var(--rounded-md)',
-                fontSize: 'var(--font-size-body)',
-                backgroundColor: 'white'
-              }}
-            >
-              <option value="electrician">Electrician</option>
-              <option value="plumber">Plumber</option>
-              <option value="carpenter">Carpenter</option>
-              <option value="painter">Painter</option>
-              <option value="cleaner">Cleaner</option>
-            </select>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
+              <label style={{ fontSize: 'var(--font-size-body-sm)', fontWeight: 'var(--font-weight-medium)' }}>Skill</label>
+              <SkillChips selectedSkill={skill} onChange={setSkill} />
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
+              <label style={{ fontSize: 'var(--font-size-body-sm)', fontWeight: 'var(--font-weight-medium)' }}>Location</label>
+              <LocationInput lat={lat} lng={lng} onChange={(newLat, newLng) => { setLat(newLat); setLng(newLng); }} />
+            </div>
           </div>
         )}
 
