@@ -21,7 +21,7 @@ def test_seed_data_success():
     try:
         # Check users count
         users = db.query(User).all()
-        assert len(users) == 6
+        assert len(users) == 7
 
         citizens = db.query(User).filter(User.role == "citizen").all()
         assert len(citizens) == 2
@@ -100,7 +100,7 @@ def test_seed_data_idempotent():
     db = TestingSessionLocal()
     try:
         users = db.query(User).all()
-        assert len(users) == 6
+        assert len(users) == 7
         worker_profiles = db.query(WorkerProfile).all()
         assert len(worker_profiles) == 4
         bookings = db.query(Booking).all()

@@ -7,7 +7,6 @@ from app.database import get_db
 from app.dependencies import get_current_user
 from app.models.user import User
 from app.schemas.admin import WorkerVerificationUpdate
-from app.schemas.workers import WorkerResponse
 from app.services.admin import toggle_verification
 
 router = APIRouter()
