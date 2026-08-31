@@ -1,7 +1,7 @@
-from pydantic import BaseModel
 from decimal import Decimal
 from uuid import UUID
-from typing import Optional
+
+from pydantic import BaseModel
 
 
 class WorkerResponse(BaseModel):
@@ -11,7 +11,7 @@ class WorkerResponse(BaseModel):
     skill: str
     lat: Decimal
     lng: Decimal
-    rating: Optional[Decimal] = None
+    rating: Decimal | None = None
     distance_km: float
     weekly_earnings: Decimal
     dispatch_score: Decimal

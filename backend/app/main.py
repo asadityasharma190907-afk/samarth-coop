@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from app.routers import auth, workers
 
 app = FastAPI(
     title="Samarth API",
     description="Cooperative Gig Services Platform API",
-    version="1.0.0"
+    version="1.0.0",
 )
 
 # Enable CORS for frontend on localhost:3000
@@ -19,7 +20,6 @@ app.add_middleware(
 
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 app.include_router(workers.router, prefix="/workers", tags=["Workers"])
-
 
 
 @app.get("/health", tags=["Health"])

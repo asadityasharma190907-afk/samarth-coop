@@ -1,14 +1,10 @@
 import pytest
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
+from conftest import TestingSessionLocal
 
-from app.database import Base
+from app.models.booking import Booking
 from app.models.user import User
 from app.models.worker_profile import WorkerProfile
-from app.models.booking import Booking
 from app.seed import seed_data
-from conftest import TestingSessionLocal
 
 
 @pytest.fixture(autouse=True)
@@ -39,7 +35,9 @@ def test_seed_data_success():
         suresh = db.query(User).filter(User.phone == "9111111111").first()
         assert suresh is not None
         assert suresh.name == "Suresh Kumar"
-        suresh_prof = db.query(WorkerProfile).filter(WorkerProfile.user_id == suresh.id).first()
+        suresh_prof = (
+            db.query(WorkerProfile).filter(WorkerProfile.user_id == suresh.id).first()
+        )
         assert suresh_prof is not None
         assert float(suresh_prof.lat) == 26.9280
         assert float(suresh_prof.lng) == 75.8100
@@ -50,7 +48,9 @@ def test_seed_data_success():
         # Check Priya Gupta (cold start -> rating None)
         priya = db.query(User).filter(User.phone == "9222222222").first()
         assert priya is not None
-        priya_prof = db.query(WorkerProfile).filter(WorkerProfile.user_id == priya.id).first()
+        priya_prof = (
+            db.query(WorkerProfile).filter(WorkerProfile.user_id == priya.id).first()
+        )
         assert priya_prof is not None
         assert priya_prof.rating is None
         assert priya_prof.verified is True
@@ -58,14 +58,18 @@ def test_seed_data_success():
         # Check Anil Yadav
         anil = db.query(User).filter(User.phone == "9333333333").first()
         assert anil is not None
-        anil_prof = db.query(WorkerProfile).filter(WorkerProfile.user_id == anil.id).first()
+        anil_prof = (
+            db.query(WorkerProfile).filter(WorkerProfile.user_id == anil.id).first()
+        )
         assert anil_prof is not None
         assert float(anil_prof.rating) == 4.5
 
         # Check Meena Verma
         meena = db.query(User).filter(User.phone == "9444444444").first()
         assert meena is not None
-        meena_prof = db.query(WorkerProfile).filter(WorkerProfile.user_id == meena.id).first()
+        meena_prof = (
+            db.query(WorkerProfile).filter(WorkerProfile.user_id == meena.id).first()
+        )
         assert meena_prof is not None
         assert float(meena_prof.rating) == 4.9
 
