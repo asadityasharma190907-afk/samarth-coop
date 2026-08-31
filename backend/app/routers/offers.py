@@ -1,3 +1,4 @@
+from typing import cast
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -8,7 +9,7 @@ from app.dependencies import get_current_user
 from app.models.booking_offer import BookingOffer
 from app.models.user import User
 from app.schemas.offers import OfferActionRequest, OfferResponse
-from app.services.offer import accept_offer
+from app.services.offer import accept_offer, decline_offer
 
 router = APIRouter()
 
@@ -37,11 +38,16 @@ def update_offer_status(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    if action_req.action.lower() != "accept":
+    action = action_req.action.lower()
+    if action not in ["accept", "decline"]:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Only 'accept' action is supported currently"
+            detail="Only 'accept' and 'decline' actions are supported"
         )
     
-    accept_offer(offer_id, current_user.id, db)
-    return {"status": "success", "message": "Offer accepted and booking assigned"}
+    if action == "accept":
+        accept_offer(offer_id, cast(UUID, current_user.id), db)
+        return {"status": "success", "message": "Offer accepted and booking assigned"}
+    else:
+        decline_offer(offer_id, cast(UUID, current_user.id), db)
+        return {"status": "success", "message": "Offer declined"}

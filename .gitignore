@@ -11,6 +11,7 @@ venv/
 *.egg-info/
 dist/
 .pytest_cache/
+*.db
 
 # Node / React
 node_modules/

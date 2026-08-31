@@ -99,12 +99,15 @@ def test_accept_offer_success(worker_with_offer):
     db = TestingSessionLocal()
     try:
         booking = db.query(Booking).filter_by(id=booking_id).first()
+        assert booking is not None
         assert booking.status == "assigned"
         
         offer = db.query(BookingOffer).filter_by(id=offer_id).first()
+        assert offer is not None
         assert offer.status == "accepted"
         
         profile = db.query(WorkerProfile).filter_by(user_id=worker_id).first()
+        assert profile is not None
         assert profile.availability == False
     finally:
         db.close()
@@ -118,7 +121,8 @@ def test_accept_offer_already_assigned(worker_with_offer):
     db = TestingSessionLocal()
     try:
         booking = db.query(Booking).filter_by(id=booking_id).first()
-        booking.status = "assigned"
+        assert booking is not None
+        booking.status = "assigned"  # type: ignore
         db.commit()
     finally:
         db.close()
@@ -140,7 +144,8 @@ def test_accept_expired_offer(worker_with_offer):
     db = TestingSessionLocal()
     try:
         offer = db.query(BookingOffer).filter_by(id=offer_id).first()
-        offer.expires_at = datetime.now(timezone.utc) - timedelta(minutes=5)
+        assert offer is not None
+        offer.expires_at = datetime.now(timezone.utc) - timedelta(minutes=5)  # type: ignore
         db.commit()
     finally:
         db.close()
@@ -157,6 +162,93 @@ def test_accept_expired_offer(worker_with_offer):
     try:
         # According to the lazy expiry, it should also update status
         offer = db.query(BookingOffer).filter_by(id=offer_id).first()
+        assert offer is not None
         assert offer.status == "expired"
+    finally:
+        db.close()
+
+
+def test_decline_offer_success_cascade(worker_with_offer):
+    token, worker_id, booking_id, offer_id = worker_with_offer
+    
+    # Add a second worker to catch the cascade
+    db = TestingSessionLocal()
+    try:
+        worker2 = User(
+            name="Priya Worker",
+            phone="9777777777",
+            password_hash=hash_password("password123"),
+            role="worker",
+        )
+        db.add(worker2)
+        db.commit()
+        db.refresh(worker2)
+        
+        profile2 = WorkerProfile(
+            user_id=worker2.id,
+            skill="electrician",
+            lat=26.9125,
+            lng=75.7874,
+            rating=4.0,
+            verified=True,
+            availability=True,
+        )
+        db.add(profile2)
+        db.commit()
+        worker2_id = worker2.id
+    finally:
+        db.close()
+        
+    headers = {"Authorization": f"Bearer {token}"}
+    response = client.put(
+        f"/booking-offers/{offer_id}",
+        json={"action": "decline"},
+        headers=headers,
+    )
+    
+    assert response.status_code == 200
+    
+    db = TestingSessionLocal()
+    try:
+        booking = db.query(Booking).filter_by(id=booking_id).first()
+        assert booking is not None
+        assert booking.status == "pending"
+        
+        old_offer = db.query(BookingOffer).filter_by(id=offer_id).first()
+        assert old_offer is not None
+        assert old_offer.status == "declined"
+        
+        # Check new offer
+        new_offer = db.query(BookingOffer).filter_by(worker_id=worker2_id).first()
+        assert new_offer is not None
+        assert new_offer.status == "offered"
+        assert new_offer.rank_at_offer == 2
+        assert new_offer.booking_id == booking_id
+    finally:
+        db.close()
+
+
+def test_cascade_exhaustion_cancels_booking(worker_with_offer):
+    token, worker_id, booking_id, offer_id = worker_with_offer
+    headers = {"Authorization": f"Bearer {token}"}
+    
+    # Only 1 worker in DB, declining should exhaust options
+    response = client.put(
+        f"/booking-offers/{offer_id}",
+        json={"action": "decline"},
+        headers=headers,
+    )
+    
+    assert response.status_code == 200
+    
+    db = TestingSessionLocal()
+    try:
+        booking = db.query(Booking).filter_by(id=booking_id).first()
+        assert booking is not None
+        assert booking.status == "cancelled"
+        
+        old_offer = db.query(BookingOffer).filter_by(id=offer_id).first()
+        assert old_offer is not None
+        assert old_offer.status == "declined"
     finally:
         db.close()
