@@ -1,0 +1,50 @@
+.earnings-table-container {
+  overflow-x: auto;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--rounded-lg);
+  background-color: var(--color-surface-card);
+}
+
+.earnings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-body-sm);
+  text-align: left;
+}
+
+.earnings-table th,
+.earnings-table td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.earnings-table th {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background-color: var(--color-surface-bg);
+}
+
+.earnings-table tr:last-child td {
+  border-bottom: none;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.welfare-column {
+  color: var(--color-welfare-fund);
+}
+
+.text-welfare-fund {
+  color: var(--color-welfare-fund);
+}
+
+.earnings-empty {
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--color-text-muted);
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--rounded-lg);
+}

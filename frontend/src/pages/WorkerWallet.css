@@ -1,0 +1,48 @@
+.wallet-container {
+  padding: var(--spacing-xl) var(--spacing-md);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.wallet-header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.wallet-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+@media (max-width: 640px) {
+  .wallet-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.wallet-card {
+  padding: var(--spacing-lg);
+  border-radius: var(--rounded-xl);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.wallet-card.primary {
+  background-color: var(--color-brand-primary);
+  color: var(--color-text-on-brand);
+}
+
+.wallet-card.secondary {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-primary);
+}
+
+.earnings-amount {
+  font-size: var(--font-size-display);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+}
+
+.wallet-card.secondary .earnings-amount {
+  color: var(--color-brand-primary);
+}
