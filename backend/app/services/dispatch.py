@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 
 from app.models.booking import Booking
+from app.models.booking_offer import BookingOffer
 
 
 def compute_weekly_earnings(worker_id: UUID, db: Session) -> Decimal:
@@ -47,3 +48,27 @@ def compute_weekly_earnings(worker_id: UUID, db: Session) -> Decimal:
     
     # Convert result to Decimal to ensure type consistency
     return Decimal(str(result))
+
+
+def compute_reliability_penalty(worker_id: UUID, db: Session) -> bool:
+    """
+    Checks if a worker should be penalized for declining/ignoring too many offers.
+    Returns True if worker has >= 5 total offers AND acceptance rate in last 10 is < 50%.
+    Returns False otherwise.
+    """
+    recent = (
+        db.query(BookingOffer)
+        .filter(BookingOffer.worker_id == worker_id)
+        .order_by(BookingOffer.created_at.desc())
+        .limit(10)
+        .all()
+    )
+
+    if len(recent) < 5:
+        return False  # Grace period
+
+    accepted = sum(1 for o in recent if o.status == "accepted")
+    
+    # Check if acceptance rate is strictly less than 50%
+    return (accepted / len(recent)) < 0.5
+
