@@ -29,8 +29,10 @@ def get_category_price(skill: str) -> Decimal:
 
 
 def dispatch_first_offer(booking: Booking, db: Session) -> None:
-    ranked_workers = get_ranked_workers(booking.skill, float(booking.lat), float(booking.lng), db)
-    
+    ranked_workers = get_ranked_workers(
+        booking.skill, float(booking.lat), float(booking.lng), db
+    )
+
     if not ranked_workers:
         booking.status = "cancelled"
         db.commit()
@@ -42,7 +44,7 @@ def dispatch_first_offer(booking: Booking, db: Session) -> None:
         worker_id=top_worker["worker_id"],
         rank_at_offer=1,
         dispatch_score=top_worker["dispatch_score"],
-        expires_at=datetime.now(timezone.utc) + timedelta(minutes=2)
+        expires_at=datetime.now(timezone.utc) + timedelta(minutes=2),
     )
     db.add(offer)
     db.commit()
