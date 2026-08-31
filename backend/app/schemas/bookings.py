@@ -5,6 +5,15 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
 
 
+class AssignedWorkerDetail(BaseModel):
+    id: UUID
+    name: str
+    skill: str
+    rating: float | None = None
+    verified: bool
+    distance_km: float
+
+
 class CreateBookingRequest(BaseModel):
     skill: str = Field(
         ..., description="Required skill category (e.g. electrician, plumber)"
@@ -26,3 +35,4 @@ class BookingResponse(BaseModel):
     lng: Decimal | None = None
     description: str | None = None
     created_at: datetime | None = None
+    assigned_worker: AssignedWorkerDetail | None = None

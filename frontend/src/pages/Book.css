@@ -1,0 +1,175 @@
+.book-container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.wizard-header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.wizard-title {
+  font-size: var(--font-size-h1);
+  line-height: var(--line-height-h1);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.wizard-subtitle {
+  font-size: var(--font-size-body);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.wizard-progress {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xl);
+  position: relative;
+}
+
+.wizard-progress::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-border-default);
+  z-index: 1;
+  transform: translateY(-50%);
+}
+
+.progress-step {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--color-surface-card);
+  border: 2px solid var(--color-border-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-muted);
+  z-index: 2;
+  transition: all 0.3s;
+}
+
+.progress-step.active {
+  border-color: var(--color-brand-primary);
+  color: var(--color-brand-primary);
+}
+
+.progress-step.completed {
+  background-color: var(--color-brand-primary);
+  border-color: var(--color-brand-primary);
+  color: var(--color-text-on-brand);
+}
+
+.wizard-step-content {
+  background-color: var(--color-surface-card);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  padding: var(--spacing-xl);
+  box-shadow: var(--card-shadow);
+  margin-bottom: var(--spacing-xl);
+}
+
+.step-title {
+  font-size: var(--font-size-h2);
+  margin-top: 0;
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text-primary);
+}
+
+.wizard-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--spacing-xl);
+}
+
+.btn-primary {
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
+  border: none;
+  border-radius: var(--button-primary-radius);
+  padding: 12px 24px;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-body);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--button-primary-hover-bg);
+}
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: var(--button-secondary-bg);
+  color: var(--button-secondary-text);
+  border: var(--button-secondary-border);
+  border-radius: var(--button-secondary-radius);
+  padding: 10px 24px;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-body);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--button-secondary-hover-bg);
+}
+
+.map-container {
+  height: 300px;
+  border-radius: var(--rounded-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border-default);
+  margin-bottom: var(--spacing-md);
+}
+
+.location-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  margin-bottom: var(--spacing-md);
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.summary-item:last-child {
+  border-bottom: none;
+}
+.summary-label {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+.summary-value {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.input-field {
+  width: 100%;
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--rounded-lg);
+  padding: 10px 14px;
+  font-size: var(--font-size-body);
+  font-family: var(--font-sans);
+  margin-top: var(--spacing-xs);
+  box-sizing: border-box;
+}
+.input-field:focus {
+  outline: none;
+  border-color: var(--color-brand-primary);
+}
