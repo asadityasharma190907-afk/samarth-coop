@@ -21,7 +21,7 @@ def test_seed_data_success():
     try:
         # Check users count
         users = db.query(User).all()
-        assert len(users) == 6
+        assert len(users) == 7
 
         citizens = db.query(User).filter(User.role == "citizen").all()
         assert len(citizens) == 2
@@ -39,9 +39,9 @@ def test_seed_data_success():
             db.query(WorkerProfile).filter(WorkerProfile.user_id == suresh.id).first()
         )
         assert suresh_prof is not None
-        assert float(suresh_prof.lat) == 26.9280
-        assert float(suresh_prof.lng) == 75.8100
-        assert float(suresh_prof.rating) == 4.2
+        assert float(suresh_prof.lat) == 26.9280  # type: ignore
+        assert float(suresh_prof.lng) == 75.8100  # type: ignore
+        assert float(suresh_prof.rating) == 4.2  # type: ignore
         assert suresh_prof.verified is True
         assert suresh_prof.availability is True
 
@@ -62,7 +62,7 @@ def test_seed_data_success():
             db.query(WorkerProfile).filter(WorkerProfile.user_id == anil.id).first()
         )
         assert anil_prof is not None
-        assert float(anil_prof.rating) == 4.5
+        assert float(anil_prof.rating) == 4.5  # type: ignore
 
         # Check Meena Verma
         meena = db.query(User).filter(User.phone == "9444444444").first()
@@ -71,7 +71,7 @@ def test_seed_data_success():
             db.query(WorkerProfile).filter(WorkerProfile.user_id == meena.id).first()
         )
         assert meena_prof is not None
-        assert float(meena_prof.rating) == 4.9
+        assert float(meena_prof.rating) == 4.9  # type: ignore
 
         # Check completed bookings
         bookings = db.query(Booking).filter(Booking.status == "completed").all()
@@ -79,15 +79,15 @@ def test_seed_data_success():
 
         suresh_b = db.query(Booking).filter(Booking.worker_id == suresh.id).first()
         assert suresh_b is not None
-        assert float(suresh_b.job_price) == 210.53
+        assert float(suresh_b.job_price) == 210.53  # type: ignore
 
         anil_b = db.query(Booking).filter(Booking.worker_id == anil.id).first()
         assert anil_b is not None
-        assert float(anil_b.job_price) == 2105.26
+        assert float(anil_b.job_price) == 2105.26  # type: ignore
 
         meena_b = db.query(Booking).filter(Booking.worker_id == meena.id).first()
         assert meena_b is not None
-        assert float(meena_b.job_price) == 4736.84
+        assert float(meena_b.job_price) == 4736.84  # type: ignore
     finally:
         db.close()
 
@@ -100,7 +100,7 @@ def test_seed_data_idempotent():
     db = TestingSessionLocal()
     try:
         users = db.query(User).all()
-        assert len(users) == 6
+        assert len(users) == 7
         worker_profiles = db.query(WorkerProfile).all()
         assert len(worker_profiles) == 4
         bookings = db.query(Booking).all()
