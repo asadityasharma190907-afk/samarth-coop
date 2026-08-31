@@ -6,9 +6,9 @@ from decimal import Decimal
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.database import SessionLocal
+from app.models.booking import Booking
 from app.models.user import User
 from app.models.worker_profile import WorkerProfile
-from app.models.booking import Booking
 from app.services.auth import hash_password
 
 
@@ -34,9 +34,13 @@ def seed_data():
                 (Booking.citizen_id.in_(user_ids)) | (Booking.worker_id.in_(user_ids))
             ).delete(synchronize_session=False)
             # Delete worker profiles
-            db.query(WorkerProfile).filter(WorkerProfile.user_id.in_(user_ids)).delete(synchronize_session=False)
+            db.query(WorkerProfile).filter(WorkerProfile.user_id.in_(user_ids)).delete(
+                synchronize_session=False
+            )
             # Delete users
-            db.query(User).filter(User.id.in_(user_ids)).delete(synchronize_session=False)
+            db.query(User).filter(User.id.in_(user_ids)).delete(
+                synchronize_session=False
+            )
             db.commit()
             print(f"Cleaned up {len(existing_users)} existing seed user(s).")
 

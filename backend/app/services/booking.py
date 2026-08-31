@@ -1,8 +1,6 @@
 from decimal import Decimal
-from uuid import UUID
-from typing import Optional
+
 from sqlalchemy.orm import Session
-from fastapi import HTTPException, status
 
 from app.models.booking import Booking
 from app.models.user import User
@@ -28,14 +26,12 @@ def get_category_price(skill: str) -> Decimal:
 
 
 def create_booking(
-    citizen: User,
-    booking_in: CreateBookingRequest,
-    db: Session
+    citizen: User, booking_in: CreateBookingRequest, db: Session
 ) -> Booking:
     # Snapshot job_price from category rate
     job_price = get_category_price(booking_in.skill)
     platform_fee = (job_price * Decimal("0.05")).quantize(Decimal("0.01"))
-    
+
     new_booking = Booking(
         citizen_id=citizen.id,
         skill=booking_in.skill.lower().strip(),
@@ -46,7 +42,7 @@ def create_booking(
         platform_fee=platform_fee,
         status="pending",
     )
-    
+
     db.add(new_booking)
     db.commit()
     db.refresh(new_booking)

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.models.user import User
-from app.schemas.bookings import CreateBookingRequest, BookingResponse
+from app.schemas.bookings import BookingResponse, CreateBookingRequest
 from app.services.booking import create_booking
 
 router = APIRouter()

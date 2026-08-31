@@ -1,15 +1,17 @@
-from pydantic import BaseModel, Field, ConfigDict
+from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
-from typing import Optional
-from datetime import datetime
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class CreateBookingRequest(BaseModel):
-    skill: str = Field(..., description="Required skill category (e.g. electrician, plumber)")
+    skill: str = Field(
+        ..., description="Required skill category (e.g. electrician, plumber)"
+    )
     lat: Decimal = Field(..., description="Citizen latitude")
     lng: Decimal = Field(..., description="Citizen longitude")
-    description: Optional[str] = Field(None, description="Optional job description")
+    description: str | None = Field(None, description="Optional job description")
 
 
 class BookingResponse(BaseModel):
@@ -18,9 +20,9 @@ class BookingResponse(BaseModel):
     booking_id: UUID = Field(validation_alias="id")
     status: str
     job_price: Decimal
-    platform_fee: Optional[Decimal] = None
-    skill: Optional[str] = None
-    lat: Optional[Decimal] = None
-    lng: Optional[Decimal] = None
-    description: Optional[str] = None
-    created_at: Optional[datetime] = None
+    platform_fee: Decimal | None = None
+    skill: str | None = None
+    lat: Decimal | None = None
+    lng: Decimal | None = None
+    description: str | None = None
+    created_at: datetime | None = None

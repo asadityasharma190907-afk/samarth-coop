@@ -1,11 +1,10 @@
+from conftest import TestingSessionLocal
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.database import Base, get_db
 from app.models.user import User
 from app.models.worker_profile import WorkerProfile
 from app.services.auth import verify_password
-from conftest import TestingSessionLocal
 
 client = TestClient(app)
 
@@ -15,7 +14,7 @@ def test_register_citizen_success():
         "name": "Ravi Sharma",
         "phone": "9876543210",
         "password": "secure123",
-        "role": "citizen"
+        "role": "citizen",
     }
     response = client.post("/auth/register", json=payload)
     assert response.status_code == 201
@@ -41,7 +40,7 @@ def test_register_duplicate_phone_conflict():
         "name": "Ravi Sharma",
         "phone": "9876543210",
         "password": "secure123",
-        "role": "citizen"
+        "role": "citizen",
     }
     # First registration
     response1 = client.post("/auth/register", json=payload)
@@ -54,9 +53,7 @@ def test_register_duplicate_phone_conflict():
 
 
 def test_register_missing_fields_validation_error():
-    payload = {
-        "name": "Ravi Sharma"
-    }
+    payload = {"name": "Ravi Sharma"}
     response = client.post("/auth/register", json=payload)
     assert response.status_code == 422
 
@@ -69,7 +66,7 @@ def test_register_worker_success():
         "role": "worker",
         "skill": "electrician",
         "lat": 26.9280,
-        "lng": 75.8100
+        "lng": 75.8100,
     }
     response = client.post("/auth/register", json=payload)
     assert response.status_code == 201
@@ -81,7 +78,7 @@ def test_register_worker_success():
     user = db.query(User).filter(User.phone == "9111111111").first()
     assert user is not None
     assert user.role == "worker"
-    
+
     profile = db.query(WorkerProfile).filter(WorkerProfile.user_id == user.id).first()
     assert profile is not None
     assert profile.skill == "electrician"
@@ -99,7 +96,7 @@ def test_register_worker_invalid_skill():
         "role": "worker",
         "skill": "hacker",  # invalid
         "lat": 26.9280,
-        "lng": 75.8100
+        "lng": 75.8100,
     }
     response = client.post("/auth/register", json=payload)
     assert response.status_code == 422
@@ -111,15 +108,12 @@ def test_login_success():
         "name": "Login Test User",
         "phone": "9000000000",
         "password": "password123",
-        "role": "citizen"
+        "role": "citizen",
     }
     client.post("/auth/register", json=register_payload)
 
     # Now login
-    login_payload = {
-        "phone": "9000000000",
-        "password": "password123"
-    }
+    login_payload = {"phone": "9000000000", "password": "password123"}
     response = client.post("/auth/login", json=login_payload)
     assert response.status_code == 200
     data = response.json()
@@ -134,44 +128,39 @@ def test_login_wrong_password():
         "name": "Login Test User 2",
         "phone": "9000000001",
         "password": "password123",
-        "role": "citizen"
+        "role": "citizen",
     }
     client.post("/auth/register", json=register_payload)
 
-    login_payload = {
-        "phone": "9000000001",
-        "password": "wrongpassword"
-    }
+    login_payload = {"phone": "9000000001", "password": "wrongpassword"}
     response = client.post("/auth/login", json=login_payload)
     assert response.status_code == 401
     assert response.json()["detail"] == "Incorrect phone number or password"
 
 
 def test_login_unregistered_phone():
-    login_payload = {
-        "phone": "9999999999",
-        "password": "password123"
-    }
+    login_payload = {"phone": "9999999999", "password": "password123"}
     response = client.post("/auth/login", json=login_payload)
     assert response.status_code == 401
     assert response.json()["detail"] == "Incorrect phone number or password"
 
 
 def test_login_missing_fields():
-    login_payload = {
-        "phone": "9000000000"
-    }
+    login_payload = {"phone": "9000000000"}
     response = client.post("/auth/login", json=login_payload)
     assert response.status_code == 422
 
 
 # Dummy protected route for testing dependencies
 from fastapi import Depends
+
 from app.dependencies import get_current_user
+
 
 @app.get("/test-protected")
 def dummy_protected_route(user: User = Depends(get_current_user)):
     return {"user_id": str(user.id), "phone": user.phone}
+
 
 def test_protected_route_success():
     # Register and login to get token
@@ -179,21 +168,21 @@ def test_protected_route_success():
         "name": "Protected Test User",
         "phone": "9000000002",
         "password": "password123",
-        "role": "citizen"
+        "role": "citizen",
     }
     client.post("/auth/register", json=register_payload)
-    
-    login_response = client.post("/auth/login", json={
-        "phone": "9000000002",
-        "password": "password123"
-    })
+
+    login_response = client.post(
+        "/auth/login", json={"phone": "9000000002", "password": "password123"}
+    )
     token = login_response.json()["access_token"]
-    
+
     # Access protected route
     headers = {"Authorization": f"Bearer {token}"}
     response = client.get("/test-protected", headers=headers)
     assert response.status_code == 200
     assert response.json()["phone"] == "9000000002"
+
 
 def test_protected_route_invalid_token():
     headers = {"Authorization": "Bearer invalid.token.here"}
@@ -201,3 +190,21 @@ def test_protected_route_invalid_token():
     assert response.status_code == 401
     assert response.json()["detail"] == "Could not validate credentials"
 
+
+def test_register_worker_out_of_bounds_coords():
+    payload = {
+        "name": "Suresh Kumar",
+        "phone": "9111111115",
+        "password": "worker123",
+        "role": "worker",
+        "skill": "electrician",
+        "lat": 95.0,  # Invalid latitude > 90
+        "lng": 75.8100,
+    }
+    response = client.post("/auth/register", json=payload)
+    assert response.status_code == 422
+
+    payload["lat"] = 26.9280
+    payload["lng"] = 185.0  # Invalid longitude > 180
+    response = client.post("/auth/register", json=payload)
+    assert response.status_code == 422
