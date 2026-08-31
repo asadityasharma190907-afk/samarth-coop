@@ -51,7 +51,7 @@ development_status:
 
   epic-2: in-progress
   2-1-seed-data-script: done
-  2-2-weekly-earnings-subquery: backlog
+  2-2-weekly-earnings-subquery: done
   2-3-reliability-penalty-computation: backlog
   2-4-dispatch-score-endpoint: backlog
   epic-2-retrospective: optional
