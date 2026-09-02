@@ -30,7 +30,19 @@ jobs:
 
       - name: Run ESLint
         working-directory: frontend
+        run: npm run lint:es
+
+      - name: Run Prettier check
+        working-directory: frontend
+        run: npm run format:check
+
+      - name: Run TypeScript type check
+        working-directory: frontend
         run: npm run lint
+
+      - name: Run Vitest tests
+        working-directory: frontend
+        run: npm run test
 
       - name: Build (type check + bundle)
         working-directory: frontend

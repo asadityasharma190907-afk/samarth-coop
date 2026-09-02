@@ -3,42 +3,42 @@
 
 :root {
   /* Brand Palette */
-  --color-brand-primary: #1A6B47;
-  --color-brand-primary-light: #2E9E6E;
-  --color-brand-primary-dark: #0F4A30;
-  --color-brand-accent: #F4A623;
-  --color-brand-accent-light: #F7BD5A;
+  --color-brand-primary: #1a6b47;
+  --color-brand-primary-light: #2e9e6e;
+  --color-brand-primary-dark: #0f4a30;
+  --color-brand-accent: #f4a623;
+  --color-brand-accent-light: #f7bd5a;
 
   /* Surface Palette */
-  --color-surface-bg: #F8FAF9;
-  --color-surface-card: #FFFFFF;
-  --color-surface-elevated: #FFFFFF;
+  --color-surface-bg: #f8faf9;
+  --color-surface-card: #ffffff;
+  --color-surface-elevated: #ffffff;
   --color-surface-overlay: rgba(26, 107, 71, 0.06);
 
   /* Text Palette */
   --color-text-primary: #111827;
-  --color-text-secondary: #4B5563;
-  --color-text-muted: #9CA3AF;
-  --color-text-on-brand: #FFFFFF;
-  --color-text-on-accent: #1A1A1A;
+  --color-text-secondary: #4b5563;
+  --color-text-muted: #9ca3af;
+  --color-text-on-brand: #ffffff;
+  --color-text-on-accent: #1a1a1a;
 
   /* Borders */
-  --color-border-default: #E5E7EB;
-  --color-border-subtle: #F3F4F6;
+  --color-border-default: #e5e7eb;
+  --color-border-subtle: #f3f4f6;
 
   /* Status Colors */
-  --color-status-success: #16A34A;
-  --color-status-warning: #D97706;
-  --color-status-error: #DC2626;
-  --color-status-info: #2563EB;
+  --color-status-success: #16a34a;
+  --color-status-warning: #d97706;
+  --color-status-error: #dc2626;
+  --color-status-info: #2563eb;
 
   /* Dispatch Rank Colors */
-  --color-dispatch-high: #1A6B47;
-  --color-dispatch-mid: #F4A623;
-  --color-dispatch-low: #9CA3AF;
+  --color-dispatch-high: #1a6b47;
+  --color-dispatch-mid: #f4a623;
+  --color-dispatch-low: #9ca3af;
 
   /* Special / Welfare Fund */
-  --color-welfare-fund: #7C3AED;
+  --color-welfare-fund: #7c3aed;
 
   /* Typography Fonts */
   --font-sans: 'Inter', 'Noto Sans Devanagari', sans-serif;
@@ -120,13 +120,15 @@
   --card-radius: var(--rounded-xl);
   --card-shadow: var(--shadow-1);
 
-  --welfare-counter-bg: linear-gradient(135deg, var(--color-welfare-fund), #9333EA);
+  --welfare-counter-bg: linear-gradient(135deg, var(--color-welfare-fund), #9333ea);
   --welfare-counter-text: var(--color-text-on-brand);
   --welfare-counter-radius: var(--rounded-2xl);
 }
 
 /* Base Body Styles */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 

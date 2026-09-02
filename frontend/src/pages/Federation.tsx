@@ -53,18 +53,12 @@ export function Federation() {
         <div className="loading-state">Loading metrics...</div>
       ) : (
         <div className="stats-grid">
-          <StatCounter 
-            label="Registered Workers" 
-            value={stats?.registered_workers || 0} 
-          />
-          <StatCounter 
-            label="Completed Bookings" 
-            value={stats?.completed_bookings || 0} 
-          />
-          <StatCounter 
-            label="Cooperative Welfare Fund" 
-            value={stats?.welfare_fund_total || 0} 
-            prefix="₹" 
+          <StatCounter label="Registered Workers" value={stats?.registered_workers || 0} />
+          <StatCounter label="Completed Bookings" value={stats?.completed_bookings || 0} />
+          <StatCounter
+            label="Cooperative Welfare Fund"
+            value={stats?.welfare_fund_total || 0}
+            prefix="₹"
             isViolet={true}
           />
         </div>
@@ -78,8 +72,8 @@ export function Federation() {
           ) : (
             <div className="bookings-list">
               {bookings?.map((booking) => (
-                <div 
-                  key={booking.id} 
+                <div
+                  key={booking.id}
                   className={`booking-item ${selectedBookingId === booking.id ? 'active' : ''}`}
                   onClick={() => setSelectedBookingId(booking.id)}
                 >
@@ -87,8 +81,12 @@ export function Federation() {
                     <strong>{booking.citizen_name}</strong> requested a <span>{booking.skill}</span>
                   </div>
                   <div className="booking-meta">
-                    <span className={`status-badge status-${booking.status}`}>{booking.status}</span>
-                    <span className="time">{new Date(booking.created_at).toLocaleDateString()}</span>
+                    <span className={`status-badge status-${booking.status}`}>
+                      {booking.status}
+                    </span>
+                    <span className="time">
+                      {new Date(booking.created_at).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -99,8 +97,10 @@ export function Federation() {
 
         <section className="audit-section">
           <h2>Dispatch Audit Trail</h2>
-          <p className="audit-subtitle">Click a booking on the left to see the dispatch algorithm decisions.</p>
-          
+          <p className="audit-subtitle">
+            Click a booking on the left to see the dispatch algorithm decisions.
+          </p>
+
           {selectedBookingId ? (
             <AuditTable bookingId={selectedBookingId} />
           ) : (

@@ -1,7 +1,7 @@
 .badge-verified {
-  background: #ECFDF5;
+  background: #ecfdf5;
   color: var(--color-status-success);
-  border: 1px solid #BBF7D0;
+  border: 1px solid #bbf7d0;
   border-radius: var(--rounded-full);
   font: 600 0.75rem/1.125rem var(--font-family, Inter, sans-serif);
   display: inline-flex;

@@ -41,10 +41,20 @@ if ($Fix) {
 }
 
 Write-Host "`n[2/4] Running Pyright Type Checker..." -ForegroundColor Yellow
-pyright
-if ($LASTEXITCODE -ne 0) { 
-    Write-Host "Pyright check failed! Please fix type errors in backend." -ForegroundColor Red
-    $errorCount++ 
+if (Get-Command pyright -ErrorAction SilentlyContinue) {
+    pyright
+    if ($LASTEXITCODE -ne 0) { 
+        Write-Host "Pyright check failed! Please fix type errors in backend." -ForegroundColor Red
+        $errorCount++ 
+    }
+} elseif (Test-Path "venv\Scripts\pyright.exe") {
+    .\venv\Scripts\pyright.exe
+    if ($LASTEXITCODE -ne 0) { 
+        Write-Host "Pyright check failed! Please fix type errors in backend." -ForegroundColor Red
+        $errorCount++ 
+    }
+} else {
+    Write-Host "Pyright CLI not found in PATH or venv. Skipping Pyright check." -ForegroundColor Yellow
 }
 
 Write-Host "`n[3/4] Running Pytest..." -ForegroundColor Yellow
@@ -57,13 +67,42 @@ if ($LASTEXITCODE -ne 0) {
 cd ..
 
 # --- Frontend Checks ---
-Write-Host "`n[4/4] Starting Frontend Checks (TypeScript)..." -ForegroundColor Yellow
+Write-Host "`n[4/4] Starting Frontend Checks (Formatting, Linting, Types, Tests)..." -ForegroundColor Yellow
 cd frontend
-npm run lint
+
+if ($Fix) {
+    Write-Host "Running Frontend Prettier (Auto-fix)..." -ForegroundColor Magenta
+    npm run format
+} else {
+    Write-Host "Running Frontend Prettier Check..." -ForegroundColor Magenta
+    npm run format:check
+    if ($LASTEXITCODE -ne 0) { 
+        Write-Host "Frontend format check failed! Run '.\qa_check.ps1 -Fix' to auto-fix errors." -ForegroundColor Red
+        $errorCount++ 
+    }
+}
+
+Write-Host "Running Frontend ESLint..." -ForegroundColor Magenta
+npm run lint:es
 if ($LASTEXITCODE -ne 0) { 
-    Write-Host "Frontend lint/typecheck failed! Please fix TypeScript errors." -ForegroundColor Red
+    Write-Host "Frontend ESLint failed! Please fix linting errors." -ForegroundColor Red
     $errorCount++ 
 }
+
+Write-Host "Running Frontend TypeScript Check..." -ForegroundColor Magenta
+npm run lint
+if ($LASTEXITCODE -ne 0) { 
+    Write-Host "Frontend typecheck failed! Please fix TypeScript errors." -ForegroundColor Red
+    $errorCount++ 
+}
+
+Write-Host "Running Frontend Vitest Tests..." -ForegroundColor Magenta
+npm run test
+if ($LASTEXITCODE -ne 0) { 
+    Write-Host "Frontend tests failed! Please fix broken tests." -ForegroundColor Red
+    $errorCount++ 
+}
+
 cd ..
 
 Write-Host "`n=========================================" -ForegroundColor Cyan

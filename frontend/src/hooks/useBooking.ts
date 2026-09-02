@@ -34,7 +34,7 @@ export interface CreateBookingPayload {
 export const useCreateBooking = () => {
   return useMutation({
     mutationFn: async (payload: CreateBookingPayload) => {
-      const response = await api.post('/bookings', payload) as Booking;
+      const response = (await api.post('/bookings', payload)) as Booking;
       return response;
     },
   });
@@ -44,7 +44,7 @@ export const useBooking = (bookingId: string | undefined) => {
   return useQuery({
     queryKey: ['booking', bookingId],
     queryFn: async () => {
-      const response = await api.get(`/bookings/${bookingId}`) as Booking;
+      const response = (await api.get(`/bookings/${bookingId}`)) as Booking;
       return response;
     },
     enabled: !!bookingId,

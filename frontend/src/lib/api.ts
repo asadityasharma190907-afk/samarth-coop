@@ -3,7 +3,7 @@ const BASE_URL = 'http://localhost:8000';
 async function fetchWithAuth(url: string, options: RequestInit = {}) {
   const token = localStorage.getItem('samarth_token');
   const headers = new Headers(options.headers || {});
-  
+
   headers.set('Content-Type', 'application/json');
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
@@ -24,7 +24,9 @@ async function fetchWithAuth(url: string, options: RequestInit = {}) {
 
 export const api = {
   get: (url: string) => fetchWithAuth(url),
-  post: (url: string, data: any) => fetchWithAuth(url, { method: 'POST', body: JSON.stringify(data) }),
-  put: (url: string, data: any) => fetchWithAuth(url, { method: 'PUT', body: JSON.stringify(data) }),
+  post: (url: string, data: any) =>
+    fetchWithAuth(url, { method: 'POST', body: JSON.stringify(data) }),
+  put: (url: string, data: any) =>
+    fetchWithAuth(url, { method: 'PUT', body: JSON.stringify(data) }),
   delete: (url: string) => fetchWithAuth(url, { method: 'DELETE' }),
 };

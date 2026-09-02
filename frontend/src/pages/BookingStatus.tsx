@@ -77,9 +77,7 @@ export function BookingStatus() {
               <h2 className="worker-name">{booking.assigned_worker.name}</h2>
               <p className="worker-skill">{booking.assigned_worker.skill}</p>
             </div>
-            {booking.assigned_worker.verified && (
-              <VerifiedBadge />
-            )}
+            {booking.assigned_worker.verified && <VerifiedBadge />}
           </div>
 
           <div className="worker-stats">
@@ -92,9 +90,12 @@ export function BookingStatus() {
               {booking.assigned_worker.distance_km} km away
             </div>
           </div>
-          
+
           <div className="action-buttons mt-6">
-            <button className="btn-secondary" onClick={() => alert('Feature coming soon: Call worker')}>
+            <button
+              className="btn-secondary"
+              onClick={() => alert('Feature coming soon: Call worker')}
+            >
               Call Worker
             </button>
           </div>
@@ -112,15 +113,13 @@ export function BookingStatus() {
           </button>
         </div>
       )}
-      
+
       {isCompleted && (
         <div className="status-card">
           <h2 className="status-title text-status-success">Job Completed</h2>
-          <p className="status-subtitle mb-6">
-            Thank you for using Samarth!
-          </p>
+          <p className="status-subtitle mb-6">Thank you for using Samarth!</p>
           <WelfareFundChip amount={booking.platform_fee || 0} />
-          
+
           <div className="mt-8 mb-4">
             {!booking.rating && !ratingSubmitted ? (
               <div className="rating-section">
@@ -128,9 +127,7 @@ export function BookingStatus() {
                 <StarRating onRate={handleRate} disabled={isSubmittingRating} />
               </div>
             ) : (
-              <div className="text-status-success font-medium">
-                Rating submitted. Thank you.
-              </div>
+              <div className="text-status-success font-medium">Rating submitted. Thank you.</div>
             )}
           </div>
           <div className="mt-8">

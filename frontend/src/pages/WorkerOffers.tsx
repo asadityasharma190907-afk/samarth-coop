@@ -23,7 +23,9 @@ export function WorkerOffers() {
       <div className="worker-offers-container">
         <div className="worker-offers-header">
           <h1 className="worker-offers-title">Job Offers</h1>
-          <p className="worker-offers-subtitle text-status-error">Failed to load offers. Please try again.</p>
+          <p className="worker-offers-subtitle text-status-error">
+            Failed to load offers. Please try again.
+          </p>
         </div>
       </div>
     );
@@ -34,8 +36,8 @@ export function WorkerOffers() {
       <div className="worker-offers-header">
         <h1 className="worker-offers-title">Job Offers</h1>
         <p className="worker-offers-subtitle">
-          {offers && offers.length > 0 
-            ? `You have ${offers.length} active offer${offers.length > 1 ? 's' : ''}.` 
+          {offers && offers.length > 0
+            ? `You have ${offers.length} active offer${offers.length > 1 ? 's' : ''}.`
             : 'Listening for nearby jobs...'}
         </p>
       </div>
@@ -48,7 +50,7 @@ export function WorkerOffers() {
         </div>
       ) : (
         <div className="offers-list">
-          {offers.map(offer => (
+          {offers.map((offer) => (
             <OfferCard key={offer.id} offer={offer} />
           ))}
         </div>

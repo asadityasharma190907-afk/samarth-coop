@@ -13,7 +13,7 @@ export function Dashboard() {
     <div style={{ padding: 'var(--spacing-xl)', textAlign: 'center' }}>
       <h1>Welcome to Dashboard</h1>
       <p>This is a placeholder for the authenticated dashboard.</p>
-      <button 
+      <button
         onClick={handleLogout}
         style={{
           marginTop: 'var(--spacing-md)',
@@ -22,7 +22,7 @@ export function Dashboard() {
           color: 'var(--button-secondary-text)',
           border: 'var(--button-secondary-border)',
           borderRadius: 'var(--button-secondary-radius)',
-          cursor: 'pointer'
+          cursor: 'pointer',
         }}
       >
         Log out

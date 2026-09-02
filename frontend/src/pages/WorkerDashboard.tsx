@@ -18,17 +18,22 @@ export function WorkerDashboard() {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: 'var(--color-surface-bg)' }}>
+    <div
+      style={{ display: 'flex', minHeight: '100vh', backgroundColor: 'var(--color-surface-bg)' }}
+    >
       {/* Desktop Sidebar (hidden on mobile) */}
-      <div className="desktop-sidebar" style={{
-        width: '240px',
-        backgroundColor: 'var(--color-surface-card)',
-        borderRight: '1px solid var(--color-border-default)',
-        padding: 'var(--spacing-lg)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--spacing-md)'
-      }}>
+      <div
+        className="desktop-sidebar"
+        style={{
+          width: '240px',
+          backgroundColor: 'var(--color-surface-card)',
+          borderRight: '1px solid var(--color-border-default)',
+          padding: 'var(--spacing-lg)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 'var(--spacing-md)',
+        }}
+      >
         <style>{`
           @media (max-width: 1023px) {
             .desktop-sidebar {
@@ -36,11 +41,15 @@ export function WorkerDashboard() {
             }
           }
         `}</style>
-        
-        <h2 style={{ fontSize: 'var(--font-size-h3)', color: 'var(--color-brand-primary)' }}>Samarth Pro</h2>
-        
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)', flex: 1 }}>
-          {TABS.map(tab => (
+
+        <h2 style={{ fontSize: 'var(--font-size-h3)', color: 'var(--color-brand-primary)' }}>
+          Samarth Pro
+        </h2>
+
+        <nav
+          style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)', flex: 1 }}
+        >
+          {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => navigate(tab.path)}
@@ -50,13 +59,14 @@ export function WorkerDashboard() {
                 gap: 'var(--spacing-sm)',
                 padding: '12px',
                 background: tab.id === 'home' ? 'var(--color-surface-overlay)' : 'none',
-                color: tab.id === 'home' ? 'var(--color-brand-primary)' : 'var(--color-text-secondary)',
+                color:
+                  tab.id === 'home' ? 'var(--color-brand-primary)' : 'var(--color-text-secondary)',
                 border: 'none',
                 borderRadius: 'var(--rounded-md)',
                 cursor: 'pointer',
                 textAlign: 'left',
                 fontWeight: 'var(--font-weight-medium)',
-                fontSize: 'var(--font-size-body)'
+                fontSize: 'var(--font-size-body)',
               }}
             >
               <span>{tab.icon}</span>
@@ -65,7 +75,7 @@ export function WorkerDashboard() {
           ))}
         </nav>
 
-        <button 
+        <button
           onClick={handleLogout}
           style={{
             padding: '12px',
@@ -74,7 +84,7 @@ export function WorkerDashboard() {
             border: '1px solid var(--color-border-default)',
             borderRadius: 'var(--rounded-md)',
             cursor: 'pointer',
-            textAlign: 'center'
+            textAlign: 'center',
           }}
         >
           Log out
@@ -85,7 +95,7 @@ export function WorkerDashboard() {
       <main style={{ flex: 1, padding: 'var(--spacing-lg)', paddingBottom: '80px' }}>
         <h1>Worker Dashboard</h1>
         <p>Welcome! You are ready to receive job offers.</p>
-        
+
         {/* Mobile logout button since sidebar is hidden */}
         <div className="mobile-logout" style={{ marginTop: 'var(--spacing-xl)' }}>
           <style>{`
@@ -95,7 +105,7 @@ export function WorkerDashboard() {
               }
             }
           `}</style>
-          <button 
+          <button
             onClick={handleLogout}
             style={{
               padding: '8px 16px',
@@ -103,7 +113,7 @@ export function WorkerDashboard() {
               color: 'var(--color-status-error)',
               border: '1px solid var(--color-border-default)',
               borderRadius: 'var(--rounded-md)',
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
           >
             Log out

@@ -1,15 +1,15 @@
 import React from 'react';
-import { 
-  Zap, 
-  Wrench, 
-  Hammer, 
-  Paintbrush, 
-  Sparkles, 
-  WashingMachine, 
-  TreePine, 
-  Bug, 
-  Car, 
-  HardHat 
+import {
+  Zap,
+  Wrench,
+  Hammer,
+  Paintbrush,
+  Sparkles,
+  WashingMachine,
+  TreePine,
+  Bug,
+  Car,
+  HardHat,
 } from 'lucide-react';
 import './SkillCategoryGrid.css';
 
@@ -37,7 +37,7 @@ export function SkillCategoryGrid({ selectedSkill, onSelect }: Props) {
       {SKILL_CATEGORIES.map((category) => {
         const Icon = category.icon;
         const isSelected = selectedSkill === category.id;
-        
+
         return (
           <button
             key={category.id}
@@ -46,9 +46,7 @@ export function SkillCategoryGrid({ selectedSkill, onSelect }: Props) {
             type="button"
           >
             <Icon />
-            <span className="skill-label">
-              {category.label}
-            </span>
+            <span className="skill-label">{category.label}</span>
           </button>
         );
       })}

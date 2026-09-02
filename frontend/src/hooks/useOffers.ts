@@ -21,7 +21,7 @@ export const useWorkerOffers = () => {
   return useQuery({
     queryKey: ['workerOffers'],
     queryFn: async () => {
-      const response = await api.get('/booking-offers/worker') as WorkerOfferDetail[];
+      const response = (await api.get('/booking-offers/worker')) as WorkerOfferDetail[];
       return response;
     },
     refetchInterval: 3000, // Poll every 3 seconds

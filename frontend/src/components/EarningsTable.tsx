@@ -39,8 +39,12 @@ export function EarningsTable({ entries }: EarningsTableProps) {
                 <td>{date}</td>
                 <td className="capitalize">{entry.skill}</td>
                 <td className="text-right font-mono">₹{jobPrice.toFixed(2)}</td>
-                <td className="text-right font-mono text-status-success font-medium">₹{payout.toFixed(2)}</td>
-                <td className="text-right font-mono text-welfare-fund">₹{platformFee.toFixed(2)}</td>
+                <td className="text-right font-mono text-status-success font-medium">
+                  ₹{payout.toFixed(2)}
+                </td>
+                <td className="text-right font-mono text-welfare-fund">
+                  ₹{platformFee.toFixed(2)}
+                </td>
               </tr>
             );
           })}

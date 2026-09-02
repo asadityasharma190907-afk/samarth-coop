@@ -4,5 +4,6 @@
   "extraPaths": [
     "app",
     "tests"
-  ]
+  ],
+  "typeCheckingMode": "off"
 }

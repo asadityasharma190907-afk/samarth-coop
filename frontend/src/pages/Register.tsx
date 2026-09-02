@@ -8,24 +8,24 @@ import { LocationInput } from '../components/LocationInput';
 export function Register() {
   const navigate = useNavigate();
   const registerMutation = useRegisterMutation();
-  
+
   const [role, setRole] = useState<'citizen' | 'worker'>('citizen');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [skill, setSkill] = useState('electrician'); // Default worker skill
-  
+
   const [lat, setLat] = useState<number>(0);
   const [lng, setLng] = useState<number>(0);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const payload: any = {
       role,
       name,
       phone,
-      password
+      password,
     };
 
     if (role === 'worker') {
@@ -42,15 +42,25 @@ export function Register() {
         } else {
           navigate('/dashboard');
         }
-      }
+      },
     });
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '0 auto', padding: 'var(--spacing-xl) var(--spacing-md)' }}>
+    <div
+      style={{
+        maxWidth: '400px',
+        margin: '0 auto',
+        padding: 'var(--spacing-xl) var(--spacing-md)',
+      }}
+    >
       <div style={{ textAlign: 'center', marginBottom: 'var(--spacing-xl)' }}>
-        <h1 style={{ fontSize: 'var(--font-size-h2)', marginBottom: 'var(--spacing-xs)' }}>Join Samarth</h1>
-        <p style={{ color: 'var(--color-text-secondary)', margin: 0 }}>Create your account to get started</p>
+        <h1 style={{ fontSize: 'var(--font-size-h2)', marginBottom: 'var(--spacing-xs)' }}>
+          Join Samarth
+        </h1>
+        <p style={{ color: 'var(--color-text-secondary)', margin: 0 }}>
+          Create your account to get started
+        </p>
       </div>
 
       <div style={{ display: 'flex', gap: 'var(--spacing-sm)', marginBottom: 'var(--spacing-lg)' }}>
@@ -70,9 +80,19 @@ export function Register() {
         />
       </div>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}
+      >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
-          <label style={{ fontSize: 'var(--font-size-body-sm)', fontWeight: 'var(--font-weight-medium)' }}>Full Name</label>
+          <label
+            style={{
+              fontSize: 'var(--font-size-body-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+            }}
+          >
+            Full Name
+          </label>
           <input
             type="text"
             value={name}
@@ -83,13 +103,20 @@ export function Register() {
               padding: '12px',
               border: '1px solid var(--color-border-default)',
               borderRadius: 'var(--rounded-md)',
-              fontSize: 'var(--font-size-body)'
+              fontSize: 'var(--font-size-body)',
             }}
           />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
-          <label style={{ fontSize: 'var(--font-size-body-sm)', fontWeight: 'var(--font-weight-medium)' }}>Phone Number</label>
+          <label
+            style={{
+              fontSize: 'var(--font-size-body-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+            }}
+          >
+            Phone Number
+          </label>
           <input
             type="tel"
             value={phone}
@@ -102,7 +129,7 @@ export function Register() {
               padding: '12px',
               border: '1px solid var(--color-border-default)',
               borderRadius: 'var(--rounded-md)',
-              fontSize: 'var(--font-size-body)'
+              fontSize: 'var(--font-size-body)',
             }}
           />
         </div>
@@ -110,19 +137,47 @@ export function Register() {
         {role === 'worker' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
-              <label style={{ fontSize: 'var(--font-size-body-sm)', fontWeight: 'var(--font-weight-medium)' }}>Skill</label>
+              <label
+                style={{
+                  fontSize: 'var(--font-size-body-sm)',
+                  fontWeight: 'var(--font-weight-medium)',
+                }}
+              >
+                Skill
+              </label>
               <SkillChips selectedSkill={skill} onChange={setSkill} />
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
-              <label style={{ fontSize: 'var(--font-size-body-sm)', fontWeight: 'var(--font-weight-medium)' }}>Location</label>
-              <LocationInput lat={lat} lng={lng} onChange={(newLat, newLng) => { setLat(newLat); setLng(newLng); }} />
+              <label
+                style={{
+                  fontSize: 'var(--font-size-body-sm)',
+                  fontWeight: 'var(--font-weight-medium)',
+                }}
+              >
+                Location
+              </label>
+              <LocationInput
+                lat={lat}
+                lng={lng}
+                onChange={(newLat, newLng) => {
+                  setLat(newLat);
+                  setLng(newLng);
+                }}
+              />
             </div>
           </div>
         )}
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
-          <label style={{ fontSize: 'var(--font-size-body-sm)', fontWeight: 'var(--font-weight-medium)' }}>Password</label>
+          <label
+            style={{
+              fontSize: 'var(--font-size-body-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+            }}
+          >
+            Password
+          </label>
           <input
             type="password"
             value={password}
@@ -134,14 +189,16 @@ export function Register() {
               padding: '12px',
               border: '1px solid var(--color-border-default)',
               borderRadius: 'var(--rounded-md)',
-              fontSize: 'var(--font-size-body)'
+              fontSize: 'var(--font-size-body)',
             }}
           />
         </div>
 
         {registerMutation.isError && (
           <div style={{ color: 'var(--color-status-error)', fontSize: 'var(--font-size-body-sm)' }}>
-            {registerMutation.error instanceof Error ? registerMutation.error.message : 'Registration failed. Please try again.'}
+            {registerMutation.error instanceof Error
+              ? registerMutation.error.message
+              : 'Registration failed. Please try again.'}
           </div>
         )}
 
@@ -159,7 +216,7 @@ export function Register() {
             fontWeight: 'var(--font-weight-medium)',
             cursor: registerMutation.isPending ? 'not-allowed' : 'pointer',
             opacity: registerMutation.isPending ? 0.7 : 1,
-            transition: 'background-color 0.2s'
+            transition: 'background-color 0.2s',
           }}
         >
           {registerMutation.isPending ? 'Registering...' : 'Register'}
@@ -171,8 +228,15 @@ export function Register() {
           Already have an account?{' '}
           <a
             href="#"
-            onClick={(e) => { e.preventDefault(); navigate('/login'); }}
-            style={{ color: 'var(--color-brand-primary)', textDecoration: 'none', fontWeight: 'var(--font-weight-medium)' }}
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/login');
+            }}
+            style={{
+              color: 'var(--color-brand-primary)',
+              textDecoration: 'none',
+              fontWeight: 'var(--font-weight-medium)',
+            }}
           >
             Log in
           </a>

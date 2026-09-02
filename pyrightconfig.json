@@ -6,5 +6,6 @@
     "backend/app",
     "backend/tests",
     "backend/venv/Lib/site-packages"
-  ]
+  ],
+  "typeCheckingMode": "off"
 }

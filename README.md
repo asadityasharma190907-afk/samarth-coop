@@ -65,6 +65,13 @@ npm install
 # 2. Start the dev server
 npm run dev
 # App running at: http://localhost:3000
+
+# 3. Run Formatting & Linting
+npm run format
+npm run lint:es
+
+# 4. Run Unit Tests (Vitest)
+npm run test
 ```
 
 ### Run Backend Tests

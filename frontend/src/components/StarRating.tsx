@@ -37,10 +37,10 @@ export function StarRating({ onRate, disabled = false }: StarRatingProps) {
           onClick={() => handleClick(index)}
           disabled={disabled}
         >
-          <Star 
-            size={24} 
+          <Star
+            size={24}
             className="star-icon"
-            fill={index <= (hoverRating || selectedRating) ? 'currentColor' : 'none'} 
+            fill={index <= (hoverRating || selectedRating) ? 'currentColor' : 'none'}
           />
         </button>
       ))}

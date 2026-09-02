@@ -11,7 +11,9 @@
   gap: var(--spacing-md);
   position: relative;
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   user-select: none; /* To prevent text selection during swipe */
   touch-action: pan-y; /* Allow vertical scrolling but capture horizontal swipe */
 }
@@ -80,7 +82,9 @@
 .expiry-progress-bar {
   height: 100%;
   background-color: var(--color-status-warning);
-  transition: width 1s linear, background-color 0.3s ease;
+  transition:
+    width 1s linear,
+    background-color 0.3s ease;
 }
 
 /* Danger state for < 30 seconds */

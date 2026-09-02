@@ -44,21 +44,21 @@
 }
 
 .status-offered {
-  background-color: #DBEAFE;
-  color: #1E40AF;
+  background-color: #dbeafe;
+  color: #1e40af;
 }
 
 .status-accepted {
-  background-color: #D1FAE5;
-  color: #065F46;
+  background-color: #d1fae5;
+  color: #065f46;
 }
 
 .status-declined {
-  background-color: #FEE2E2;
-  color: #991B1B;
+  background-color: #fee2e2;
+  color: #991b1b;
 }
 
 .status-expired {
-  background-color: #F3F4F6;
+  background-color: #f3f4f6;
   color: #374151;
 }

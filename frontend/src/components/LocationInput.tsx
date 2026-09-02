@@ -13,7 +13,7 @@ export function LocationInput({ lat, lng, onChange }: LocationInputProps) {
   const handleGetLocation = () => {
     setErrorMsg('');
     setIsLoading(true);
-    
+
     if (!navigator.geolocation) {
       setErrorMsg('Geolocation is not supported by your browser');
       setIsLoading(false);
@@ -42,7 +42,7 @@ export function LocationInput({ lat, lng, onChange }: LocationInputProps) {
             break;
         }
       },
-      { timeout: 10000 }
+      { timeout: 10000 },
     );
   };
 
@@ -80,7 +80,11 @@ export function LocationInput({ lat, lng, onChange }: LocationInputProps) {
 
       <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <label style={{ fontSize: 'var(--font-size-caption)', color: 'var(--color-text-secondary)' }}>Latitude</label>
+          <label
+            style={{ fontSize: 'var(--font-size-caption)', color: 'var(--color-text-secondary)' }}
+          >
+            Latitude
+          </label>
           <input
             type="number"
             step="any"
@@ -91,12 +95,16 @@ export function LocationInput({ lat, lng, onChange }: LocationInputProps) {
               padding: '8px',
               border: '1px solid var(--color-border-default)',
               borderRadius: 'var(--rounded-md)',
-              fontSize: 'var(--font-size-body-sm)'
+              fontSize: 'var(--font-size-body-sm)',
             }}
           />
         </div>
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <label style={{ fontSize: 'var(--font-size-caption)', color: 'var(--color-text-secondary)' }}>Longitude</label>
+          <label
+            style={{ fontSize: 'var(--font-size-caption)', color: 'var(--color-text-secondary)' }}
+          >
+            Longitude
+          </label>
           <input
             type="number"
             step="any"
@@ -107,7 +115,7 @@ export function LocationInput({ lat, lng, onChange }: LocationInputProps) {
               padding: '8px',
               border: '1px solid var(--color-border-default)',
               borderRadius: 'var(--rounded-md)',
-              fontSize: 'var(--font-size-body-sm)'
+              fontSize: 'var(--font-size-body-sm)',
             }}
           />
         </div>

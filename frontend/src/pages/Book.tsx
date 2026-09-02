@@ -16,7 +16,13 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-function LocationPicker({ position, setPosition }: { position: [number, number], setPosition: (pos: [number, number]) => void }) {
+function LocationPicker({
+  position,
+  setPosition,
+}: {
+  position: [number, number];
+  setPosition: (pos: [number, number]) => void;
+}) {
   useMapEvents({
     click(e) {
       setPosition([e.latlng.lat, e.latlng.lng]);
@@ -30,18 +36,18 @@ export function Book() {
   const [skill, setSkill] = useState<string | null>(null);
   const [position, setPosition] = useState<[number, number]>([26.9124, 75.7873]); // Default Jaipur
   const [description, setDescription] = useState('');
-  
+
   const navigate = useNavigate();
   const createBooking = useCreateBooking();
 
-  const handleNext = () => setStep(s => Math.min(s + 1, 3));
-  const handleBack = () => setStep(s => Math.max(s - 1, 1));
-  
+  const handleNext = () => setStep((s) => Math.min(s + 1, 3));
+  const handleBack = () => setStep((s) => Math.max(s - 1, 1));
+
   const handleUseMyLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => setPosition([pos.coords.latitude, pos.coords.longitude]),
-        (err) => alert('Could not get location. Please click on the map.')
+        (_err) => alert('Could not get location. Please click on the map.'),
       );
     }
   };
@@ -53,7 +59,7 @@ export function Book() {
         skill,
         lat: position[0],
         lng: position[1],
-        description: description || undefined
+        description: description || undefined,
       });
       navigate(`/booking/${result.booking_id}`);
     } catch (error) {
@@ -62,7 +68,7 @@ export function Book() {
     }
   };
 
-  const getSkillLabel = (id: string) => SKILL_CATEGORIES.find(s => s.id === id)?.label || id;
+  const getSkillLabel = (id: string) => SKILL_CATEGORIES.find((s) => s.id === id)?.label || id;
 
   return (
     <div className="book-container">
@@ -72,8 +78,11 @@ export function Book() {
       </div>
 
       <div className="wizard-progress">
-        {[1, 2, 3].map(i => (
-          <div key={i} className={`progress-step ${step === i ? 'active' : ''} ${step > i ? 'completed' : ''}`}>
+        {[1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className={`progress-step ${step === i ? 'active' : ''} ${step > i ? 'completed' : ''}`}
+          >
             {i}
           </div>
         ))}
@@ -83,19 +92,15 @@ export function Book() {
         {step === 1 && (
           <div>
             <h2 className="step-title">What do you need help with?</h2>
-            <SkillCategoryGrid 
-              selectedSkill={skill} 
+            <SkillCategoryGrid
+              selectedSkill={skill}
               onSelect={(s) => {
                 setSkill(s);
                 setTimeout(handleNext, 300); // Auto-advance
-              }} 
+              }}
             />
             <div className="wizard-actions" style={{ justifyContent: 'flex-end' }}>
-              <button 
-                className="btn-primary" 
-                disabled={!skill}
-                onClick={handleNext}
-              >
+              <button className="btn-primary" disabled={!skill} onClick={handleNext}>
                 Continue
               </button>
             </div>
@@ -115,13 +120,17 @@ export function Book() {
               </MapContainer>
             </div>
             <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
-              Click on the map to place the pin. 
-              (Lat: {position[0].toFixed(4)}, Lng: {position[1].toFixed(4)})
+              Click on the map to place the pin. (Lat: {position[0].toFixed(4)}, Lng:{' '}
+              {position[1].toFixed(4)})
             </p>
-            
+
             <div className="wizard-actions">
-              <button className="btn-secondary" onClick={handleBack}>Back</button>
-              <button className="btn-primary" onClick={handleNext}>Continue</button>
+              <button className="btn-secondary" onClick={handleBack}>
+                Back
+              </button>
+              <button className="btn-primary" onClick={handleNext}>
+                Continue
+              </button>
             </div>
           </div>
         )}
@@ -136,7 +145,9 @@ export function Book() {
               </div>
               <div className="summary-item">
                 <span className="summary-label">Location</span>
-                <span className="summary-value">{position[0].toFixed(4)}, {position[1].toFixed(4)}</span>
+                <span className="summary-value">
+                  {position[0].toFixed(4)}, {position[1].toFixed(4)}
+                </span>
               </div>
             </div>
 
@@ -152,11 +163,13 @@ export function Book() {
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
-            
+
             <div className="wizard-actions">
-              <button className="btn-secondary" onClick={handleBack}>Back</button>
-              <button 
-                className="btn-primary" 
+              <button className="btn-secondary" onClick={handleBack}>
+                Back
+              </button>
+              <button
+                className="btn-primary"
                 onClick={handleSubmit}
                 disabled={createBooking.isPending}
               >

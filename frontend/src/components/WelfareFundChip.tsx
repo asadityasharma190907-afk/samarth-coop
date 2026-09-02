@@ -21,10 +21,10 @@ export function WelfareFundChip({ amount }: WelfareFundChipProps) {
     const step = (timestamp: number) => {
       if (!startTimestamp) startTimestamp = timestamp;
       const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-      
+
       // ease-out quartic
       const easeProgress = 1 - Math.pow(1 - progress, 4);
-      
+
       setDisplayAmount(targetAmount * easeProgress);
 
       if (progress < 1) {

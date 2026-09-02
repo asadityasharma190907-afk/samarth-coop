@@ -9,9 +9,9 @@ export function useAuth() {
       const payload = JSON.parse(atob(token.split('.')[1]));
       user = {
         id: payload.sub,
-        role: payload.role
+        role: payload.role,
       };
-    } catch (e) {
+    } catch {
       // Invalid token
     }
   }

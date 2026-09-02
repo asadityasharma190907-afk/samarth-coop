@@ -1,7 +1,9 @@
 .welfare-chip-wrapper {
   opacity: 0;
   transform: translateY(10px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
   margin-top: var(--spacing-md);
   margin-bottom: var(--spacing-md);
 }
@@ -12,7 +14,7 @@
 }
 
 .welfare-chip {
-  background: linear-gradient(135deg, var(--color-welfare-fund), #9333EA);
+  background: linear-gradient(135deg, var(--color-welfare-fund), #9333ea);
   border-radius: var(--rounded-2xl);
   padding: 12px 20px;
   display: inline-flex;
