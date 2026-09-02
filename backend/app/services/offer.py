@@ -1,3 +1,4 @@
+import threading
 from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
@@ -9,8 +10,11 @@ from app.models.booking_offer import BookingOffer
 from app.models.worker_profile import WorkerProfile
 from app.services.dispatch import get_ranked_workers
 
+_accept_lock = threading.Lock()
+
 
 def check_and_expire_offer(offer: BookingOffer, db: Session) -> bool:
+
     if offer.status != "offered":
         return False
 
@@ -132,29 +136,48 @@ def accept_offer(offer_id: UUID, worker_id: UUID, db: Session) -> None:
             status_code=status.HTTP_400_BAD_REQUEST, detail="Offer has expired"
         )
 
-    # Apply row lock on booking (AD-6)
-    booking = db.query(Booking).filter_by(id=offer.booking_id).with_for_update().first()
-
-    if not booking:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Booking not found"
+    with _accept_lock:
+        # Apply row lock on booking (AD-6)
+        booking = (
+            db.query(Booking).filter_by(id=offer.booking_id).with_for_update().first()
         )
 
-    if booking.status != "pending":
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail="Booking already assigned"
+        if not booking:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Booking not found"
+            )
+
+        db.refresh(booking)
+        db.refresh(offer)
+
+        if booking.status != "pending" or offer.status != "offered":
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Booking already assigned or offer expired",
+            )
+
+        # Atomic update to guarantee concurrency safety across PostgreSQL and SQLite
+        rows_updated = (
+            db.query(Booking)
+            .filter(Booking.id == offer.booking_id, Booking.status == "pending")
+            .update(
+                {Booking.status: "assigned", Booking.worker_id: worker_id},
+                synchronize_session=False,
+            )
         )
 
-    # Assign booking
-    booking.status = "assigned"  # type: ignore
-    booking.worker_id = worker_id  # type: ignore
+        if rows_updated == 0:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Booking already assigned or offer expired",
+            )
 
-    # Update offer
-    offer.status = "accepted"  # type: ignore
+        # Update offer
+        offer.status = "accepted"  # type: ignore
 
-    # Update worker availability
-    worker_profile = db.query(WorkerProfile).filter_by(user_id=worker_id).first()
-    if worker_profile:
-        worker_profile.availability = False  # type: ignore
+        # Update worker availability
+        worker_profile = db.query(WorkerProfile).filter_by(user_id=worker_id).first()
+        if worker_profile:
+            worker_profile.availability = False  # type: ignore
 
-    db.commit()
+        db.commit()
