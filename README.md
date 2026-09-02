@@ -74,6 +74,26 @@ cd backend
 pytest
 ```
 
+### Run Local QA Checks (Pre-push)
+
+To prevent failing CI builds, run the QA check script locally before pushing:
+
+```powershell
+# Run checks (Ruff, Pyright, Pytest, TSC)
+.\qa_check.ps1
+
+# Auto-fix linting/formatting errors
+.\qa_check.ps1 -Fix
+```
+
+**Git Hook setup (For all team members)**: 
+We have automated this check so it runs before every `git push`. Because git hooks are not tracked by default, **every teammate must run this command once** after pulling this code:
+
+```bash
+git config core.hooksPath .githooks
+```
+Once run, your pushes will automatically be blocked if QA checks fail locally.
+
 ---
 
 ## Project Structure
