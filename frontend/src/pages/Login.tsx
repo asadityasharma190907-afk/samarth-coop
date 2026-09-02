@@ -14,7 +14,13 @@ export function Login() {
     loginMutation.mutate({ phone, password }, {
       onSuccess: (data) => {
         localStorage.setItem('samarth_token', data.access_token);
-        navigate('/dashboard');
+        if (data.role === 'worker') {
+          navigate('/worker/dashboard');
+        } else if (data.role === 'citizen') {
+          navigate('/book');
+        } else {
+          navigate('/federation'); // admin
+        }
       }
     });
   };
