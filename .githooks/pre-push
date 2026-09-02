@@ -1,0 +1,11 @@
+#!/bin/sh
+
+echo "Running Pre-Push QA Checks..."
+powershell.exe -ExecutionPolicy Bypass -File "./qa_check.ps1"
+if [ $? -ne 0 ]; then
+    echo "========================================="
+    echo "Push aborted. QA checks failed locally."
+    echo "Please fix the errors and try again."
+    echo "========================================="
+    exit 1
+fi
