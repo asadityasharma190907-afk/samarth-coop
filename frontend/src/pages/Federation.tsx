@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '../lib/api';
 import { StatCounter } from '../components/StatCounter';
 import { AuditTable } from '../components/AuditTable';
+import { VerificationQueue } from '../components/VerificationQueue';
 import './Federation.css';
 
 interface FederationStats {
@@ -65,6 +66,10 @@ export function Federation() {
       )}
 
       <div className="dashboard-content">
+        <section className="verification-section">
+          <VerificationQueue />
+        </section>
+
         <section className="bookings-section">
           <h2>Recent Bookings</h2>
           {bookingsLoading ? (
