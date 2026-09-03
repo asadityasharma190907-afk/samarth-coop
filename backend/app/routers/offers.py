@@ -71,21 +71,20 @@ def get_booking_offers(booking_id: UUID, db: Session = Depends(get_db)):
 def get_worker_offers(
     current_user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ):
-    # Get active offers for the worker
-    offers = (
+    # Lazily expire ANY globally active offers first
+    # This ensures that an expired offer from another worker cascades to this worker
+    all_active_offers = db.query(BookingOffer).filter(BookingOffer.status == "offered").all()
+    for active_offer in all_active_offers:
+        check_and_expire_offer(active_offer, db)
+
+    # Get active offers for the current worker (which may now include newly cascaded ones)
+    active_offers = (
         db.query(BookingOffer)
         .filter(
             BookingOffer.worker_id == current_user.id, BookingOffer.status == "offered"
         )
         .all()
     )
-
-    # Lazily expire them
-    active_offers = []
-    for offer in offers:
-        if check_and_expire_offer(offer, db):
-            continue
-        active_offers.append(offer)
 
     # Get worker profile for location
     profile = (
