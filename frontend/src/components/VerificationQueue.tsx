@@ -55,14 +55,27 @@ export function VerificationQueue() {
       <h3>Pending Verifications</h3>
       
       {toast && (
-        <div className={`toast toast-${toast.type}`} style={{
-          padding: '12px 24px', 
-          margin: '16px', 
-          borderRadius: '4px',
-          backgroundColor: toast.type === 'success' ? 'var(--color-success-light)' : 'var(--color-danger-light)',
-          color: toast.type === 'success' ? 'var(--color-success-dark)' : 'var(--color-danger-dark)',
-          border: `1px solid ${toast.type === 'success' ? 'var(--color-success-main)' : 'var(--color-danger-main)'}`
-        }}>
+        <div
+          className={`toast toast-${toast.type}`}
+          style={{
+            padding: '12px 24px',
+            margin: '16px',
+            borderRadius: '4px',
+            backgroundColor:
+              toast.type === 'success'
+                ? 'var(--color-success-light)'
+                : 'var(--color-danger-light)',
+            color:
+              toast.type === 'success'
+                ? 'var(--color-success-dark)'
+                : 'var(--color-danger-dark)',
+            border: `1px solid ${
+              toast.type === 'success'
+                ? 'var(--color-success-main)'
+                : 'var(--color-danger-main)'
+            }`,
+          }}
+        >
           {toast.message}
         </div>
       )}
@@ -96,11 +109,15 @@ export function VerificationQueue() {
                     </button>
                     <button
                       className="btn-approve"
-                      onClick={() => verifyMutation.mutate({ id: worker.worker_id, status: 'verified' })}
+                      onClick={() =>
+                        verifyMutation.mutate({ id: worker.worker_id, status: 'verified' })
+                      }
                       disabled={verifyMutation.isPending}
                     >
-                      {verifyMutation.isPending && verifyMutation.variables?.id === worker.worker_id && verifyMutation.variables?.status === 'verified' 
-                        ? 'Approving...' 
+                      {verifyMutation.isPending &&
+                      verifyMutation.variables?.id === worker.worker_id &&
+                      verifyMutation.variables?.status === 'verified'
+                        ? 'Approving...'
                         : 'Approve'}
                     </button>
                   </td>
