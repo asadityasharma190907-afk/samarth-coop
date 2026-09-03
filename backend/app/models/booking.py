@@ -38,6 +38,7 @@ class Booking(Base):
     status = Column(
         String(20), nullable=False, default="pending", server_default=text("'pending'")
     )
+    dispute_reason = Column(String(500), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     citizen = relationship("User", foreign_keys=[citizen_id])
