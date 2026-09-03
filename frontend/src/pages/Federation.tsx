@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../lib/api';
 import { StatCounter } from '../components/StatCounter';
@@ -23,6 +23,9 @@ interface FederationBooking {
 
 export function Federation() {
   const [selectedBookingId, setSelectedBookingId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterSkill, setFilterSkill] = useState('All Skills');
+  const [filterStatus, setFilterStatus] = useState('All');
 
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['federationStats'],
@@ -41,6 +44,21 @@ export function Federation() {
     },
     refetchInterval: 10000,
   });
+
+  const uniqueSkills = useMemo(() => {
+    if (!bookings) return [];
+    return Array.from(new Set(bookings.map((b) => b.skill)));
+  }, [bookings]);
+
+  const filteredBookings = useMemo(() => {
+    if (!bookings) return [];
+    return bookings.filter((b) => {
+      const matchesSearch = b.citizen_name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSkill = filterSkill === 'All Skills' || b.skill === filterSkill;
+      const matchesStatus = filterStatus === 'All' || b.status === filterStatus.toLowerCase();
+      return matchesSearch && matchesSkill && matchesStatus;
+    });
+  }, [bookings, searchQuery, filterSkill, filterStatus]);
 
   return (
     <div className="federation-container animate-fade-in">
@@ -67,11 +85,49 @@ export function Federation() {
       <div className="dashboard-content">
         <section className="bookings-section">
           <h2>Recent Bookings</h2>
+          
+          <div className="filter-toolbar">
+            <input
+              type="text"
+              placeholder="Search by citizen name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+            
+            <div className="filter-controls">
+              <select
+                value={filterSkill}
+                onChange={(e) => setFilterSkill(e.target.value)}
+                className="skill-select"
+              >
+                <option value="All Skills">All Skills</option>
+                {uniqueSkills.map((skill) => (
+                  <option key={skill} value={skill}>
+                    {skill}
+                  </option>
+                ))}
+              </select>
+              
+              <div className="status-chips">
+                {['All', 'Completed', 'Assigned', 'Cancelled', 'Pending'].map((status) => (
+                  <button
+                    key={status}
+                    className={`status-chip ${filterStatus === status ? 'active' : ''}`}
+                    onClick={() => setFilterStatus(status)}
+                  >
+                    {status}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
           {bookingsLoading ? (
             <div className="loading-state">Loading bookings...</div>
           ) : (
             <div className="bookings-list">
-              {bookings?.map((booking) => (
+              {filteredBookings.map((booking) => (
                 <div
                   key={booking.id}
                   className={`booking-item ${selectedBookingId === booking.id ? 'active' : ''}`}
@@ -90,7 +146,8 @@ export function Federation() {
                   </div>
                 </div>
               ))}
-              {!bookings?.length && <p>No bookings found.</p>}
+              ))}
+              {filteredBookings.length === 0 && <p>No matching bookings found.</p>}
             </div>
           )}
         </section>
