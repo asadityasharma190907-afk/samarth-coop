@@ -160,3 +160,46 @@ def test_unverified_worker_excluded_from_dispatch(admin_token, test_worker):
     assert response.status_code == 200
     workers = response.json()
     assert not any(w["worker_id"] == str(test_worker) for w in workers)
+
+
+def test_get_admin_workers_pending(admin_token, test_worker):
+    token, _ = admin_token
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # First, let's make sure the test_worker is pending
+    payload = {"verification_status": "pending"}
+    client.patch(f"/admin/workers/{test_worker}/verify", json=payload, headers=headers)
+
+    response = client.get("/admin/workers?status=pending", headers=headers)
+    assert response.status_code == 200
+    workers = response.json()
+    assert isinstance(workers, list)
+    
+    # test_worker should be in the pending list
+    assert any(w["user_id"] == str(test_worker) for w in workers)
+    for w in workers:
+        assert w["verification_status"] == "pending"
+
+def test_get_admin_workers_verified(admin_token, test_worker):
+    token, _ = admin_token
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # Let's make sure the test_worker is verified
+    payload = {"verification_status": "verified"}
+    client.patch(f"/admin/workers/{test_worker}/verify", json=payload, headers=headers)
+
+    response = client.get("/admin/workers?status=verified", headers=headers)
+    assert response.status_code == 200
+    workers = response.json()
+    
+    # test_worker should be in the verified list
+    assert any(w["user_id"] == str(test_worker) for w in workers)
+    for w in workers:
+        assert w["verification_status"] == "verified"
+
+def test_get_admin_workers_forbidden(citizen_token):
+    token, _ = citizen_token
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = client.get("/admin/workers", headers=headers)
+    assert response.status_code == 403
