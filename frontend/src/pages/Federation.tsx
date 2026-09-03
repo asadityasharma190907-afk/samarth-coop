@@ -85,7 +85,7 @@ export function Federation() {
       <div className="dashboard-content">
         <section className="bookings-section">
           <h2>Recent Bookings</h2>
-          
+
           <div className="filter-toolbar">
             <input
               type="text"
@@ -94,7 +94,7 @@ export function Federation() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="search-input"
             />
-            
+
             <div className="filter-controls">
               <select
                 value={filterSkill}
@@ -108,7 +108,7 @@ export function Federation() {
                   </option>
                 ))}
               </select>
-              
+
               <div className="status-chips">
                 {['All', 'Completed', 'Assigned', 'Cancelled', 'Pending'].map((status) => (
                   <button
@@ -130,14 +130,11 @@ export function Federation() {
               {filteredBookings.map((booking) => (
                 <div
                   key={booking.id}
-                  className={`booking-item ${
-                    selectedBookingId === booking.id ? 'active' : ''
-                  }`}
+                  className={`booking-item ${selectedBookingId === booking.id ? 'active' : ''}`}
                   onClick={() => setSelectedBookingId(booking.id)}
                 >
                   <div className="booking-info">
-                    <strong>{booking.citizen_name}</strong> requested a{' '}
-                    <span>{booking.skill}</span>
+                    <strong>{booking.citizen_name}</strong> requested a <span>{booking.skill}</span>
                   </div>
                   <div className="booking-meta">
                     <span className={`status-badge status-${booking.status}`}>

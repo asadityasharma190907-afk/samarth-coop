@@ -1,18 +1,20 @@
+from typing import Literal
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status as status_code
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi import status as status_code
 from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.models.user import User
-from app.schemas.admin import WorkerVerificationUpdate, AdminWorkerItemResponse
-from app.services.admin import update_verification_status, get_workers_by_status
-from typing import Literal, List
+from app.schemas.admin import AdminWorkerItemResponse, WorkerVerificationUpdate
+from app.services.admin import get_workers_by_status, update_verification_status
 
 router = APIRouter()
 
-@router.get("/workers", response_model=List[AdminWorkerItemResponse])
+
+@router.get("/workers", response_model=list[AdminWorkerItemResponse])
 def get_pending_workers(
     status: Literal["pending", "verified", "rejected"] = "pending",
     db: Session = Depends(get_db),
@@ -24,6 +26,7 @@ def get_pending_workers(
             detail="Only admins can view worker statuses",
         )
     return get_workers_by_status(status=status, db=db)
+
 
 @router.patch("/workers/{id}/verify")
 def verify_worker(
@@ -38,7 +41,9 @@ def verify_worker(
             detail="Only admins can verify workers",
         )
 
-    profile = update_verification_status(worker_id=id, status=payload.verification_status, db=db)
+    profile = update_verification_status(
+        worker_id=id, status=payload.verification_status, db=db
+    )
     return {
         "message": f"Worker verification status updated to {profile.verification_status}",
         "verification_status": profile.verification_status,

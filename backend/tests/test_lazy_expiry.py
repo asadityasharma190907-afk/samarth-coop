@@ -1,6 +1,5 @@
 import uuid
 from datetime import datetime, timedelta, timezone
-from decimal import Decimal
 
 import pytest
 from conftest import TestingSessionLocal
@@ -34,10 +33,12 @@ def backdate_offer_expiry(booking_id: uuid.UUID, rank: int, worker_id: uuid.UUID
             .filter_by(booking_id=booking_id, worker_id=worker_id, rank_at_offer=rank)
             .first()
         )
-        assert offer is not None, f"No offer found for worker {worker_id} at rank {rank}"
-        
+        assert offer is not None, (
+            f"No offer found for worker {worker_id} at rank {rank}"
+        )
+
         # Backdate the expiration to 10 seconds ago
-        offer.expires_at = datetime.now(timezone.utc) - timedelta(seconds=10) # type: ignore
+        offer.expires_at = datetime.now(timezone.utc) - timedelta(seconds=10)  # type: ignore
         db.commit()
     finally:
         db.close()
@@ -46,6 +47,7 @@ def backdate_offer_expiry(booking_id: uuid.UUID, rank: int, worker_id: uuid.UUID
 def get_worker_id(phone: str) -> uuid.UUID:
     db = TestingSessionLocal()
     from app.models.user import User
+
     try:
         user = db.query(User).filter(User.phone == phone).first()
         assert user is not None
@@ -151,7 +153,6 @@ def test_lazy_expiry_cascade_e2e():
     assert res.status_code == 200
     meena_offers = res.json()
     assert len(meena_offers) == 1
-    meena_offer_id = uuid.UUID(meena_offers[0]["id"])
     assert meena_offers[0]["rank_at_offer"] == 4
     assert get_offer_status(anil_offer_id) == "expired"
 
@@ -159,7 +160,7 @@ def test_lazy_expiry_cascade_e2e():
     backdate_offer_expiry(booking_id, 4, meena_id)
     # Trigger lazy cascade reading as admin to verify it handles exhaust correctly
     res = client.get(
-        f"/booking-offers/booking/{str(booking_id)}",
+        f"/booking-offers/booking/{booking_id!s}",
         headers={"Authorization": f"Bearer {admin_token}"},
     )
     assert res.status_code == 200

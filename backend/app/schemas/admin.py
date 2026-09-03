@@ -1,10 +1,13 @@
-from typing import Literal
-from pydantic import BaseModel
-from uuid import UUID
 from datetime import datetime
+from typing import Literal
+from uuid import UUID
+
+from pydantic import BaseModel
+
 
 class WorkerVerificationUpdate(BaseModel):
     verification_status: Literal["pending", "verified", "rejected"]
+
 
 class AdminWorkerItemResponse(BaseModel):
     worker_id: UUID
