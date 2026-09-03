@@ -1,8 +1,11 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi import status as status_code
+from fastapi.responses import StreamingResponse
 from sqlalchemy import func
 from sqlalchemy.orm import Session, aliased
 
 from app.database import get_db
+from app.dependencies import get_current_user
 from app.models.booking import Booking
 from app.models.booking_offer import BookingOffer
 from app.models.user import User
@@ -11,7 +14,10 @@ from app.schemas.federation import (
     FederationBookingResponse,
     FederationStatsResponse,
 )
-from app.services.federation import get_earnings_distribution
+from app.services.federation import (
+    generate_weekly_earnings_csv,
+    get_earnings_distribution,
+)
 
 router = APIRouter()
 
@@ -77,3 +83,25 @@ def get_federation_bookings(db: Session = Depends(get_db)):
 @router.get("/earnings-distribution", response_model=EarningsDistributionResponse)
 def get_federation_earnings_distribution(db: Session = Depends(get_db)):
     return get_earnings_distribution(db=db)
+
+
+@router.get("/export-earnings")
+def export_earnings(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status_code.HTTP_403_FORBIDDEN,
+            detail="Only admins can export earnings data",
+        )
+
+    csv_data = generate_weekly_earnings_csv(db=db)
+
+    return StreamingResponse(
+        iter([csv_data]),
+        media_type="text/csv",
+        headers={
+            "Content-Disposition": 'attachment; filename="samarth_weekly_earnings_report.csv"'
+        },
+    )
