@@ -32,14 +32,21 @@ def upgrade() -> None:
     )
 
     # 2. Migrate existing data
-    # SQLite uses 1/0 or TRUE/FALSE. Using TRUE/FALSE as text or 1/0 depends on dialect, but SQLAlchemy execute can handle basic string.
-    # To be fully cross-dialect, we can just run two updates:
-    op.execute(
-        "UPDATE worker_profiles SET verification_status = 'verified' WHERE verified = TRUE OR verified = 1"
-    )
-    op.execute(
-        "UPDATE worker_profiles SET verification_status = 'pending' WHERE verified = FALSE OR verified = 0 OR verified IS NULL"
-    )
+    bind = op.get_bind()
+    if bind.dialect.name == "postgresql":
+        op.execute(
+            "UPDATE worker_profiles SET verification_status = 'verified' WHERE verified = TRUE"
+        )
+        op.execute(
+            "UPDATE worker_profiles SET verification_status = 'pending' WHERE verified = FALSE OR verified IS NULL"
+        )
+    else:
+        op.execute(
+            "UPDATE worker_profiles SET verification_status = 'verified' WHERE verified = 1"
+        )
+        op.execute(
+            "UPDATE worker_profiles SET verification_status = 'pending' WHERE verified = 0 OR verified IS NULL"
+        )
 
     # 3. Drop the old column using batch_alter_table (required for SQLite)
     with op.batch_alter_table("worker_profiles") as batch_op:
