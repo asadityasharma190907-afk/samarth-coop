@@ -130,11 +130,14 @@ export function Federation() {
               {filteredBookings.map((booking) => (
                 <div
                   key={booking.id}
-                  className={`booking-item ${selectedBookingId === booking.id ? 'active' : ''}`}
+                  className={`booking-item ${
+                    selectedBookingId === booking.id ? 'active' : ''
+                  }`}
                   onClick={() => setSelectedBookingId(booking.id)}
                 >
                   <div className="booking-info">
-                    <strong>{booking.citizen_name}</strong> requested a <span>{booking.skill}</span>
+                    <strong>{booking.citizen_name}</strong> requested a{' '}
+                    <span>{booking.skill}</span>
                   </div>
                   <div className="booking-meta">
                     <span className={`status-badge status-${booking.status}`}>
@@ -145,7 +148,6 @@ export function Federation() {
                     </span>
                   </div>
                 </div>
-              ))}
               ))}
               {filteredBookings.length === 0 && <p>No matching bookings found.</p>}
             </div>
