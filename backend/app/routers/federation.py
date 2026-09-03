@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy import func
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, aliased
 
 from app.database import get_db
 from app.models.booking import Booking
+from app.models.booking_offer import BookingOffer
 from app.models.user import User
 from app.schemas.federation import (
     EarningsDistributionResponse,
@@ -39,17 +40,24 @@ def get_federation_stats(db: Session = Depends(get_db)):
 
 @router.get("/bookings", response_model=list[FederationBookingResponse])
 def get_federation_bookings(db: Session = Depends(get_db)):
+    Worker = aliased(User)
     # Returns all bookings, descending by creation
-    bookings = (
-        db.query(Booking, User)
+    bookings_data = (
+        db.query(Booking, User, Worker)
         .join(User, User.id == Booking.citizen_id)
+        .outerjoin(
+            BookingOffer,
+            (BookingOffer.booking_id == Booking.id)
+            & (BookingOffer.status == "accepted"),
+        )
+        .outerjoin(Worker, Worker.id == BookingOffer.worker_id)
         .order_by(Booking.created_at.desc())
         .limit(50)  # Just latest 50 for the dashboard
         .all()
     )
 
     result = []
-    for booking, citizen in bookings:
+    for booking, citizen, worker in bookings_data:
         result.append(
             FederationBookingResponse(
                 id=booking.id,  # type: ignore
@@ -59,6 +67,8 @@ def get_federation_bookings(db: Session = Depends(get_db)):
                 job_price=booking.job_price,  # type: ignore
                 platform_fee=booking.platform_fee,  # type: ignore
                 created_at=booking.created_at,  # type: ignore
+                worker_name=worker.name if worker else None,
+                dispute_reason=booking.dispute_reason,
             )
         )
     return result
