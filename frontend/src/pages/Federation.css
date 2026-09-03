@@ -27,6 +27,11 @@
   flex-wrap: wrap;
 }
 
+.earnings-section,
+.verification-section {
+  margin-bottom: var(--spacing-2xl);
+}
+
 .dashboard-content {
   display: grid;
   grid-template-columns: 1fr 2fr;

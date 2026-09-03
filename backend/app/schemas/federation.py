@@ -21,3 +21,16 @@ class FederationBookingResponse(BaseModel):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class EarningsBucketItem(BaseModel):
+    range_label: str
+    min_val: int
+    max_val: int | None
+    worker_count: int
+
+
+class EarningsDistributionResponse(BaseModel):
+    currency: str
+    total_workers: int
+    buckets: list[EarningsBucketItem]

@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '../lib/api';
 import { StatCounter } from '../components/StatCounter';
 import { AuditTable } from '../components/AuditTable';
+import { EarningsChart } from '../components/EarningsChart';
 import { VerificationQueue } from '../components/VerificationQueue';
 import './Federation.css';
 
@@ -83,11 +84,15 @@ export function Federation() {
         </div>
       )}
 
-      <div className="dashboard-content">
-        <section className="verification-section">
-          <VerificationQueue />
-        </section>
+      <section className="earnings-section">
+        <EarningsChart />
+      </section>
 
+      <section className="verification-section">
+        <VerificationQueue />
+      </section>
+
+      <div className="dashboard-content">
         <section className="bookings-section">
           <h2>Recent Bookings</h2>
 
