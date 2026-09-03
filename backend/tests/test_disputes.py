@@ -138,6 +138,7 @@ def test_dispute_booking_by_citizen(test_users, assigned_booking):
     db = TestingSessionLocal()
     try:
         booking = db.query(Booking).filter_by(id=assigned_booking).first()
+        assert booking is not None
         assert booking.status == "disputed"
         assert booking.dispute_reason == "Worker never showed up."
     finally:
