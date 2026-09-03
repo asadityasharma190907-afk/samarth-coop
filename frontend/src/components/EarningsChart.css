@@ -60,7 +60,8 @@
   border-radius: var(--radius-sm) var(--radius-sm) 0 0;
   transition: height 0.5s ease-in-out, background-color 0.2s ease;
   position: relative;
-  min-height: 4px; /* Ensure it's visible even at 0% if we wanted, but we leave it small */
+  /* Ensure it's visible even at 0% if we wanted, but we leave it small */
+  min-height: 4px;
 }
 
 .bar:hover {

@@ -41,9 +41,7 @@ export function EarningsChart() {
     <div className="earnings-chart-container">
       <div className="chart-header">
         <h3>Weekly Earnings Distribution</h3>
-        <span className="total-workers-badge">
-          {data.total_workers} Active Workers
-        </span>
+        <span className="total-workers-badge">{data.total_workers} Active Workers</span>
       </div>
       
       <div className="chart-body">
@@ -52,10 +50,12 @@ export function EarningsChart() {
             const heightPct = (bucket.worker_count / effectiveMax) * 100;
             return (
               <div key={index} className="bar-wrapper">
-                <div 
-                  className="bar" 
+                <div
+                  className="bar"
                   style={{ height: `${heightPct}%` }}
-                  title={`${bucket.worker_count} worker${bucket.worker_count !== 1 ? 's' : ''}`}
+                  title={`${bucket.worker_count} worker${
+                    bucket.worker_count !== 1 ? 's' : ''
+                  }`}
                 >
                   <span className="bar-tooltip">{bucket.worker_count}</span>
                 </div>

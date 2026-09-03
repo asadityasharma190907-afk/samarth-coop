@@ -1,8 +1,11 @@
 from datetime import datetime, timedelta, timezone
+
 from sqlalchemy import func
 from sqlalchemy.orm import Session
+
 from app.models.booking import Booking
 from app.models.worker_profile import WorkerProfile
+
 
 def get_earnings_distribution(db: Session):
     dialect_name = db.bind.dialect.name

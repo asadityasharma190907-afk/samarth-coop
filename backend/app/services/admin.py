@@ -1,13 +1,12 @@
 from uuid import UUID
 
 from fastapi import HTTPException
+from fastapi import status as status_code
 from sqlalchemy.orm import Session
 
+from app.models.user import User
 from app.models.worker_profile import WorkerProfile
 
-
-from fastapi import status as status_code
-from app.models.user import User
 
 def update_verification_status(worker_id: UUID, status: str, db: Session) -> WorkerProfile:
     profile = db.query(WorkerProfile).filter(WorkerProfile.user_id == worker_id).first()

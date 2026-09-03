@@ -5,7 +5,11 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.booking import Booking
 from app.models.user import User
-from app.schemas.federation import FederationBookingResponse, FederationStatsResponse, EarningsDistributionResponse
+from app.schemas.federation import (
+    EarningsDistributionResponse,
+    FederationBookingResponse,
+    FederationStatsResponse,
+)
 from app.services.federation import get_earnings_distribution
 
 router = APIRouter()

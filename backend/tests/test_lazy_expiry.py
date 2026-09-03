@@ -1,6 +1,5 @@
 import uuid
 from datetime import datetime, timedelta, timezone
-from decimal import Decimal
 
 import pytest
 from conftest import TestingSessionLocal
@@ -151,7 +150,6 @@ def test_lazy_expiry_cascade_e2e():
     assert res.status_code == 200
     meena_offers = res.json()
     assert len(meena_offers) == 1
-    meena_offer_id = uuid.UUID(meena_offers[0]["id"])
     assert meena_offers[0]["rank_at_offer"] == 4
     assert get_offer_status(anil_offer_id) == "expired"
 
@@ -159,7 +157,7 @@ def test_lazy_expiry_cascade_e2e():
     backdate_offer_expiry(booking_id, 4, meena_id)
     # Trigger lazy cascade reading as admin to verify it handles exhaust correctly
     res = client.get(
-        f"/booking-offers/booking/{str(booking_id)}",
+        f"/booking-offers/booking/{booking_id!s}",
         headers={"Authorization": f"Bearer {admin_token}"},
     )
     assert res.status_code == 200
