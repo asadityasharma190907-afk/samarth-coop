@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { Download } from 'lucide-react';
 import { api } from '../lib/api';
 import { StatCounter } from '../components/StatCounter';
 import { AuditTable } from '../components/AuditTable';
@@ -31,6 +32,7 @@ export function Federation() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterSkill, setFilterSkill] = useState('All Skills');
   const [filterStatus, setFilterStatus] = useState('All');
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['federationStats'],
@@ -65,6 +67,35 @@ export function Federation() {
     });
   }, [bookings, searchQuery, filterSkill, filterStatus]);
 
+  const handleDownloadCSV = async () => {
+    try {
+      setIsDownloading(true);
+      const token = localStorage.getItem('samarth_token');
+      const response = await fetch('http://localhost:8000/federation/export-earnings', {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to download CSV');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'samarth_weekly_earnings_report.csv';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Download CSV error:', err);
+      alert('Error downloading CSV report. Please try again.');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <div className="federation-container animate-fade-in">
       <header className="federation-header">
@@ -88,6 +119,12 @@ export function Federation() {
       )}
 
       <section className="earnings-section">
+        <div className="earnings-section-actions">
+          <button className="btn-download-csv" onClick={handleDownloadCSV} disabled={isDownloading}>
+            <Download size={16} />
+            {isDownloading ? 'Generating CSV...' : 'Download CSV Report'}
+          </button>
+        </div>
         <EarningsChart />
       </section>
 
