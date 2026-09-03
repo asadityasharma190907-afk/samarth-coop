@@ -22,11 +22,13 @@ class FederationBookingResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+
 class EarningsBucketItem(BaseModel):
     range_label: str
     min_val: int
     max_val: int | None
     worker_count: int
+
 
 class EarningsDistributionResponse(BaseModel):
     currency: str

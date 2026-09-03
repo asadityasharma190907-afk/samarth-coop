@@ -25,13 +25,13 @@ def get_earnings_distribution(db: Session):
     earnings_query = (
         db.query(
             WorkerProfile.user_id,
-            func.coalesce(func.sum(Booking.job_price * 0.95), 0).label("earnings")
+            func.coalesce(func.sum(Booking.job_price * 0.95), 0).label("earnings"),
         )
         .outerjoin(
             Booking,
-            (Booking.worker_id == WorkerProfile.user_id) &
-            (Booking.status == "completed") &
-            (Booking.created_at >= week_start)
+            (Booking.worker_id == WorkerProfile.user_id)
+            & (Booking.status == "completed")
+            & (Booking.created_at >= week_start),
         )
         .group_by(WorkerProfile.user_id)
         .all()
@@ -39,9 +39,19 @@ def get_earnings_distribution(db: Session):
 
     buckets = [
         {"range_label": "₹0 - ₹500", "min_val": 0, "max_val": 500, "worker_count": 0},
-        {"range_label": "₹501 - ₹1500", "min_val": 501, "max_val": 1500, "worker_count": 0},
-        {"range_label": "₹1501 - ₹3000", "min_val": 1501, "max_val": 3000, "worker_count": 0},
-        {"range_label": "₹3001+", "min_val": 3001, "max_val": None, "worker_count": 0}
+        {
+            "range_label": "₹501 - ₹1500",
+            "min_val": 501,
+            "max_val": 1500,
+            "worker_count": 0,
+        },
+        {
+            "range_label": "₹1501 - ₹3000",
+            "min_val": 1501,
+            "max_val": 3000,
+            "worker_count": 0,
+        },
+        {"range_label": "₹3001+", "min_val": 3001, "max_val": None, "worker_count": 0},
     ]
 
     for row in earnings_query:
@@ -55,8 +65,4 @@ def get_earnings_distribution(db: Session):
         else:
             buckets[3]["worker_count"] += 1
 
-    return {
-        "currency": "INR",
-        "total_workers": len(earnings_query),
-        "buckets": buckets
-    }
+    return {"currency": "INR", "total_workers": len(earnings_query), "buckets": buckets}

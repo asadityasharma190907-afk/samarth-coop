@@ -43,7 +43,7 @@ export function EarningsChart() {
         <h3>Weekly Earnings Distribution</h3>
         <span className="total-workers-badge">{data.total_workers} Active Workers</span>
       </div>
-      
+
       <div className="chart-body">
         <div className="bars-container">
           {data.buckets.map((bucket, index) => {
@@ -53,9 +53,7 @@ export function EarningsChart() {
                 <div
                   className="bar"
                   style={{ height: `${heightPct}%` }}
-                  title={`${bucket.worker_count} worker${
-                    bucket.worker_count !== 1 ? 's' : ''
-                  }`}
+                  title={`${bucket.worker_count} worker${bucket.worker_count !== 1 ? 's' : ''}`}
                 >
                   <span className="bar-tooltip">{bucket.worker_count}</span>
                 </div>

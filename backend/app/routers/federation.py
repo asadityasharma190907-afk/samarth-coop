@@ -63,6 +63,7 @@ def get_federation_bookings(db: Session = Depends(get_db)):
         )
     return result
 
+
 @router.get("/earnings-distribution", response_model=EarningsDistributionResponse)
 def get_federation_earnings_distribution(db: Session = Depends(get_db)):
     return get_earnings_distribution(db=db)

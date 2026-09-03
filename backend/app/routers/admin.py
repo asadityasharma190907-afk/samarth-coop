@@ -13,6 +13,7 @@ from app.services.admin import get_workers_by_status, update_verification_status
 
 router = APIRouter()
 
+
 @router.get("/workers", response_model=list[AdminWorkerItemResponse])
 def get_pending_workers(
     status: Literal["pending", "verified", "rejected"] = "pending",
@@ -25,6 +26,7 @@ def get_pending_workers(
             detail="Only admins can view worker statuses",
         )
     return get_workers_by_status(status=status, db=db)
+
 
 @router.patch("/workers/{id}/verify")
 def verify_worker(
@@ -39,7 +41,9 @@ def verify_worker(
             detail="Only admins can verify workers",
         )
 
-    profile = update_verification_status(worker_id=id, status=payload.verification_status, db=db)
+    profile = update_verification_status(
+        worker_id=id, status=payload.verification_status, db=db
+    )
     return {
         "message": f"Worker verification status updated to {profile.verification_status}",
         "verification_status": profile.verification_status,

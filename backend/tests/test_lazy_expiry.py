@@ -33,10 +33,12 @@ def backdate_offer_expiry(booking_id: uuid.UUID, rank: int, worker_id: uuid.UUID
             .filter_by(booking_id=booking_id, worker_id=worker_id, rank_at_offer=rank)
             .first()
         )
-        assert offer is not None, f"No offer found for worker {worker_id} at rank {rank}"
-        
+        assert offer is not None, (
+            f"No offer found for worker {worker_id} at rank {rank}"
+        )
+
         # Backdate the expiration to 10 seconds ago
-        offer.expires_at = datetime.now(timezone.utc) - timedelta(seconds=10) # type: ignore
+        offer.expires_at = datetime.now(timezone.utc) - timedelta(seconds=10)  # type: ignore
         db.commit()
     finally:
         db.close()
@@ -45,6 +47,7 @@ def backdate_offer_expiry(booking_id: uuid.UUID, rank: int, worker_id: uuid.UUID
 def get_worker_id(phone: str) -> uuid.UUID:
     db = TestingSessionLocal()
     from app.models.user import User
+
     try:
         user = db.query(User).filter(User.phone == phone).first()
         assert user is not None
