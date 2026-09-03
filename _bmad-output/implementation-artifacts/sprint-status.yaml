@@ -81,33 +81,34 @@ development_status:
 # ─────────────────────────────────────────────────────────────────────────────
 # EPIC 6: Demo Hardening, Verification, & Dashboard Transparency
 # ─────────────────────────────────────────────────────────────────────────────
-  epic-6: in-progress
+  epic-6: done
   6-1-double-accept-concurrency: done
   6-2-lazy-expiry-test: done
   6-3-verification-status-migration: done
   6-4-admin-verification-api: done
   6-5-verified-badge-ui: done
   6-6-verification-queue-ui: done
-  6-7-earnings-distribution-chart: review
+  6-7-earnings-distribution-chart: done
   6-8-audit-filtering: done
   epic-6-retrospective: optional
 
 # ─────────────────────────────────────────────────────────────────────────────
 # EPIC 7: Dispute Resolution & Trust (Zero New Tables)
 # ─────────────────────────────────────────────────────────────────────────────
-  epic-7: ready-for-dev
-  7-1-dispute-migration: ready-for-dev
-  7-2-dispute-api: ready-for-dev
-  7-3-citizen-dispute-ui: ready-for-dev
-  7-4-ministry-disputes-ui: ready-for-dev
+  epic-7: done
+  7-1-dispute-migration: done
+  7-2-dispute-api: done
+  7-3-citizen-dispute-ui: done
+  7-4-ministry-disputes-ui: done
   epic-7-retrospective: optional
 
 # ─────────────────────────────────────────────────────────────────────────────
 # EPIC 8: Ministry Analytics Polish
 # ─────────────────────────────────────────────────────────────────────────────
-  epic-8: ready-for-dev
-  8-1-csv-export-api: ready-for-dev
-  8-2-csv-download-button: ready-for-dev
+  epic-8: done
+  8-1-csv-export-api: done
+  8-2-csv-download-button: done
   epic-8-retrospective: optional
 
 action_items: []
+
