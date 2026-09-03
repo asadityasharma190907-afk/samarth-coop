@@ -72,7 +72,7 @@ def test_worker():
             lat=26.9125,
             lng=75.7874,
             rating=4.5,
-            verified=True,
+            verification_status="verified",
             availability=True,
         )
         db.add(profile)
@@ -85,7 +85,7 @@ def test_worker():
 def test_verify_worker_forbidden_for_citizen(citizen_token, test_worker):
     token, _ = citizen_token
     headers = {"Authorization": f"Bearer {token}"}
-    payload = {"verified": False}
+    payload = {"verification_status": "pending"}
 
     response = client.patch(
         f"/admin/workers/{test_worker}/verify", json=payload, headers=headers
@@ -98,33 +98,33 @@ def test_verify_worker_success(admin_token, test_worker):
     headers = {"Authorization": f"Bearer {token}"}
 
     # Set to False
-    payload = {"verified": False}
+    payload = {"verification_status": "pending"}
     response = client.patch(
         f"/admin/workers/{test_worker}/verify", json=payload, headers=headers
     )
     assert response.status_code == 200
-    assert response.json()["verified"] == False
+    assert response.json()["verification_status"] == "pending"
 
     # Check DB
     db = TestingSessionLocal()
     try:
         profile = db.query(WorkerProfile).filter_by(user_id=test_worker).first()
-        assert profile.verified == False
+        assert profile.verification_status == "pending"
     finally:
         db.close()
 
     # Set back to True
-    payload = {"verified": True}
+    payload = {"verification_status": "verified"}
     response = client.patch(
         f"/admin/workers/{test_worker}/verify", json=payload, headers=headers
     )
     assert response.status_code == 200
-    assert response.json()["verified"] == True
+    assert response.json()["verification_status"] == "verified"
 
     db = TestingSessionLocal()
     try:
         profile = db.query(WorkerProfile).filter_by(user_id=test_worker).first()
-        assert profile.verified == True
+        assert profile.verification_status == "verified"
     finally:
         db.close()
 
@@ -132,7 +132,7 @@ def test_verify_worker_success(admin_token, test_worker):
 def test_verify_worker_not_found(admin_token):
     token, _ = admin_token
     headers = {"Authorization": f"Bearer {token}"}
-    payload = {"verified": False}
+    payload = {"verification_status": "pending"}
     fake_id = str(uuid.uuid4())
 
     response = client.patch(
@@ -152,7 +152,7 @@ def test_unverified_worker_excluded_from_dispatch(admin_token, test_worker):
     assert any(w["worker_id"] == str(test_worker) for w in workers)
 
     # Unverify worker
-    payload = {"verified": False}
+    payload = {"verification_status": "pending"}
     client.patch(f"/admin/workers/{test_worker}/verify", json=payload, headers=headers)
 
     # Worker should not be in pool

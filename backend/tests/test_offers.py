@@ -44,7 +44,7 @@ def worker_with_offer():
             lat=26.9125,
             lng=75.7874,
             rating=4.5,
-            verified=True,
+            verification_status="verified",
             availability=True,
         )
         db.add(profile)
@@ -188,7 +188,7 @@ def test_decline_offer_success_cascade(worker_with_offer):
             lat=26.9125,
             lng=75.7874,
             rating=4.0,
-            verified=True,
+            verification_status="verified",
             availability=True,
         )
         db.add(profile2)
@@ -274,7 +274,7 @@ def test_lazy_expiry_on_read(worker_with_offer):
             lat=26.9125,
             lng=75.7874,
             rating=4.0,
-            verified=True,
+            verification_status="verified",
             availability=True,
         )
         db.add(profile2)

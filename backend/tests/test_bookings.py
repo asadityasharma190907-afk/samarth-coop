@@ -56,7 +56,7 @@ def seeded_worker():
             lat=26.9125,
             lng=75.7874,
             rating=4.5,
-            verified=True,
+            verification_status="verified",
             availability=True,
         )
         db.add(profile)

@@ -31,7 +31,7 @@ def test_wallet_empty():
             skill="electrician",
             lat=26.0,
             lng=75.0,
-            verified=True,
+            verification_status="verified",
             availability=True,
         )
         db.add(profile)
@@ -69,7 +69,7 @@ def test_wallet_forbidden():
             skill="plumber",
             lat=26.0,
             lng=75.0,
-            verified=True,
+            verification_status="verified",
             availability=True,
         )
         db.add(profile2)
@@ -109,7 +109,7 @@ def test_wallet_with_earnings():
             skill="plumber",
             lat=26.0,
             lng=75.0,
-            verified=True,
+            verification_status="verified",
             availability=True,
         )
         db.add(profile)

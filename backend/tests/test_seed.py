@@ -42,7 +42,7 @@ def test_seed_data_success():
         assert float(suresh_prof.lat) == 26.9280  # type: ignore
         assert float(suresh_prof.lng) == 75.8100  # type: ignore
         assert float(suresh_prof.rating) == 4.2  # type: ignore
-        assert suresh_prof.verified is True
+        assert suresh_prof.verification_status == "verified"
         assert suresh_prof.availability is True
 
         # Check Priya Gupta (cold start -> rating None)
@@ -53,7 +53,7 @@ def test_seed_data_success():
         )
         assert priya_prof is not None
         assert priya_prof.rating is None
-        assert priya_prof.verified is True
+        assert priya_prof.verification_status == "verified"
 
         # Check Anil Yadav
         anil = db.query(User).filter(User.phone == "9333333333").first()

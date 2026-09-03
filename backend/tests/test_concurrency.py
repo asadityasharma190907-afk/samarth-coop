@@ -46,7 +46,7 @@ def create_worker_with_offer(idx: int = 0):
             lat=26.9125,
             lng=75.7874,
             rating=4.5,
-            verified=True,
+            verification_status="verified",
             availability=True,
         )
         db.add(profile)
@@ -170,7 +170,7 @@ def test_double_accept_concurrent_offers_same_booking(run_idx: int = 100):
             skill="plumber",
             lat=26.91,
             lng=75.78,
-            verified=True,
+            verification_status="verified",
             availability=True,
         )
         p2 = WorkerProfile(
@@ -178,7 +178,7 @@ def test_double_accept_concurrent_offers_same_booking(run_idx: int = 100):
             skill="plumber",
             lat=26.91,
             lng=75.78,
-            verified=True,
+            verification_status="verified",
             availability=True,
         )
         db.add_all([p1, p2])

@@ -41,7 +41,7 @@ def test_get_workers_api_success():
             lng=Decimal("75.8100"),
             rating=Decimal("4.2"),
             availability=True,
-            verified=True,
+            verification_status="verified",
         )
         db.add(suresh_p)
 
@@ -58,7 +58,7 @@ def test_get_workers_api_success():
             lng=Decimal("75.7600"),
             rating=None,
             availability=True,
-            verified=True,
+            verification_status="verified",
         )
         db.add(priya_p)
 
@@ -75,7 +75,7 @@ def test_get_workers_api_success():
             lng=Decimal("75.8000"),
             rating=Decimal("4.5"),
             availability=True,
-            verified=True,
+            verification_status="verified",
         )
         db.add(anil_p)
 
@@ -92,7 +92,7 @@ def test_get_workers_api_success():
             lng=Decimal("75.7880"),
             rating=Decimal("4.9"),
             availability=True,
-            verified=True,
+            verification_status="verified",
         )
         db.add(meena_p)
         db.flush()
