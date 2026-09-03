@@ -17,8 +17,8 @@ export function useProfile() {
   return useQuery({
     queryKey: ['workerProfile'],
     queryFn: async () => {
-      const { data } = await api.get<WorkerProfile>('/workers/me');
-      return data;
+      const response = await api.get('/workers/me');
+      return response as WorkerProfile;
     },
   });
 }
