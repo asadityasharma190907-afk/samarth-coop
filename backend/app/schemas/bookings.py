@@ -10,7 +10,7 @@ class AssignedWorkerDetail(BaseModel):
     name: str
     skill: str
     rating: float | None = None
-    verified: bool
+    verification_status: str
     distance_km: float
 
 

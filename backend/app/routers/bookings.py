@@ -72,7 +72,7 @@ def get_booking(booking_id: UUID, db: Session = Depends(get_db)):
                     name=worker.name,  # type: ignore
                     skill=str(profile.skill),
                     rating=profile.rating,  # type: ignore
-                    verified=bool(profile.verified),
+                    verification_status=profile.verification_status,  # type: ignore
                     distance_km=round(distance, 1),
                 )
 
