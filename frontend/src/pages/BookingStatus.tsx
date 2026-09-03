@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MapPin, Search, Star } from 'lucide-react';
-import { useBooking } from '../hooks/useBooking';
+import { MapPin, Search, Star, AlertTriangle } from 'lucide-react';
+import { useBooking, useDisputeBooking } from '../hooks/useBooking';
+import { DisputeModal } from '../components/DisputeModal';
 import { WelfareFundChip } from '../components/WelfareFundChip';
 import { VerifiedBadge } from '../components/VerifiedBadge';
 import { StarRating } from '../components/StarRating';
@@ -14,6 +15,16 @@ export function BookingStatus() {
   const navigate = useNavigate();
   const [ratingSubmitted, setRatingSubmitted] = useState(false);
   const [isSubmittingRating, setIsSubmittingRating] = useState(false);
+  const [isDisputeModalOpen, setIsDisputeModalOpen] = useState(false);
+
+  const disputeMutation = useDisputeBooking(id || '');
+
+  const handleDispute = (reason: string) => {
+    disputeMutation.mutate(reason, {
+      onSuccess: () => setIsDisputeModalOpen(false),
+      onError: (err: any) => alert(err.message || 'Failed to submit dispute'),
+    });
+  };
 
   const handleRate = async (rating: number) => {
     if (!id || isSubmittingRating) return;
@@ -55,6 +66,7 @@ export function BookingStatus() {
   const isAssigned = booking.status === 'assigned';
   const isCancelled = booking.status === 'cancelled';
   const isCompleted = booking.status === 'completed';
+  const isDisputed = booking.status === 'disputed';
 
   return (
     <div className="status-container">
@@ -99,6 +111,13 @@ export function BookingStatus() {
             >
               Call Worker
             </button>
+            <button
+              className="btn-secondary"
+              style={{ color: 'var(--color-status-error)', fontWeight: 500 }}
+              onClick={() => setIsDisputeModalOpen(true)}
+            >
+              Report Issue
+            </button>
           </div>
         </div>
       )}
@@ -131,13 +150,44 @@ export function BookingStatus() {
               <div className="text-status-success font-medium">Rating submitted. Thank you.</div>
             )}
           </div>
-          <div className="mt-8">
-            <button className="btn-primary" onClick={() => navigate('/book')}>
+          <div className="mt-8 flex" style={{ gap: 'var(--spacing-3)' }}>
+            <button className="btn-primary flex-1" onClick={() => navigate('/book')}>
               Book Another Service
+            </button>
+            <button
+              className="btn-secondary flex-1"
+              style={{ color: 'var(--color-status-error)', fontWeight: 500 }}
+              onClick={() => setIsDisputeModalOpen(true)}
+            >
+              Report Issue
             </button>
           </div>
         </div>
       )}
+      {isDisputed && (
+        <div className="status-card" style={{ borderColor: 'var(--color-status-error)' }}>
+          <div className="pulse-ring" style={{ background: 'rgba(239, 68, 68, 0.1)' }}>
+            <AlertTriangle className="w-8 h-8 text-status-error" />
+          </div>
+          <h2
+            className="status-title text-status-error"
+            style={{ color: 'var(--color-status-error)' }}
+          >
+            Under Cooperative Review — Dispute Registered
+          </h2>
+          <p className="status-subtitle mb-6">{booking.dispute_reason}</p>
+          <button className="btn-primary" onClick={() => navigate('/book')}>
+            Book Another Service
+          </button>
+        </div>
+      )}
+
+      <DisputeModal
+        isOpen={isDisputeModalOpen}
+        onClose={() => setIsDisputeModalOpen(false)}
+        onSubmit={handleDispute}
+        isSubmitting={disputeMutation.isPending}
+      />
     </div>
   );
 }
