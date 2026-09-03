@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
 
 export interface AssignedWorkerDetail {
@@ -23,6 +23,7 @@ export interface Booking {
   created_at: string;
   assigned_worker?: AssignedWorkerDetail;
   rating?: number | null;
+  dispute_reason?: string | null;
 }
 
 export interface CreateBookingPayload {
@@ -52,6 +53,19 @@ export const useBooking = (bookingId: string | undefined) => {
     refetchInterval: (query) => {
       const status = query.state.data?.status;
       return status === 'pending' || status === 'assigned' ? 3000 : false;
+    },
+  });
+};
+
+export const useDisputeBooking = (bookingId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (reason: string) => {
+      const response = await api.post(`/bookings/${bookingId}/dispute`, { reason });
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['booking', bookingId] });
     },
   });
 };
