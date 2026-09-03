@@ -174,3 +174,34 @@ def submit_rating(
     db.refresh(booking)
 
     return booking
+
+
+def flag_booking_dispute(
+    booking_id: UUID, reason: str, user_id: UUID, db: Session
+) -> Booking:
+    booking = db.query(Booking).filter_by(id=booking_id).first()
+
+    if not booking:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Booking not found"
+        )
+
+    if user_id != booking.citizen_id and user_id != booking.worker_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to dispute this booking",
+        )
+
+    if booking.status not in ["assigned", "completed"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Only assigned or completed bookings can be disputed",
+        )
+
+    booking.status = "disputed"  # type: ignore
+    booking.dispute_reason = reason.strip()  # type: ignore
+
+    db.commit()
+    db.refresh(booking)
+
+    return booking
