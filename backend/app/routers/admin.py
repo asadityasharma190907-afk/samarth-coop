@@ -25,8 +25,8 @@ def verify_worker(
             detail="Only admins can verify workers",
         )
 
-    profile = toggle_verification(worker_id=id, verified=payload.verified, db=db)
+    profile = toggle_verification(worker_id=id, status=payload.verification_status, db=db)
     return {
         "message": "Worker verification updated successfully",
-        "verified": profile.verified,
+        "verification_status": profile.verification_status,
     }

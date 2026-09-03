@@ -368,7 +368,7 @@ def test_get_ranked_workers_milestone_gate_success():
             lng=Decimal("75.8100"),
             rating=Decimal("4.2"),
             availability=True,
-            verified=True,
+            verification_status="verified",
         )
         db.add(suresh_p)
 
@@ -385,7 +385,7 @@ def test_get_ranked_workers_milestone_gate_success():
             lng=Decimal("75.7600"),
             rating=None,
             availability=True,
-            verified=True,
+            verification_status="verified",
         )
         db.add(priya_p)
 
@@ -402,7 +402,7 @@ def test_get_ranked_workers_milestone_gate_success():
             lng=Decimal("75.8000"),
             rating=Decimal("4.5"),
             availability=True,
-            verified=True,
+            verification_status="verified",
         )
         db.add(anil_p)
 
@@ -419,7 +419,7 @@ def test_get_ranked_workers_milestone_gate_success():
             lng=Decimal("75.7880"),
             rating=Decimal("4.9"),
             availability=True,
-            verified=True,
+            verification_status="verified",
         )
         db.add(meena_p)
         db.flush()
@@ -512,7 +512,7 @@ def test_get_ranked_workers_excludes_unverified_and_unavailable():
             lng=Decimal("75.8100"),
             rating=Decimal("4.2"),
             availability=True,
-            verified=False,
+            verification_status="pending",
         )
         db.add(w1_p)
 
@@ -532,7 +532,7 @@ def test_get_ranked_workers_excludes_unverified_and_unavailable():
             lng=Decimal("75.8100"),
             rating=Decimal("4.2"),
             availability=False,
-            verified=True,
+            verification_status="verified",
         )
         db.add(w2_p)
 
@@ -549,7 +549,7 @@ def test_get_ranked_workers_excludes_unverified_and_unavailable():
             lng=Decimal("75.8100"),
             rating=Decimal("4.2"),
             availability=True,
-            verified=True,
+            verification_status="verified",
         )
         db.add(w3_p)
         db.commit()
@@ -586,7 +586,7 @@ def test_get_ranked_workers_excludes_out_of_radius():
             lng=Decimal("75.8500"),
             rating=Decimal("4.2"),
             availability=True,
-            verified=True,
+            verification_status="verified",
         )
         db.add(w1_p)
         db.commit()
@@ -622,7 +622,7 @@ def test_get_ranked_workers_reliability_penalty_applied():
             lng=Decimal("75.8100"),
             rating=Decimal("4.0"),
             availability=True,
-            verified=True,
+            verification_status="verified",
         )
         db.add(wA_p)
 
@@ -642,7 +642,7 @@ def test_get_ranked_workers_reliability_penalty_applied():
             lng=Decimal("75.8100"),
             rating=Decimal("4.0"),
             availability=True,
-            verified=True,
+            verification_status="verified",
         )
         db.add(wB_p)
         db.flush()

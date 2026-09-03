@@ -82,7 +82,7 @@ def test_register_worker_success():
     profile = db.query(WorkerProfile).filter(WorkerProfile.user_id == user.id).first()
     assert profile is not None
     assert profile.skill == "electrician"
-    assert profile.verified is False
+    assert profile.verification_status == "pending"
     assert profile.availability is True
     assert profile.rating is None
     db.close()

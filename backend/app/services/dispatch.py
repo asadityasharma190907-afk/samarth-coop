@@ -109,7 +109,7 @@ def get_ranked_workers(skill: str, lat: float, lng: float, db: Session) -> list[
         .join(User, WorkerProfile.user_id == User.id)
         .filter(
             WorkerProfile.skill == skill,
-            WorkerProfile.verified == True,
+            WorkerProfile.verification_status == "verified",
             WorkerProfile.availability == True,
         )
         .all()
