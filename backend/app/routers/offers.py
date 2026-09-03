@@ -73,7 +73,9 @@ def get_worker_offers(
 ):
     # Lazily expire ANY globally active offers first
     # This ensures that an expired offer from another worker cascades to this worker
-    all_active_offers = db.query(BookingOffer).filter(BookingOffer.status == "offered").all()
+    all_active_offers = (
+        db.query(BookingOffer).filter(BookingOffer.status == "offered").all()
+    )
     for active_offer in all_active_offers:
         check_and_expire_offer(active_offer, db)
 

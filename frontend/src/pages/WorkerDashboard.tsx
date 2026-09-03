@@ -111,8 +111,11 @@ export function WorkerDashboard() {
             }}
           >
             <Clock size={20} style={{ flexShrink: 0, marginTop: '2px' }} />
-            <div style={{ fontSize: 'var(--font-size-body)', lineHeight: 'var(--line-height-body)' }}>
-              Your profile is currently under cooperative review. You will start receiving job offers once verified by the society administrator.
+            <div
+              style={{ fontSize: 'var(--font-size-body)', lineHeight: 'var(--line-height-body)' }}
+            >
+              Your profile is currently under cooperative review. You will start receiving job
+              offers once verified by the society administrator.
             </div>
           </div>
         )}
