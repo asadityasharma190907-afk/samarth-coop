@@ -13,9 +13,16 @@ from app.schemas.bookings import (
     AssignedWorkerDetail,
     BookingResponse,
     CreateBookingRequest,
+    DisputeBookingRequest,
+    DisputeBookingResponse,
     RatingRequest,
 )
-from app.services.booking import complete_booking, create_booking, submit_rating
+from app.services.booking import (
+    complete_booking,
+    create_booking,
+    flag_booking_dispute,
+    submit_rating,
+)
 from app.services.dispatch import haversine_km
 
 router = APIRouter()
@@ -98,3 +105,19 @@ def rate_booking(
 ):
     booking = submit_rating(booking_id, payload.rating, current_user.id, db)  # type: ignore
     return BookingResponse.model_validate(booking)
+
+
+@router.post("/{booking_id}/dispute", response_model=DisputeBookingResponse)
+def dispute_booking(
+    booking_id: UUID,
+    payload: DisputeBookingRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    booking = flag_booking_dispute(booking_id, payload.reason, current_user.id, db)  # type: ignore
+    return DisputeBookingResponse(
+        booking_id=booking.id,  # type: ignore
+        status=booking.status,  # type: ignore
+        dispute_reason=booking.dispute_reason,  # type: ignore
+        message="Dispute registered. Cooperative mediation initiated.",
+    )
