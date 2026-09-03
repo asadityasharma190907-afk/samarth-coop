@@ -53,7 +53,7 @@ export function VerificationQueue() {
   return (
     <div className="verification-queue">
       <h3>Pending Verifications</h3>
-      
+
       {toast && (
         <div
           className={`toast toast-${toast.type}`}
@@ -62,17 +62,11 @@ export function VerificationQueue() {
             margin: '16px',
             borderRadius: '4px',
             backgroundColor:
-              toast.type === 'success'
-                ? 'var(--color-success-light)'
-                : 'var(--color-danger-light)',
+              toast.type === 'success' ? 'var(--color-success-light)' : 'var(--color-danger-light)',
             color:
-              toast.type === 'success'
-                ? 'var(--color-success-dark)'
-                : 'var(--color-danger-dark)',
+              toast.type === 'success' ? 'var(--color-success-dark)' : 'var(--color-danger-dark)',
             border: `1px solid ${
-              toast.type === 'success'
-                ? 'var(--color-success-main)'
-                : 'var(--color-danger-main)'
+              toast.type === 'success' ? 'var(--color-success-main)' : 'var(--color-danger-main)'
             }`,
           }}
         >
@@ -95,14 +89,20 @@ export function VerificationQueue() {
             <tbody>
               {workers.map((worker) => (
                 <tr key={worker.worker_id}>
-                  <td><strong>{worker.name}</strong></td>
-                  <td><span className="skill-chip">{worker.skill}</span></td>
+                  <td>
+                    <strong>{worker.name}</strong>
+                  </td>
+                  <td>
+                    <span className="skill-chip">{worker.skill}</span>
+                  </td>
                   <td>{worker.phone}</td>
                   <td>{new Date(worker.created_at).toLocaleDateString()}</td>
                   <td className="actions">
                     <button
                       className="btn-reject"
-                      onClick={() => verifyMutation.mutate({ id: worker.worker_id, status: 'rejected' })}
+                      onClick={() =>
+                        verifyMutation.mutate({ id: worker.worker_id, status: 'rejected' })
+                      }
                       disabled={verifyMutation.isPending}
                     >
                       Reject

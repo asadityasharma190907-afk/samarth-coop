@@ -38,7 +38,9 @@ class WorkerProfile(Base):
     rating = Column(Numeric(2, 1), nullable=True)
     rating_count = Column(Integer, default=0, server_default=text("0"))
     availability = Column(Boolean, default=True, server_default=text("TRUE"))
-    verification_status = Column(String(20), default="pending", server_default=text("'pending'"))
+    verification_status = Column(
+        String(20), default="pending", server_default=text("'pending'")
+    )
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     user = relationship("User", back_populates="worker_profile")

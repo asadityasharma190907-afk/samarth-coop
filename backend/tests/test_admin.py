@@ -174,11 +174,12 @@ def test_get_admin_workers_pending(admin_token, test_worker):
     assert response.status_code == 200
     workers = response.json()
     assert isinstance(workers, list)
-    
+
     # test_worker should be in the pending list
     assert any(w["user_id"] == str(test_worker) for w in workers)
     for w in workers:
         assert w["verification_status"] == "pending"
+
 
 def test_get_admin_workers_verified(admin_token, test_worker):
     token, _ = admin_token
@@ -191,11 +192,12 @@ def test_get_admin_workers_verified(admin_token, test_worker):
     response = client.get("/admin/workers?status=verified", headers=headers)
     assert response.status_code == 200
     workers = response.json()
-    
+
     # test_worker should be in the verified list
     assert any(w["user_id"] == str(test_worker) for w in workers)
     for w in workers:
         assert w["verification_status"] == "verified"
+
 
 def test_get_admin_workers_forbidden(citizen_token):
     token, _ = citizen_token
