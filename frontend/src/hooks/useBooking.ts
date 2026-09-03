@@ -6,7 +6,8 @@ export interface AssignedWorkerDetail {
   name: string;
   skill: string;
   rating: number | null;
-  verified: boolean;
+  verified?: boolean;
+  verification_status?: 'pending' | 'verified' | 'rejected';
   distance_km: number;
 }
 
