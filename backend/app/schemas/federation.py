@@ -19,6 +19,8 @@ class FederationBookingResponse(BaseModel):
     job_price: Decimal
     platform_fee: Decimal
     created_at: datetime
+    worker_name: str | None = None
+    dispute_reason: str | None = None
 
     model_config = ConfigDict(from_attributes=True)
 

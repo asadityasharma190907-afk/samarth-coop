@@ -5,6 +5,7 @@ import { StatCounter } from '../components/StatCounter';
 import { AuditTable } from '../components/AuditTable';
 import { EarningsChart } from '../components/EarningsChart';
 import { VerificationQueue } from '../components/VerificationQueue';
+import { DisputesQueue } from '../components/DisputesQueue';
 import './Federation.css';
 
 interface FederationStats {
@@ -21,6 +22,8 @@ interface FederationBooking {
   job_price: number;
   platform_fee: number;
   created_at: string;
+  worker_name?: string | null;
+  dispute_reason?: string | null;
 }
 
 export function Federation() {
@@ -90,6 +93,14 @@ export function Federation() {
 
       <section className="verification-section">
         <VerificationQueue />
+      </section>
+
+      <section className="disputes-section" style={{ marginTop: 'var(--spacing-6)' }}>
+        {bookingsLoading ? (
+          <div className="loading-state">Loading active disputes...</div>
+        ) : (
+          <DisputesQueue bookings={bookings || []} />
+        )}
       </section>
 
       <div className="dashboard-content">
