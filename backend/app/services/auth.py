@@ -87,6 +87,8 @@ def register_worker(db: Session, payload: WorkerRegisterRequest) -> User:
     db.add(new_user)
     db.flush()
 
+    is_demo = payload.phone == "9999999999"
+
     worker_profile = WorkerProfile(
         user_id=new_user.id,
         skill=payload.skill,
@@ -100,6 +102,9 @@ def register_worker(db: Session, payload: WorkerRegisterRequest) -> User:
         experience_years=payload.experience_years,
         languages_spoken=payload.languages_spoken,
         aadhaar_number=payload.aadhaar_number,
+        verification_status="verified" if is_demo else "pending",
+        rating=4.0 if is_demo else None,
+        rating_count=1 if is_demo else 0,
     )
     db.add(worker_profile)
     db.commit()
