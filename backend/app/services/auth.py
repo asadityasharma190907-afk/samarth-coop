@@ -88,7 +88,18 @@ def register_worker(db: Session, payload: WorkerRegisterRequest) -> User:
     db.flush()
 
     worker_profile = WorkerProfile(
-        user_id=new_user.id, skill=payload.skill, lat=payload.lat, lng=payload.lng
+        user_id=new_user.id,
+        skill=payload.skill,
+        lat=payload.lat,
+        lng=payload.lng,
+        father_name=payload.father_name,
+        date_of_birth=payload.date_of_birth,
+        domicile=payload.domicile,
+        local_address=payload.local_address,
+        marital_status=payload.marital_status,
+        experience_years=payload.experience_years,
+        languages_spoken=payload.languages_spoken,
+        aadhaar_number=payload.aadhaar_number,
     )
     db.add(worker_profile)
     db.commit()
