@@ -52,9 +52,7 @@ def verify_aadhaar_otp(
     )
     if not profile:
         raise HTTPException(
-            status_code=status.HTTP_44_NOT_FOUND
-            if hasattr(status, "HTTP_404_NOT_FOUND")
-            else 404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Worker profile not found",
         )
 
@@ -71,9 +69,9 @@ def verify_aadhaar_otp(
             detail="Invalid OTP format. OTP must be a 6-digit number",
         )
 
-    profile.aadhaar_number = payload.aadhaar_number
-    profile.verification_status = "verified"
-    profile.police_verification_status = "verified"
+    profile.aadhaar_number = payload.aadhaar_number  # type: ignore
+    profile.verification_status = "verified"  # type: ignore
+    profile.police_verification_status = "verified"  # type: ignore
     db.commit()
     db.refresh(profile)
 
@@ -100,7 +98,7 @@ def create_kyc_payment_order(
     )
     if not profile:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Worker profile not found",
         )
 
@@ -130,11 +128,11 @@ def verify_kyc_payment(
     )
     if not profile:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Worker profile not found",
         )
 
-    profile.kyc_payment_status = "completed"
+    profile.kyc_payment_status = "completed"  # type: ignore
     db.commit()
     db.refresh(profile)
 

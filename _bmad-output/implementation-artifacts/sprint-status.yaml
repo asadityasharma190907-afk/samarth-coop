@@ -110,5 +110,14 @@ development_status:
   8-2-csv-download-button: done
   epic-8-retrospective: optional
 
+# ─────────────────────────────────────────────────────────────────────────────
+# EPIC 9: Worker KYC & Verification Infrastructure
+# ─────────────────────────────────────────────────────────────────────────────
+  epic-9: done
+  9-1-db-schema-expansion-worker-kyc: done
+  9-2-auth-api-kyc-registration: done
+  9-3-kyc-router-aadhaar-razorpay: done
+  epic-9-retrospective: optional
+
 action_items: []
 

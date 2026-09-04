@@ -28,7 +28,7 @@ def authenticate_user(db: Session, phone: str, password: str) -> User | None:
     user = db.query(User).filter(User.phone == phone).first()
     if not user:
         return None
-    if not verify_password(password, user.password_hash):
+    if not verify_password(password, str(user.password_hash)):
         return None
     return user
 

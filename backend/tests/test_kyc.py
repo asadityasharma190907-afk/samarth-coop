@@ -51,7 +51,9 @@ def test_verify_aadhaar_otp_success():
     # Verify DB state
     db = TestingSessionLocal()
     user = db.query(User).filter(User.phone == "9777766665").first()
+    assert user is not None
     profile = db.query(WorkerProfile).filter(WorkerProfile.user_id == user.id).first()
+    assert profile is not None
     assert profile.aadhaar_number == "123456789012"
     assert profile.verification_status == "verified"
     assert profile.police_verification_status == "verified"
@@ -115,6 +117,8 @@ def test_verify_kyc_payment_success():
     # Verify DB state
     db = TestingSessionLocal()
     user = db.query(User).filter(User.phone == "9777766663").first()
+    assert user is not None
     profile = db.query(WorkerProfile).filter(WorkerProfile.user_id == user.id).first()
+    assert profile is not None
     assert profile.kyc_payment_status == "completed"
     db.close()
