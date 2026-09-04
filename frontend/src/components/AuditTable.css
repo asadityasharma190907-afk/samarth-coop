@@ -44,21 +44,21 @@
 }
 
 .status-offered {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: var(--color-status-info-bg);
+  color: var(--color-status-info-text);
 }
 
 .status-accepted {
-  background-color: #d1fae5;
-  color: #065f46;
+  background-color: var(--color-status-success-bg);
+  color: var(--color-status-success-text);
 }
 
 .status-declined {
-  background-color: #fee2e2;
-  color: #991b1b;
+  background-color: var(--color-status-error-bg);
+  color: var(--color-status-error-text);
 }
 
 .status-expired {
-  background-color: #f3f4f6;
-  color: #374151;
+  background-color: var(--color-status-neutral-bg);
+  color: var(--color-status-neutral-text);
 }
