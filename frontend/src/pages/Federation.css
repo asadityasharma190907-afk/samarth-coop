@@ -187,7 +187,7 @@
 
 .status-chip.active {
   background-color: var(--color-brand-primary);
-  color: #fff;
+  color: var(--color-text-on-brand);
   border-color: var(--color-brand-primary);
 }
 

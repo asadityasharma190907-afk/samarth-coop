@@ -450,7 +450,7 @@ export function Register() {
                   marginTop: 'var(--spacing-sm)',
                   padding: '12px',
                   backgroundColor: 'var(--button-primary-bg)',
-                  color: '#fff',
+                  color: 'var(--color-text-on-brand)',
                   border: 'none',
                   borderRadius: 'var(--button-primary-radius)',
                   fontWeight: 600,
@@ -665,7 +665,7 @@ export function Register() {
                     flex: 2,
                     padding: '12px',
                     backgroundColor: 'var(--button-primary-bg)',
-                    color: '#fff',
+                    color: 'var(--color-text-on-brand)',
                     border: 'none',
                     borderRadius: 'var(--rounded-md)',
                     fontWeight: 600,
@@ -723,7 +723,7 @@ export function Register() {
                       style={{
                         padding: '12px',
                         backgroundColor: 'var(--color-brand-primary)',
-                        color: '#fff',
+                        color: 'var(--color-text-on-brand)',
                         border: 'none',
                         borderRadius: 'var(--rounded-md)',
                         fontWeight: 600,
@@ -763,7 +763,7 @@ export function Register() {
                         style={{
                           padding: '12px',
                           backgroundColor: 'var(--color-brand-primary)',
-                          color: '#fff',
+                          color: 'var(--color-text-on-brand)',
                           border: 'none',
                           borderRadius: 'var(--rounded-md)',
                           fontWeight: 600,
@@ -835,7 +835,7 @@ export function Register() {
                     backgroundColor: aadhaarVerified
                       ? 'var(--button-primary-bg)'
                       : 'var(--color-border-default)',
-                    color: '#fff',
+                    color: 'var(--color-text-on-brand)',
                     border: 'none',
                     borderRadius: 'var(--rounded-md)',
                     fontWeight: 600,
@@ -917,7 +917,7 @@ export function Register() {
                       style={{
                         padding: '12px',
                         backgroundColor: 'var(--color-brand-primary)',
-                        color: '#fff',
+                        color: 'var(--color-text-on-brand)',
                         border: 'none',
                         borderRadius: 'var(--rounded-md)',
                         fontWeight: 600,
@@ -945,7 +945,7 @@ export function Register() {
                         style={{
                           padding: '12px',
                           backgroundColor: 'var(--color-status-success)',
-                          color: '#fff',
+                          color: 'var(--color-text-on-brand)',
                           border: 'none',
                           borderRadius: 'var(--rounded-md)',
                           fontWeight: 600,
@@ -1016,7 +1016,7 @@ export function Register() {
                     backgroundColor: paymentCompleted
                       ? 'var(--button-primary-bg)'
                       : 'var(--color-border-default)',
-                    color: '#fff',
+                    color: 'var(--color-text-on-brand)',
                     border: 'none',
                     borderRadius: 'var(--rounded-md)',
                     fontWeight: 600,

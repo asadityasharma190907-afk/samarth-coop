@@ -13,7 +13,11 @@
 }
 
 .stat-counter-card.violet-gradient {
-  background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-welfare-fund) 0%,
+    var(--color-welfare-fund-dark) 100%
+  );
   color: white;
   border: none;
 }
