@@ -16,7 +16,19 @@ async function fetchWithAuth(url: string, options: RequestInit = {}) {
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
-    throw new Error(errorData?.detail || 'An unexpected error occurred');
+    let message = 'An unexpected error occurred';
+    if (errorData) {
+      if (typeof errorData.detail === 'string') {
+        message = errorData.detail;
+      } else if (Array.isArray(errorData.detail)) {
+        message = errorData.detail
+          .map((item: { msg?: string }) => item.msg || JSON.stringify(item))
+          .join('; ');
+      } else if (typeof errorData.message === 'string') {
+        message = errorData.message;
+      }
+    }
+    throw new Error(message);
   }
 
   return response.json();
