@@ -24,8 +24,21 @@ def upgrade() -> None:
         batch_op.add_column(
             sa.Column("dispute_reason", sa.String(length=500), nullable=True)
         )
+    bind = op.get_bind()
+    if bind.dialect.name == "postgresql":
+        op.execute("ALTER TABLE bookings DROP CONSTRAINT IF EXISTS ck_bookings_status;")
+        op.execute(
+            "ALTER TABLE bookings ADD CONSTRAINT ck_bookings_status CHECK (status IN ('pending', 'assigned', 'completed', 'cancelled', 'disputed'));"
+        )
 
 
 def downgrade() -> None:
+    bind = op.get_bind()
+    if bind.dialect.name == "postgresql":
+        op.execute("ALTER TABLE bookings DROP CONSTRAINT IF EXISTS ck_bookings_status;")
+        op.execute(
+            "ALTER TABLE bookings ADD CONSTRAINT ck_bookings_status CHECK (status IN ('pending', 'assigned', 'completed', 'cancelled'));"
+        )
     with op.batch_alter_table("bookings") as batch_op:
         batch_op.drop_column("dispute_reason")
+
