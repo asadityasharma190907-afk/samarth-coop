@@ -289,4 +289,3 @@ def test_worker_onboarding_kyc_and_dispatch_e2e():
     wallet_res = client.get(f"/wallet/{user_id}", headers=headers)
     assert wallet_res.status_code == 200, wallet_res.text
     assert float(wallet_res.json()["weekly_earnings"]) == 427.5
-
