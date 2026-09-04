@@ -22,19 +22,35 @@ export function Dashboard() {
         }}
       >
         <h1 style={{ fontSize: 'var(--font-size-h2)', margin: 0 }}>My Bookings</h1>
-        <button
-          onClick={handleLogout}
-          style={{
-            padding: '8px 16px',
-            backgroundColor: 'var(--button-secondary-bg)',
-            color: 'var(--button-secondary-text)',
-            border: 'var(--button-secondary-border)',
-            borderRadius: 'var(--button-secondary-radius)',
-            cursor: 'pointer',
-          }}
-        >
-          Log out
-        </button>
+        <div style={{ display: 'flex', gap: 'var(--spacing-md)' }}>
+          <button
+            onClick={() => navigate('/book')}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: 'var(--button-primary-bg)',
+              color: 'var(--button-primary-text)',
+              border: 'none',
+              borderRadius: 'var(--button-primary-radius)',
+              cursor: 'pointer',
+              fontWeight: 'var(--font-weight-medium)',
+            }}
+          >
+            Book New Service
+          </button>
+          <button
+            onClick={handleLogout}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: 'var(--button-secondary-bg)',
+              color: 'var(--button-secondary-text)',
+              border: 'var(--button-secondary-border)',
+              borderRadius: 'var(--button-secondary-radius)',
+              cursor: 'pointer',
+            }}
+          >
+            Log out
+          </button>
+        </div>
       </div>
 
       {isLoading ? (

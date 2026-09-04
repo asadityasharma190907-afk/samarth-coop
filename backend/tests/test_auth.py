@@ -127,6 +127,30 @@ def test_register_worker_with_kyc_fields_success():
     db.close()
 
 
+def test_register_demo_worker_success():
+    payload = {
+        "name": "Demo Worker",
+        "phone": "9999999999",
+        "password": "worker123",
+        "role": "worker",
+        "skill": "electrician",
+        "lat": 26.9280,
+        "lng": 75.8100,
+    }
+    response = client.post("/auth/register", json=payload)
+    assert response.status_code == 201
+
+    db = TestingSessionLocal()
+    user = db.query(User).filter(User.phone == "9999999999").first()
+    assert user is not None
+    profile = db.query(WorkerProfile).filter(WorkerProfile.user_id == user.id).first()
+    assert profile is not None
+    assert profile.verification_status == "verified"
+    assert profile.rating == 4.0
+    assert profile.rating_count == 1
+    db.close()
+
+
 def test_register_worker_invalid_skill():
     payload = {
         "name": "Suresh Kumar",
