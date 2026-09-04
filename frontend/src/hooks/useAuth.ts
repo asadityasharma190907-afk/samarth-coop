@@ -8,7 +8,7 @@ export function useAuth() {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       user = {
-        id: payload.sub,
+        id: payload.user_id || payload.sub,
         role: payload.role,
       };
     } catch {
