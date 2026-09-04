@@ -44,6 +44,10 @@ def test_seed_data_success():
         assert float(suresh_prof.rating) == 4.2  # type: ignore
         assert suresh_prof.verification_status == "verified"
         assert suresh_prof.availability is True
+        assert suresh_prof.father_name == "Ramesh Kumar"
+        assert suresh_prof.aadhaar_number == "123456789012"
+        assert suresh_prof.police_verification_status == "verified"
+        assert suresh_prof.kyc_payment_status == "completed"
 
         # Check Priya Gupta (cold start -> rating None)
         priya = db.query(User).filter(User.phone == "9222222222").first()
