@@ -2,11 +2,11 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '../lib/api';
 
 export interface EarningsEntry {
-  id: string;
-  created_at: string;
+  date: string;
   skill: string;
   job_price: string | number;
   platform_fee: string | number;
+  worker_payout: string | number;
 }
 
 export interface WalletData {
@@ -20,7 +20,7 @@ export function useWallet(workerId: string | undefined) {
     queryKey: ['wallet', workerId],
     queryFn: async () => {
       if (!workerId) throw new Error('Worker ID is required');
-      const { data } = await api.get(`/wallet/${workerId}`);
+      const data = await api.get(`/wallet/${workerId}`);
       return data;
     },
     enabled: !!workerId,
