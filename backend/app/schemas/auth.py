@@ -37,6 +37,14 @@ class WorkerRegisterRequest(BaseRegisterRequest):
     skill: AllowedSkills
     lat: float = Field(..., ge=-90.0, le=90.0, json_schema_extra={"example": 26.9280})
     lng: float = Field(..., ge=-180.0, le=180.0, json_schema_extra={"example": 75.8100})
+    father_name: str | None = Field(None, max_length=100)
+    date_of_birth: str | None = Field(None, max_length=20)
+    domicile: str | None = Field(None, max_length=100)
+    local_address: str | None = Field(None, max_length=255)
+    marital_status: str | None = Field(None, max_length=20)
+    experience_years: int | None = Field(None, ge=0, le=70)
+    languages_spoken: str | None = Field(None, max_length=100)
+    aadhaar_number: str | None = Field(None, min_length=12, max_length=12)
 
 
 RegisterRequest = Annotated[
