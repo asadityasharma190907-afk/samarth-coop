@@ -12,6 +12,8 @@ import { WorkerOffers } from './pages/WorkerOffers';
 import { WorkerWallet } from './pages/WorkerWallet';
 import { Federation } from './pages/Federation';
 
+import { WorkerProfile } from './pages/WorkerProfile';
+
 const queryClient = new QueryClient();
 
 export default function App() {
@@ -30,7 +32,7 @@ export default function App() {
             <Route path="dashboard" element={<WorkerHome />} />
             <Route path="offers" element={<WorkerOffers />} />
             <Route path="wallet" element={<WorkerWallet />} />
-            <Route path="profile" element={<WorkerHome />} />
+            <Route path="profile" element={<WorkerProfile />} />
           </Route>
           <Route path="/federation" element={<Federation />} />
         </Routes>

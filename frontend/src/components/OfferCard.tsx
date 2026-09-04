@@ -112,13 +112,13 @@ export function OfferCard({ offer }: OfferCardProps) {
 
       <div className="offer-header">
         <h3 className="offer-skill">{offer.skill}</h3>
-        <div className="offer-price">₹{offer.job_price.toFixed(2)}</div>
+        <div className="offer-price">₹{Number(offer.job_price).toFixed(2)}</div>
       </div>
 
       <div className="offer-meta">
         <div className="offer-meta-item">
           <MapPin size={16} />
-          <span>{offer.distance_km} km away</span>
+          <span>{Number(offer.distance_km).toFixed(1)} km away</span>
         </div>
         <div className="offer-meta-item">
           <Clock size={16} />
@@ -145,20 +145,18 @@ export function OfferCard({ offer }: OfferCardProps) {
       )}
 
       {showConfirm ? (
-        <div className="confirm-modal p-4 bg-gray-50 border rounded-lg mt-2 text-center">
-          <p className="font-medium mb-4">
-            You're taking this job. Your availability will be set to busy.
-          </p>
-          <div className="flex gap-4">
+        <div className="confirm-modal">
+          <p>You're taking this job. Your availability will be set to busy.</p>
+          <div className="confirm-actions">
             <button
-              className="btn-secondary flex-1"
+              className="btn-secondary"
               onClick={() => setShowConfirm(false)}
               disabled={actionMutation.isPending}
             >
               Cancel
             </button>
             <button
-              className="btn-primary flex-1"
+              className="btn-primary"
               onClick={handleAccept}
               disabled={actionMutation.isPending}
             >
@@ -169,7 +167,7 @@ export function OfferCard({ offer }: OfferCardProps) {
       ) : (
         <div className="offer-actions">
           <button
-            className="btn-secondary text-status-error border-status-error"
+            className="btn-secondary"
             style={{ color: 'var(--color-status-error)', borderColor: 'var(--color-status-error)' }}
             onClick={handleDecline}
             disabled={actionMutation.isPending || secondsLeft === 0}

@@ -11,6 +11,11 @@ export interface WorkerProfile {
   availability: boolean;
   verification_status: 'pending' | 'verified' | 'rejected';
   created_at: string;
+  name?: string;
+  phone?: string;
+  experience_years?: number;
+  languages_spoken?: string;
+  local_address?: string;
 }
 
 export function useProfile() {
