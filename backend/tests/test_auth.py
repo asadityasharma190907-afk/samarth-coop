@@ -88,6 +88,45 @@ def test_register_worker_success():
     db.close()
 
 
+def test_register_worker_with_kyc_fields_success():
+    payload = {
+        "name": "Ramesh Chandra",
+        "phone": "9888877771",
+        "password": "worker123",
+        "role": "worker",
+        "skill": "plumber",
+        "lat": 26.9200,
+        "lng": 75.8000,
+        "father_name": "Sita Ram Chandra",
+        "date_of_birth": "1988-04-10",
+        "domicile": "Rajasthan",
+        "local_address": "55 Tonk Road, Jaipur",
+        "marital_status": "married",
+        "experience_years": 10,
+        "languages_spoken": "Hindi, English",
+        "aadhaar_number": "999888777666",
+    }
+    response = client.post("/auth/register", json=payload)
+    assert response.status_code == 201
+
+    db = TestingSessionLocal()
+    user = db.query(User).filter(User.phone == "9888877771").first()
+    assert user is not None
+    profile = db.query(WorkerProfile).filter(WorkerProfile.user_id == user.id).first()
+    assert profile is not None
+    assert profile.father_name == "Sita Ram Chandra"
+    assert profile.date_of_birth == "1988-04-10"
+    assert profile.domicile == "Rajasthan"
+    assert profile.local_address == "55 Tonk Road, Jaipur"
+    assert profile.marital_status == "married"
+    assert profile.experience_years == 10
+    assert profile.languages_spoken == "Hindi, English"
+    assert profile.aadhaar_number == "999888777666"
+    assert profile.police_verification_status == "pending"
+    assert profile.kyc_payment_status == "pending"
+    db.close()
+
+
 def test_register_worker_invalid_skill():
     payload = {
         "name": "Suresh Kumar",
