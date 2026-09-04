@@ -178,3 +178,115 @@ def test_demo_beat_e2e():
     assert res.status_code == 200, res.text
     wallet_data = res.json()
     assert float(wallet_data["weekly_earnings"]) == 4975.0
+
+
+def test_worker_onboarding_kyc_and_dispatch_e2e():
+    """Validates the full worker onboarding, Aadhaar KYC verification, Razorpay onboarding payment,
+
+    and subsequent dispatch booking flow end-to-end.
+    """
+    seed_data()
+
+    # 1. Register a new worker
+    worker_reg = {
+        "name": "Vikram Singh",
+        "phone": "9888877771",
+        "password": "password123",
+        "role": "worker",
+        "skill": "plumber",
+        "lat": 26.9124,
+        "lng": 75.7873,
+    }
+    reg_res = client.post("/auth/register", json=worker_reg)
+    assert reg_res.status_code == 201, reg_res.text
+    vikram_token = reg_res.json()["access_token"]
+    headers = {"Authorization": f"Bearer {vikram_token}"}
+
+    # 2. Aadhaar OTP verification
+    otp_res = client.post(
+        "/kyc/aadhaar/send-otp",
+        json={"aadhaar_number": "999988887777"},
+        headers=headers,
+    )
+    assert otp_res.status_code == 200, otp_res.text
+
+    verify_res = client.post(
+        "/kyc/aadhaar/verify-otp",
+        json={"aadhaar_number": "999988887777", "otp": "123456"},
+        headers=headers,
+    )
+    assert verify_res.status_code == 200, verify_res.text
+    assert verify_res.json()["verification_status"] == "verified"
+
+    # 3. KYC Payment Onboarding
+    order_res = client.post("/kyc/payment/create-order", headers=headers)
+    assert order_res.status_code == 200, order_res.text
+    order_id = order_res.json()["order_id"]
+
+    pay_verify_res = client.post(
+        "/kyc/payment/verify",
+        json={
+            "razorpay_order_id": order_id,
+            "razorpay_payment_id": "pay_test_98765",
+            "razorpay_signature": "sig_test_123",
+        },
+        headers=headers,
+    )
+    assert pay_verify_res.status_code == 200, pay_verify_res.text
+    assert pay_verify_res.json()["kyc_payment_status"] == "completed"
+
+    # 4. Citizen books a plumber
+    ravi_token = login("9555555555")
+    booking_res = client.post(
+        "/bookings",
+        json={
+            "skill": "plumber",
+            "lat": 26.9124,
+            "lng": 75.7873,
+            "description": "Fixing leaking bathroom pipe.",
+            "job_price": 600,
+        },
+        headers={"Authorization": f"Bearer {ravi_token}"},
+    )
+    assert booking_res.status_code == 201, booking_res.text
+    booking_id = booking_res.json()["booking_id"]
+
+    # 5. Worker checks offers and accepts
+    offers_res = client.get("/booking-offers/worker", headers=headers)
+    assert offers_res.status_code == 200, offers_res.text
+    offers = offers_res.json()
+    assert len(offers) > 0, "Vikram should receive the booking offer"
+    offer_id = offers[0]["id"]
+
+    accept_res = client.put(
+        f"/booking-offers/{offer_id}",
+        json={"action": "accept"},
+        headers=headers,
+    )
+    assert accept_res.status_code == 200, accept_res.text
+
+    # 6. Worker completes booking
+    complete_res = client.put(f"/bookings/{booking_id}/complete", headers=headers)
+    assert complete_res.status_code == 200, complete_res.text
+
+    # 7. Citizen submits 5-star rating
+    rating_res = client.post(
+        f"/bookings/{booking_id}/rating",
+        json={"rating": 5, "review": "Excellent plumbing repair!"},
+        headers={"Authorization": f"Bearer {ravi_token}"},
+    )
+    assert rating_res.status_code == 200, rating_res.text
+
+    # 8. Verify wallet balance (450 * 0.95 = 427.50)
+    db = TestingSessionLocal()
+    from app.models.user import User
+
+    user = db.query(User).filter(User.phone == "9888877771").first()
+    assert user is not None
+    user_id = str(user.id)
+    db.close()
+
+    wallet_res = client.get(f"/wallet/{user_id}", headers=headers)
+    assert wallet_res.status_code == 200, wallet_res.text
+    assert float(wallet_res.json()["weekly_earnings"]) == 427.5
+

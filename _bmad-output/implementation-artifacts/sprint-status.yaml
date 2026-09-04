@@ -127,4 +127,21 @@ development_status:
   10-2-police-verified-badge: done
   epic-10-retrospective: optional
 
+# ─────────────────────────────────────────────────────────────────────────────
+# EPIC 11: Worker & Citizen Dashboard Experience Polish
+# ─────────────────────────────────────────────────────────────────────────────
+  epic-11: done
+  11-1-worker-dashboard-nested-routing: done
+  11-2-citizen-dashboard-recent-bookings: done
+  epic-11-retrospective: optional
+
+# ─────────────────────────────────────────────────────────────────────────────
+# EPIC 12: Design System & E2E Verification
+# ─────────────────────────────────────────────────────────────────────────────
+  epic-12: done
+  12-1-design-token-refactoring: done
+  12-2-e2e-demo-verification-suite-health-check: done
+  epic-12-retrospective: optional
+
 action_items: []
+
