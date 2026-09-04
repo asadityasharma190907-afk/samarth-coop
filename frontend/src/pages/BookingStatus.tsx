@@ -89,8 +89,12 @@ export function BookingStatus() {
               <h2 className="worker-name">{booking.assigned_worker.name}</h2>
               <p className="worker-skill">{booking.assigned_worker.skill}</p>
             </div>
-            {(booking.assigned_worker.verification_status === 'verified' ||
-              booking.assigned_worker.verified) && <VerifiedBadge />}
+            <VerifiedBadge
+              status={
+                booking.assigned_worker.verification_status ||
+                (booking.assigned_worker.verified ? 'verified' : 'pending')
+              }
+            />
           </div>
 
           <div className="worker-stats">

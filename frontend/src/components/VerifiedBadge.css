@@ -1,11 +1,44 @@
 .badge-verified {
-  background: #ecfdf5;
+  background-color: var(--color-surface-overlay);
   color: var(--color-status-success);
-  border: 1px solid #bbf7d0;
+  border: 1px solid var(--color-status-success);
   border-radius: var(--rounded-full);
-  font: 600 0.75rem/1.125rem var(--font-family, Inter, sans-serif);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-caption);
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
+  gap: var(--spacing-xs);
+  padding: 4px 10px;
+}
+
+.badge-pending {
+  background-color: rgba(217, 119, 6, 0.08);
+  color: var(--color-status-warning);
+  border: 1px solid var(--color-status-warning);
+  border-radius: var(--rounded-full);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-caption);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 4px 10px;
+}
+
+.badge-unverified {
+  background-color: rgba(156, 163, 175, 0.1);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--rounded-full);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-caption);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 4px 10px;
 }

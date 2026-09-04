@@ -110,5 +110,13 @@ development_status:
   8-2-csv-download-button: done
   epic-8-retrospective: optional
 
+# ─────────────────────────────────────────────────────────────────────────────
+# EPIC 10: Multi-Step Worker Onboarding & Verification UI
+# ─────────────────────────────────────────────────────────────────────────────
+  epic-10: done
+  10-1-multi-step-worker-registration-wizard: done
+  10-2-police-verified-badge: done
+  epic-10-retrospective: optional
+
 action_items: []
 
