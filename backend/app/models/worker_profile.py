@@ -41,6 +41,20 @@ class WorkerProfile(Base):
     verification_status = Column(
         String(20), default="pending", server_default=text("'pending'")
     )
+    father_name = Column(String(100), nullable=True)
+    date_of_birth = Column(String(20), nullable=True)
+    domicile = Column(String(100), nullable=True)
+    local_address = Column(String(255), nullable=True)
+    marital_status = Column(String(20), nullable=True)
+    experience_years = Column(Integer, nullable=True)
+    languages_spoken = Column(String(100), nullable=True)
+    aadhaar_number = Column(String(12), nullable=True)
+    police_verification_status = Column(
+        String(20), default="pending", server_default=text("'pending'")
+    )
+    kyc_payment_status = Column(
+        String(20), default="pending", server_default=text("'pending'")
+    )
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     user = relationship("User", back_populates="worker_profile")
