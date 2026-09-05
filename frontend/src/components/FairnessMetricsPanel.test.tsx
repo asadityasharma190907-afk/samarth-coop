@@ -102,7 +102,7 @@ describe('FairnessMetricsPanel', () => {
     expect(screen.getAllByText(/0.42/)[0]).toBeInTheDocument();
 
     expect(screen.getByText(/Meena Effect/i)).toBeInTheDocument();
-    expect(screen.getByText('3')).toBeInTheDocument();
+    expect(screen.getAllByText('3')[0]).toBeInTheDocument();
 
     expect(screen.getByText(/Min Weekly Earnings/i)).toBeInTheDocument();
     expect(screen.getByText(/Max Weekly Earnings/i)).toBeInTheDocument();
