@@ -1,8 +1,15 @@
 from datetime import datetime
 from decimal import Decimal
+from enum import Enum
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+
+class UrgencyTier(str, Enum):
+    normal = "normal"
+    urgent = "urgent"
+    emergency = "emergency"
 
 
 class AssignedWorkerDetail(BaseModel):
@@ -21,6 +28,10 @@ class CreateBookingRequest(BaseModel):
     lat: Decimal = Field(..., description="Citizen latitude")
     lng: Decimal = Field(..., description="Citizen longitude")
     description: str | None = Field(None, description="Optional job description")
+    urgency: UrgencyTier = Field(
+        UrgencyTier.normal,
+        description="Urgency tier: normal | urgent | emergency",
+    )
 
 
 class RatingRequest(BaseModel):
@@ -64,3 +75,8 @@ class BookingResponse(BaseModel):
     created_at: datetime | None = None
     dispute_reason: str | None = None
     assigned_worker: AssignedWorkerDetail | None = None
+    # Fair-Surge pricing breakdown
+    base_price: Decimal | None = None
+    surge_surplus: Decimal | None = None
+    is_surging: bool | None = None
+    urgency: str | None = None
