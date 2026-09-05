@@ -54,10 +54,7 @@ export function FairnessMetricsPanel() {
     );
   }
 
-  const maxWeeklyEarnings = Math.max(
-    ...data.offers_distribution.map((d) => d.weekly_earnings),
-    1,
-  );
+  const maxWeeklyEarnings = Math.max(...data.offers_distribution.map((d) => d.weekly_earnings), 1);
 
   return (
     <div className="fairness-panel-container">
@@ -122,7 +119,7 @@ export function FairnessMetricsPanel() {
           <span className="counter-label">Interventions</span>
         </div>
         <div className="meena-content">
-          <h4>The "Meena Effect" Counter</h4>
+          <h4>The &quot;Meena Effect&quot; Counter</h4>
           <p>
             {data.meena_effect_description ||
               'Times fairness dispatch prioritized a low-earning worker over a closer or higher-rated peer.'}
