@@ -31,6 +31,8 @@ def test_register_citizen_success():
     assert user.name == "Ravi Sharma"
     assert user.role == "citizen"
     assert user.password_hash != "secure123"
+    assert user.cancellation_count == 0
+    assert user.citizen_trust_score == 100
     assert verify_password("secure123", user.password_hash) is True
     db.close()
 
