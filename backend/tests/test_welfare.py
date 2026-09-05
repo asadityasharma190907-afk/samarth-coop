@@ -131,7 +131,9 @@ def test_disburse_welfare_fund_forbidden_for_citizen():
         db.add(citizen)
         db.commit()
         db.refresh(citizen)
-        token = create_access_token(data={"user_id": str(citizen.id), "role": "citizen"})
+        token = create_access_token(
+            data={"user_id": str(citizen.id), "role": "citizen"}
+        )
     finally:
         db.close()
 
@@ -182,7 +184,9 @@ def test_disburse_welfare_fund_invalid_category_and_insufficient_balance():
         "category": "party_fund",
         "description": "Invalid category",
     }
-    res_inv = client.post("/welfare-fund/disburse", json=payload_invalid, headers=headers)
+    res_inv = client.post(
+        "/welfare-fund/disburse", json=payload_invalid, headers=headers
+    )
     assert res_inv.status_code == 400
 
     # Insufficient balance test (150 > 100)
@@ -191,7 +195,9 @@ def test_disburse_welfare_fund_invalid_category_and_insufficient_balance():
         "category": "insurance",
         "description": "Exceeds balance",
     }
-    res_exc = client.post("/welfare-fund/disburse", json=payload_exceed, headers=headers)
+    res_exc = client.post(
+        "/welfare-fund/disburse", json=payload_exceed, headers=headers
+    )
     assert res_exc.status_code == 400
     assert res_exc.json()["detail"] == "Insufficient fund balance"
 

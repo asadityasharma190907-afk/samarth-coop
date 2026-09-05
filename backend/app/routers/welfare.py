@@ -1,5 +1,4 @@
 from decimal import Decimal
-from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func
@@ -25,19 +24,29 @@ VALID_CATEGORIES = {"insurance", "tool_loan", "training", "emergency", "pension"
 def _get_summary_data(db: Session):
     booking_res = (
         db.query(
-            func.coalesce(func.sum(Booking.platform_fee), Decimal("0.00")).label("total_fees"),
+            func.coalesce(func.sum(Booking.platform_fee), Decimal("0.00")).label(
+                "total_fees"
+            ),
             func.count(Booking.id).label("completed_bookings"),
         )
         .filter(Booking.status == "completed")
         .first()
     )
-    total_fees = Decimal(str(booking_res.total_fees)) if booking_res else Decimal("0.00")
+    total_fees = (
+        Decimal(str(booking_res.total_fees)) if booking_res else Decimal("0.00")
+    )
     completed_bookings = booking_res.completed_bookings if booking_res else 0
 
     disbursement_sum = db.query(
-        func.coalesce(func.sum(WelfareDisbursement.amount), Decimal("0.00")).label("total_disbursed")
+        func.coalesce(func.sum(WelfareDisbursement.amount), Decimal("0.00")).label(
+            "total_disbursed"
+        )
     ).scalar()
-    total_disbursed = Decimal(str(disbursement_sum)) if disbursement_sum is not None else Decimal("0.00")
+    total_disbursed = (
+        Decimal(str(disbursement_sum))
+        if disbursement_sum is not None
+        else Decimal("0.00")
+    )
 
     remaining_balance = max(Decimal("0.00"), total_fees - total_disbursed)
 
@@ -124,7 +133,7 @@ def disburse_welfare_fund(
     )
 
 
-@router.get("/disbursements", response_model=List[DisbursementItem])
+@router.get("/disbursements", response_model=list[DisbursementItem])
 def get_welfare_disbursements(
     limit: int = 50,
     db: Session = Depends(get_db),
