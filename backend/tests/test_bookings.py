@@ -524,11 +524,14 @@ def test_citizen_cancel_booking_success(citizen_token, seeded_worker):
         offer = (
             db.query(BookingOffer).filter_by(booking_id=uuid.UUID(booking_id)).first()
         )
+        assert offer is not None
         offer.status = "accepted"  # type: ignore
         booking = db.query(Booking).filter_by(id=uuid.UUID(booking_id)).first()
+        assert booking is not None
         booking.status = "assigned"  # type: ignore
         booking.worker_id = seeded_worker
         profile = db.query(WorkerProfile).filter_by(user_id=seeded_worker).first()
+        assert profile is not None
         profile.availability = False  # type: ignore
         db.commit()
     finally:
@@ -540,14 +543,17 @@ def test_citizen_cancel_booking_success(citizen_token, seeded_worker):
     db = TestingSessionLocal()
     try:
         booking = db.query(Booking).filter_by(id=uuid.UUID(booking_id)).first()
+        assert booking is not None
         assert booking.status == "cancelled"
 
         citizen = db.query(User).filter_by(id=citizen_id).first()
+        assert citizen is not None
         assert citizen.cancellation_count == 1
         # score = 100 - (10 * 1) + (5 * 0) = 90
         assert citizen.citizen_trust_score == 90
 
         profile = db.query(WorkerProfile).filter_by(user_id=seeded_worker).first()
+        assert profile is not None
         assert profile.availability is True
     finally:
         db.close()
@@ -581,6 +587,7 @@ def test_citizen_cancel_three_bookings_trust_score(citizen_token, seeded_worker)
     db = TestingSessionLocal()
     try:
         citizen = db.query(User).filter_by(id=citizen_id).first()
+        assert citizen is not None
         assert citizen.cancellation_count == 3
         # score = 100 - (10 * 3) + 0 = 70
         assert citizen.citizen_trust_score == 70
