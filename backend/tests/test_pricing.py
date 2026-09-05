@@ -131,7 +131,9 @@ def test_zero_supply_returns_p_max():
             hour_of_day=12,
         )
         result = compute_fair_surge_price(ctx, db)
-        expected_max = (BASE_RATES["electrician"] * Decimal("1.50")).quantize(Decimal("1.00"))
+        expected_max = (BASE_RATES["electrician"] * Decimal("1.50")).quantize(
+            Decimal("1.00")
+        )
         assert result.final_price == expected_max  # ₹750.00
     finally:
         db.close()
@@ -156,7 +158,9 @@ def test_extreme_demand_spike_capped_at_p_max():
             hour_of_day=12,
         )
         result = compute_fair_surge_price(ctx, db)
-        expected_max = (BASE_RATES["electrician"] * Decimal("1.50")).quantize(Decimal("1.00"))
+        expected_max = (BASE_RATES["electrician"] * Decimal("1.50")).quantize(
+            Decimal("1.00")
+        )
         assert result.final_price == expected_max
     finally:
         db.close()
@@ -256,7 +260,9 @@ def test_worker_payout_is_at_least_95_percent_of_base():
             hour_of_day=12,
         )
         result = compute_fair_surge_price(ctx, db)
-        min_payout = (BASE_RATES["electrician"] * Decimal("0.95")).quantize(Decimal("1.00"))
+        min_payout = (BASE_RATES["electrician"] * Decimal("0.95")).quantize(
+            Decimal("1.00")
+        )
         assert result.worker_payout >= min_payout
     finally:
         db.close()
@@ -303,7 +309,9 @@ def test_workers_outside_radius_not_counted():
             hour_of_day=12,
         )
         result = compute_fair_surge_price(ctx, db)
-        expected_max = (BASE_RATES["electrician"] * Decimal("1.50")).quantize(Decimal("1.00"))
+        expected_max = (BASE_RATES["electrician"] * Decimal("1.50")).quantize(
+            Decimal("1.00")
+        )
         assert result.final_price == expected_max
     finally:
         db.close()

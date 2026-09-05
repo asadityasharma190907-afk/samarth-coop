@@ -33,12 +33,14 @@ TIME_MULTIPLIERS = {
     "night": Decimal("1.25"),  # 23:00-06:00
 }
 
+
 def _time_multiplier(hour: int) -> Decimal:
     if 6 <= hour < 20:
         return TIME_MULTIPLIERS["day"]
     if 20 <= hour < 23:
         return TIME_MULTIPLIERS["evening"]
     return TIME_MULTIPLIERS["night"]
+
 
 def compute_fair_surge_price(ctx: PricingContext, db: Session) -> PricingResult:
     # Validate skill
