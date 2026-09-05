@@ -87,3 +87,46 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
+// Push Event: Display notification popup when backend sends push alert
+self.addEventListener('push', (event) => {
+  let payload = {};
+  if (event.data) {
+    try {
+      payload = event.data.json();
+    } catch (e) {
+      payload = { title: 'Samarth — New Job Offer', body: event.data.text() };
+    }
+  }
+
+  const title = payload.title || 'Samarth — New Job Offer';
+  const options = {
+    body: payload.body || 'You have received a new booking offer. Tap to view.',
+    icon: payload.icon || '/icons/icon-192.png',
+    badge: '/icons/icon-192.png',
+    data: payload.data || { url: '/worker/offers' },
+    vibrate: [200, 100, 200]
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+// Notification Click: Open or focus target URL when user clicks notification
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const targetUrl = (event.notification.data && event.notification.data.url) || '/worker/offers';
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url.includes(targetUrl) && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(targetUrl);
+      }
+    })
+  );
+});
+
