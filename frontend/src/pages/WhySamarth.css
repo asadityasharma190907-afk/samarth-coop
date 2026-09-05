@@ -1,0 +1,352 @@
+/* WhySamarth.css — Competitive Comparison Page Styles (Tokens Only) */
+
+.why-samarth-page {
+  min-height: 100vh;
+  background-color: var(--color-surface-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  padding-bottom: var(--spacing-3xl);
+}
+
+.why-samarth-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--color-surface-card);
+  border-bottom: 1px solid var(--color-border-default);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.why-samarth-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  text-decoration: none;
+  color: var(--color-brand-primary);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-h3);
+}
+
+.why-samarth-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.nav-back-link {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  transition: color 0.2s ease;
+}
+
+.nav-back-link:hover {
+  color: var(--color-brand-primary);
+}
+
+.nav-cta-btn {
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--rounded-md);
+  text-decoration: none;
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  transition: background-color 0.2s ease;
+}
+
+.nav-cta-btn:hover {
+  background-color: var(--button-primary-hover-bg);
+}
+
+.why-samarth-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-md);
+}
+
+/* Hero Section */
+.why-samarth-hero {
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+}
+
+.why-samarth-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background-color: var(--color-surface-overlay);
+  color: var(--color-brand-primary);
+  border: 1px solid var(--color-brand-primary-light);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--rounded-full);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--spacing-md);
+}
+
+.why-samarth-title {
+  font-size: var(--font-size-display);
+  line-height: var(--line-height-display);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.why-samarth-subtitle {
+  font-size: var(--font-size-body-lg);
+  line-height: var(--line-height-body-lg);
+  color: var(--color-text-secondary);
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* Comparison Table Wrapper */
+.comparison-section {
+  margin-bottom: var(--spacing-3xl);
+}
+
+.comparison-table-wrapper {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--rounded-xl);
+  box-shadow: var(--shadow-1);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  min-width: 650px;
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-size: var(--font-size-body);
+}
+
+.comparison-table thead th {
+  background-color: var(--color-surface-bg);
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  border-bottom: 2px solid var(--color-border-default);
+}
+
+.comparison-table th.col-samarth,
+.comparison-table td.col-samarth {
+  background-color: var(--color-surface-overlay);
+  border-left: 2px solid var(--color-brand-primary);
+  border-right: 2px solid var(--color-brand-primary);
+}
+
+.comparison-table thead th.col-samarth {
+  color: var(--color-brand-primary);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+}
+
+.dimension-name {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.table-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: var(--rounded-full);
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.table-tag.tag-success {
+  background-color: var(--color-status-success-bg);
+  color: var(--color-status-success-text);
+}
+
+.table-tag.tag-neutral {
+  background-color: var(--color-status-neutral-bg);
+  color: var(--color-status-neutral-text);
+}
+
+.table-footnote {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+  font-style: italic;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+/* Pillar Sections */
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-3xl);
+}
+
+.pillar-card {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--rounded-xl);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-1);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pillar-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
+}
+
+.pillar-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--rounded-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.pillar-icon-wrapper.icon-brand {
+  background-color: var(--color-surface-overlay);
+  color: var(--color-brand-primary);
+}
+
+.pillar-icon-wrapper.icon-purple {
+  background-color: rgba(124, 58, 237, 0.1);
+  color: var(--color-welfare-fund);
+}
+
+.pillar-icon-wrapper.icon-amber {
+  background-color: rgba(244, 166, 35, 0.12);
+  color: var(--color-brand-accent);
+}
+
+.pillar-title {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text-primary);
+}
+
+.pillar-desc {
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-md);
+  flex-grow: 1;
+}
+
+.formula-box {
+  background-color: var(--color-surface-bg);
+  border: 1px dashed var(--color-border-default);
+  border-radius: var(--rounded-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-caption);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.case-study-box {
+  background-color: var(--color-surface-overlay);
+  border-left: 3px solid var(--color-brand-primary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: 0 var(--rounded-md) var(--rounded-md) 0;
+  font-size: var(--font-size-body-sm);
+  color: var(--color-brand-primary-dark);
+}
+
+/* Call to Action Banner */
+.why-samarth-cta-banner {
+  background: linear-gradient(135deg, var(--color-brand-primary), var(--color-brand-primary-dark));
+  color: var(--color-text-on-brand);
+  border-radius: var(--rounded-2xl);
+  padding: var(--spacing-2xl);
+  text-align: center;
+  box-shadow: var(--shadow-2);
+}
+
+.cta-banner-title {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-text-on-brand);
+}
+
+.cta-banner-subtitle {
+  font-size: var(--font-size-body-lg);
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 600px;
+  margin: 0 auto var(--spacing-lg) auto;
+}
+
+.cta-banner-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.cta-button-white {
+  background-color: var(--color-surface-card);
+  color: var(--color-brand-primary-dark);
+  padding: 12px 24px;
+  border-radius: var(--rounded-lg);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.cta-button-white:hover {
+  opacity: 0.95;
+}
+
+.cta-button-outline {
+  border: 2px solid var(--color-surface-card);
+  color: var(--color-text-on-brand);
+  padding: 10px 24px;
+  border-radius: var(--rounded-lg);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.cta-button-outline:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .why-samarth-title {
+    font-size: var(--font-size-h1);
+    line-height: var(--line-height-h1);
+  }
+
+  .pillars-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .why-samarth-nav-actions {
+    gap: var(--spacing-sm);
+  }
+}

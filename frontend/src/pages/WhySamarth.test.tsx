@@ -1,0 +1,70 @@
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import { describe, it, expect } from 'vitest';
+import { WhySamarth } from './WhySamarth';
+
+describe('WhySamarth Page', () => {
+  const renderWithRouter = () => {
+    return render(
+      <BrowserRouter>
+        <WhySamarth />
+      </BrowserRouter>,
+    );
+  };
+
+  it('renders the main headline and subtitle', () => {
+    renderWithRouter();
+    expect(
+      screen.getByRole('heading', { level: 1, name: /The platform Urban Company cannot build/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/SIH Problem #26089/i)).toBeInTheDocument();
+  });
+
+  it('renders all 8 comparison dimensions in the table', () => {
+    renderWithRouter();
+    const dimensions = [
+      'Platform cut',
+      'Price transparency',
+      'Lowest earner gets next job',
+      'Worker owns platform',
+      'Dispute proof (photo)',
+      'Welfare fund',
+      'Government backing',
+      'Dispatch audit trail',
+    ];
+
+    dimensions.forEach((dim) => {
+      expect(screen.getByText(dim)).toBeInTheDocument();
+    });
+
+    // Check key dimension values
+    expect(screen.getByText('5%')).toBeInTheDocument();
+    expect(screen.getByText('25-30%')).toBeInTheDocument();
+    expect(screen.getByText('0%*')).toBeInTheDocument();
+    expect(screen.getByText('Ministry of Cooperation')).toBeInTheDocument();
+  });
+
+  it('renders the 3 narrative pillar sections and formula', () => {
+    renderWithRouter();
+    expect(
+      screen.getByRole('heading', { level: 2, name: /Our Algorithm is Fairness/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 2, name: /The Cooperative Difference/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: /Built for Bharat/i })).toBeInTheDocument();
+
+    // Check formula and demo proof point
+    expect(screen.getByText(/Score = \(5000 − WeeklyEarnings\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Meena Verma/i)).toBeInTheDocument();
+    expect(screen.getByText(/Suresh Kumar/i)).toBeInTheDocument();
+  });
+
+  it('renders navigation links and action buttons', () => {
+    renderWithRouter();
+    expect(screen.getByRole('button', { name: /Back to Login/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Join Cooperative/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Create an Account/i })).toBeInTheDocument();
+  });
+});

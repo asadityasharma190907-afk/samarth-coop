@@ -235,6 +235,27 @@ export function Login() {
             Register
           </a>
         </p>
+
+        <div style={{ marginTop: 'var(--spacing-md)' }}>
+          <a
+            href="/why-samarth"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/why-samarth');
+            }}
+            style={{
+              fontSize: 'var(--font-size-body-sm)',
+              color: 'var(--color-brand-primary)',
+              textDecoration: 'none',
+              fontWeight: 'var(--font-weight-medium)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 'var(--spacing-xs)',
+            }}
+          >
+            🌿 Why Samarth? (Competitive Comparison) →
+          </a>
+        </div>
       </div>
     </div>
   );
