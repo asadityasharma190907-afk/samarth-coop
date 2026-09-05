@@ -617,3 +617,74 @@ def test_cancel_completed_booking_fails(citizen_token, seeded_worker):
         cancel_response.json()["detail"]
         == "Cannot cancel a completed or already cancelled booking"
     )
+
+
+def test_price_preview_unauthenticated_fails():
+    response = client.get(
+        "/bookings/price-preview?skill=electrician&lat=26.9124&lng=75.7873"
+    )
+    assert response.status_code == 401
+
+
+def test_price_preview_success(citizen_token):
+    token, _ = citizen_token
+    headers = {"Authorization": f"Bearer {token}"}
+
+    db = TestingSessionLocal()
+    initial_booking_count = db.query(Booking).count()
+    db.close()
+
+    response = client.get(
+        "/bookings/price-preview?skill=electrician&lat=26.9124&lng=75.7873&urgency=normal",
+        headers=headers,
+    )
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data["skill"] == "electrician"
+    assert float(data["base_price"]) == 500.0
+    assert float(data["final_price"]) >= 450.0
+    assert "surge_surplus" in data
+    assert "is_surging" in data
+    assert "surge_reason" in data
+    assert float(data["urgency_multiplier"]) == 1.0
+    assert "worker_earns" in data
+    assert "welfare_fund_contribution" in data
+    assert "platform_fee" in data
+
+    # Verify no booking was created in DB
+    db = TestingSessionLocal()
+    new_booking_count = db.query(Booking).count()
+    db.close()
+    assert new_booking_count == initial_booking_count
+
+
+def test_price_preview_invalid_skill_fails(citizen_token):
+    token, _ = citizen_token
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = client.get(
+        "/bookings/price-preview?skill=space_engineer&lat=26.9124&lng=75.7873",
+        headers=headers,
+    )
+    assert response.status_code == 400
+    assert "Unknown skill" in response.json()["detail"]
+
+
+def test_price_preview_urgency_multipliers(citizen_token):
+    token, _ = citizen_token
+    headers = {"Authorization": f"Bearer {token}"}
+
+    res_normal = client.get(
+        "/bookings/price-preview?skill=electrician&lat=26.9124&lng=75.7873&urgency=normal",
+        headers=headers,
+    )
+    res_emergency = client.get(
+        "/bookings/price-preview?skill=electrician&lat=26.9124&lng=75.7873&urgency=emergency",
+        headers=headers,
+    )
+    assert res_normal.status_code == 200
+    assert res_emergency.status_code == 200
+
+    assert float(res_normal.json()["urgency_multiplier"]) == 1.0
+    assert float(res_emergency.json()["urgency_multiplier"]) == 1.35
