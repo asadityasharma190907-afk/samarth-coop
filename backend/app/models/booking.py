@@ -48,6 +48,8 @@ class Booking(Base):
     gender_preference = Column(
         String(20), nullable=True, default="any", server_default=text("'any'")
     )
+    before_photo_url = Column(String(500), nullable=True)
+    after_photo_url = Column(String(500), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     citizen = relationship("User", foreign_keys=[citizen_id])

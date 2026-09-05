@@ -1,0 +1,215 @@
+/* PhotoProofCard.css — Tokens only, zero hardcoded hex */
+
+.photo-proof-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  font-family: var(--font-sans);
+  text-align: left;
+}
+
+.photo-proof-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.photo-proof-card-title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.photo-proof-shield-icon {
+  color: var(--color-brand-primary);
+  flex-shrink: 0;
+}
+
+.photo-proof-card-title {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.photo-proof-card-badge {
+  font-size: var(--font-size-overline);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px var(--spacing-xs);
+  border-radius: var(--rounded-full);
+  background-color: var(--color-status-success-bg);
+  color: var(--color-status-success-text);
+  flex-shrink: 0;
+}
+
+.photo-proof-card-desc {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-caption);
+  margin: 0;
+}
+
+.photo-proof-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xs);
+}
+
+@media (max-width: 600px) {
+  .photo-proof-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.photo-proof-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.photo-proof-item-label {
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.photo-proof-item-img-wrap {
+  position: relative;
+  border-radius: var(--rounded-md);
+  overflow: hidden;
+  border: 1px solid var(--color-border-default);
+  cursor: pointer;
+  background-color: var(--color-surface-bg);
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-proof-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.photo-proof-item-img-wrap:hover .photo-proof-img {
+  transform: scale(1.03);
+}
+
+.photo-proof-zoom-hint {
+  position: absolute;
+  bottom: var(--spacing-xs);
+  right: var(--spacing-xs);
+  background-color: rgba(0, 0, 0, 0.65);
+  color: #ffffff;
+  font-size: var(--font-size-overline);
+  padding: 2px 6px;
+  border-radius: var(--rounded-sm);
+  pointer-events: none;
+}
+
+.photo-proof-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-lg) var(--spacing-md);
+  border: 1px dashed var(--color-border-default);
+  border-radius: var(--rounded-md);
+  background-color: var(--color-surface-bg);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-caption);
+  aspect-ratio: 4 / 3;
+  text-align: center;
+}
+
+.photo-proof-empty-icon {
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+/* Lightbox / Zoom Modal */
+.photo-zoom-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-md);
+  animation: fadeIn 0.2s ease;
+}
+
+.photo-zoom-modal-content {
+  background-color: var(--color-surface-card);
+  border-radius: var(--rounded-lg);
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--shadow-2, 0 10px 25px rgba(0, 0, 0, 0.5));
+}
+
+.photo-zoom-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.photo-zoom-modal-title {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.photo-zoom-close-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--rounded-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-zoom-close-btn:hover {
+  background-color: var(--color-surface-overlay);
+  color: var(--color-text-primary);
+}
+
+.photo-zoom-modal-img {
+  max-width: 85vw;
+  max-height: 75vh;
+  object-fit: contain;
+  background-color: var(--color-surface-bg);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

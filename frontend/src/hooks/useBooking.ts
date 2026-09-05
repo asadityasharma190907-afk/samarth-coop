@@ -24,6 +24,8 @@ export interface Booking {
   assigned_worker?: AssignedWorkerDetail;
   rating?: number | null;
   dispute_reason?: string | null;
+  before_photo_url?: string | null;
+  after_photo_url?: string | null;
 }
 
 export interface CreateBookingPayload {

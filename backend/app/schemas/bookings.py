@@ -85,6 +85,17 @@ class BookingResponse(BaseModel):
     is_surging: bool | None = None
     urgency: str | None = None
     gender_preference: str | None = "any"
+    before_photo_url: str | None = None
+    after_photo_url: str | None = None
+
+
+class PhotoProofUploadResponse(BaseModel):
+    booking_id: UUID
+    photo_type: str
+    photo_url: str
+    before_photo_url: str | None = None
+    after_photo_url: str | None = None
+    message: str
 
 
 class PricePreviewResponse(BaseModel):

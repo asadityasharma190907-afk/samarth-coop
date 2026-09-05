@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -16,6 +16,7 @@ from app.schemas.bookings import (
     CreateBookingRequest,
     DisputeBookingRequest,
     DisputeBookingResponse,
+    PhotoProofUploadResponse,
     PricePreviewResponse,
     RatingRequest,
     UrgencyTier,
@@ -30,6 +31,7 @@ from app.services.booking import (
 )
 from app.services.dispatch import haversine_km
 from app.services.pricing import compute_fair_surge_price
+from app.services.storage import save_photo
 
 router = APIRouter()
 
@@ -197,3 +199,103 @@ def cancel_booking_endpoint(
 ):
     booking = cancel_booking(booking_id, current_user.id, db)  # type: ignore
     return BookingResponse.model_validate(booking)
+
+
+@router.post(
+    "/{booking_id}/photos/before",
+    response_model=PhotoProofUploadResponse,
+    status_code=status.HTTP_200_OK,
+)
+async def upload_before_photo(
+    booking_id: UUID,
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    booking = db.query(Booking).filter(Booking.id == booking_id).first()
+    if not booking:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Booking not found"
+        )
+
+    # Verify authorization: must be the assigned worker
+    is_assigned_worker = booking.worker_id == current_user.id
+    if not is_assigned_worker:
+        accepted_offer = (
+            db.query(BookingOffer)
+            .filter(
+                BookingOffer.booking_id == booking_id,
+                BookingOffer.worker_id == current_user.id,
+                BookingOffer.status == "accepted",
+            )
+            .first()
+        )
+        if not accepted_offer:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Only the assigned worker can upload photo proof for this booking.",
+            )
+
+    photo_url = await save_photo(file, prefix=f"before_{str(booking_id)[:8]}")
+    booking.before_photo_url = photo_url
+    db.commit()
+    db.refresh(booking)
+
+    return PhotoProofUploadResponse(
+        booking_id=booking.id,  # type: ignore
+        photo_type="before",
+        photo_url=photo_url,
+        before_photo_url=booking.before_photo_url,  # type: ignore
+        after_photo_url=booking.after_photo_url,  # type: ignore
+        message="Before photo uploaded successfully",
+    )
+
+
+@router.post(
+    "/{booking_id}/photos/after",
+    response_model=PhotoProofUploadResponse,
+    status_code=status.HTTP_200_OK,
+)
+async def upload_after_photo(
+    booking_id: UUID,
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    booking = db.query(Booking).filter(Booking.id == booking_id).first()
+    if not booking:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Booking not found"
+        )
+
+    # Verify authorization: must be the assigned worker
+    is_assigned_worker = booking.worker_id == current_user.id
+    if not is_assigned_worker:
+        accepted_offer = (
+            db.query(BookingOffer)
+            .filter(
+                BookingOffer.booking_id == booking_id,
+                BookingOffer.worker_id == current_user.id,
+                BookingOffer.status == "accepted",
+            )
+            .first()
+        )
+        if not accepted_offer:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Only the assigned worker can upload photo proof for this booking.",
+            )
+
+    photo_url = await save_photo(file, prefix=f"after_{str(booking_id)[:8]}")
+    booking.after_photo_url = photo_url
+    db.commit()
+    db.refresh(booking)
+
+    return PhotoProofUploadResponse(
+        booking_id=booking.id,  # type: ignore
+        photo_type="after",
+        photo_url=photo_url,
+        before_photo_url=booking.before_photo_url,  # type: ignore
+        after_photo_url=booking.after_photo_url,  # type: ignore
+        message="After photo uploaded successfully",
+    )
