@@ -57,14 +57,10 @@ describe('NetworkDensityPanel', () => {
         ];
       }
       if (url.includes('skill=carpenter')) {
-        return [
-          { worker_id: 'w7', name: 'Sunil', wave_used: 2, effective_radius_km: 5.0 },
-        ];
+        return [{ worker_id: 'w7', name: 'Sunil', wave_used: 2, effective_radius_km: 5.0 }];
       }
       if (url.includes('skill=ac_mechanic')) {
-        return [
-          { worker_id: 'w8', name: 'Arun', wave_used: 3, effective_radius_km: 8.0 },
-        ];
+        return [{ worker_id: 'w8', name: 'Arun', wave_used: 3, effective_radius_km: 8.0 }];
       }
       return [];
     });
@@ -76,7 +72,9 @@ describe('NetworkDensityPanel', () => {
     );
 
     // Verify header and title
-    expect(await screen.findByText(/Network Density & Dispatch Elasticity \(Live\)/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Network Density & Dispatch Elasticity \(Live\)/i),
+    ).toBeInTheDocument();
     expect(screen.getByText('Live Governance Signals')).toBeInTheDocument();
 
     // Verify skills rendered
@@ -91,7 +89,9 @@ describe('NetworkDensityPanel', () => {
 
     // Verify wave badges & status pills
     expect(screen.getAllByText('W1').length).toBeGreaterThan(0);
-    expect(screen.getByText('Ministry / NCCT Evaluator Note: Dynamic Radius Elasticity')).toBeInTheDocument();
+    expect(
+      screen.getByText('Ministry / NCCT Evaluator Note: Dynamic Radius Elasticity'),
+    ).toBeInTheDocument();
   });
 
   it('renders error message when API fails', async () => {

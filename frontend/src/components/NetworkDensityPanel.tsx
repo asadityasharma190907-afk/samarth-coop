@@ -27,7 +27,11 @@ const SUPPORTED_SKILLS = [
 ];
 
 export function NetworkDensityPanel() {
-  const { data: densityList, isLoading, error } = useQuery<SkillDensityData[]>({
+  const {
+    data: densityList,
+    isLoading,
+    error,
+  } = useQuery<SkillDensityData[]>({
     queryKey: ['networkDensity'],
     queryFn: async () => {
       // Fetch bookings for demand signals
@@ -44,7 +48,7 @@ export function NetworkDensityPanel() {
       for (const skillItem of SUPPORTED_SKILLS) {
         try {
           const workersRes: any = await api.get(
-            `/workers?skill=${skillItem.id}&lat=26.9124&lng=75.7873`
+            `/workers?skill=${skillItem.id}&lat=26.9124&lng=75.7873`,
           );
           const workersList = Array.isArray(workersRes) ? workersRes : [];
 
@@ -52,7 +56,7 @@ export function NetworkDensityPanel() {
           const supply = workersList.length;
           const skillBookings = bookings.filter((b) => b.skill === skillItem.id);
           const activeBookings = skillBookings.filter(
-            (b) => b.status === 'pending' || b.status === 'assigned'
+            (b) => b.status === 'pending' || b.status === 'assigned',
           ).length;
 
           // Compute demand count (with fallback baseline based on skill volume)
@@ -64,7 +68,7 @@ export function NetworkDensityPanel() {
             painter: 3,
             appliance_repair: 4,
           };
-          const demand = activeBookings > 0 ? activeBookings + 2 : (baseDemandMap[skillItem.id] || 3);
+          const demand = activeBookings > 0 ? activeBookings + 2 : baseDemandMap[skillItem.id] || 3;
           const effectiveSupply = supply > 0 ? supply : 2;
 
           const rawRatio = demand / effectiveSupply;
@@ -75,7 +79,9 @@ export function NetworkDensityPanel() {
           let radius = 3.0;
           if (workersList.length > 0 && workersList[0]?.wave_used) {
             waveNum = workersList[0].wave_used;
-            radius = workersList[0].effective_radius_km || (waveNum === 1 ? 3 : waveNum === 2 ? 5 : waveNum === 3 ? 8 : 12);
+            radius =
+              workersList[0].effective_radius_km ||
+              (waveNum === 1 ? 3 : waveNum === 2 ? 5 : waveNum === 3 ? 8 : 12);
           } else {
             if (dsRatio > 4.0) {
               waveNum = 3;
@@ -126,7 +132,11 @@ export function NetworkDensityPanel() {
   });
 
   if (isLoading) {
-    return <div className="density-loading" data-testid="density-loading">Loading live network density & elasticity signals...</div>;
+    return (
+      <div className="density-loading" data-testid="density-loading">
+        Loading live network density & elasticity signals...
+      </div>
+    );
   }
 
   if (error || !densityList || densityList.length === 0) {
@@ -138,9 +148,13 @@ export function NetworkDensityPanel() {
   }
 
   const avgRatio =
-    Math.round((densityList.reduce((acc, curr) => acc + curr.dsRatio, 0) / densityList.length) * 10) / 10;
+    Math.round(
+      (densityList.reduce((acc, curr) => acc + curr.dsRatio, 0) / densityList.length) * 10,
+    ) / 10;
   const highestWave = Math.max(...densityList.map((d) => d.waveNumber), 1);
-  const surgeCount = densityList.filter((d) => d.status === 'surge' || d.status === 'moderate').length;
+  const surgeCount = densityList.filter(
+    (d) => d.status === 'surge' || d.status === 'moderate',
+  ).length;
 
   return (
     <div className="network-density-container" data-testid="network-density-panel">
@@ -152,7 +166,8 @@ export function NetworkDensityPanel() {
             <h2>Network Density & Dispatch Elasticity (Live)</h2>
           </div>
           <p>
-            Real-time Demand/Supply (D/S) ratio telemetry and wave-based adaptive radius expansion per skill category
+            Real-time Demand/Supply (D/S) ratio telemetry and wave-based adaptive radius expansion
+            per skill category
           </p>
         </div>
         <div className="density-live-badge">
@@ -176,7 +191,13 @@ export function NetworkDensityPanel() {
           <span className="kpi-label">Active Expansion Wave</span>
           <div className="kpi-value-row">
             <span className="kpi-value">Wave {highestWave}</span>
-            <span className="kpi-tag info">{highestWave === 1 ? '3.0 km Core' : highestWave === 2 ? '5.0 km Urban' : '8.0 km Ring'}</span>
+            <span className="kpi-tag info">
+              {highestWave === 1
+                ? '3.0 km Core'
+                : highestWave === 2
+                  ? '5.0 km Urban'
+                  : '8.0 km Ring'}
+            </span>
           </div>
           <span className="kpi-subtext">Dynamic radius currently active for peak fulfillment</span>
         </div>
@@ -187,7 +208,9 @@ export function NetworkDensityPanel() {
             <span className="kpi-value">{surgeCount}</span>
             <span className="kpi-tag warning">Expanded Pools</span>
           </div>
-          <span className="kpi-subtext">Skills operating in expanded radius to prevent unfulfilled bookings</span>
+          <span className="kpi-subtext">
+            Skills operating in expanded radius to prevent unfulfilled bookings
+          </span>
         </div>
       </div>
 
@@ -195,7 +218,9 @@ export function NetworkDensityPanel() {
       <div className="density-table-card">
         <div className="table-header-row">
           <h3>Live Skill Density & Elasticity Status</h3>
-          <span className="table-caption">Updates every 10 seconds based on live worker heartbeats</span>
+          <span className="table-caption">
+            Updates every 10 seconds based on live worker heartbeats
+          </span>
         </div>
 
         <div className="table-responsive">
@@ -233,9 +258,13 @@ export function NetworkDensityPanel() {
                   <td className="status-cell">
                     <span className={`status-pill status-${item.status}`}>
                       <span className="status-dot" />
-                      {item.status === 'healthy' && <CheckCircle2 size={13} className="status-icon" />}
+                      {item.status === 'healthy' && (
+                        <CheckCircle2 size={13} className="status-icon" />
+                      )}
                       {item.status === 'oversupply' && <Info size={13} className="status-icon" />}
-                      {item.status === 'moderate' && <AlertTriangle size={13} className="status-icon" />}
+                      {item.status === 'moderate' && (
+                        <AlertTriangle size={13} className="status-icon" />
+                      )}
                       {item.status === 'surge' && <Activity size={13} className="status-icon" />}
                       {item.statusLabel}
                     </span>
@@ -254,7 +283,11 @@ export function NetworkDensityPanel() {
           <h4>Ministry / NCCT Evaluator Note: Dynamic Radius Elasticity</h4>
         </div>
         <p>
-          Unlike private aggregator surge algorithms that raise prices for consumers when demand peaks, Samarth dynamically expands the worker dispatch ring (<strong>Wave 1: 3km</strong> &rarr; <strong>Wave 2: 5km</strong> &rarr; <strong>Wave 3: 8km</strong> &rarr; <strong>Wave 4: 12km</strong>) while keeping base cooperative rates transparent and directing fair-surge surplus directly into the Cooperative Welfare Fund.
+          Unlike private aggregator surge algorithms that raise prices for consumers when demand
+          peaks, Samarth dynamically expands the worker dispatch ring (<strong>Wave 1: 3km</strong>{' '}
+          &rarr; <strong>Wave 2: 5km</strong> &rarr; <strong>Wave 3: 8km</strong> &rarr;{' '}
+          <strong>Wave 4: 12km</strong>) while keeping base cooperative rates transparent and
+          directing fair-surge surplus directly into the Cooperative Welfare Fund.
         </p>
       </div>
     </div>

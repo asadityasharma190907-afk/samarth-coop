@@ -54,7 +54,8 @@
 }
 
 @keyframes pulseGlow {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 0.9;
   }
@@ -93,7 +94,8 @@
 }
 
 @keyframes blinkDot {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1);
   }
@@ -119,7 +121,9 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .density-kpi-card:hover {
