@@ -24,6 +24,7 @@ export function Register() {
   const [lng, setLng] = useState<number>(75.81);
 
   // Step 2: Extended Profile
+  const [gender, setGender] = useState<'male' | 'female' | 'prefer_not_to_say'>('male');
   const [fatherName, setFatherName] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('1992-05-15');
   const [domicile, setDomicile] = useState('Rajasthan');
@@ -133,6 +134,7 @@ export function Register() {
       skill,
       lat,
       lng,
+      gender,
       father_name: fatherName,
       date_of_birth: dateOfBirth,
       domicile,
@@ -548,6 +550,51 @@ export function Register() {
                     <option value="single">Single</option>
                     <option value="married">Married</option>
                   </select>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
+                <label style={{ fontSize: 'var(--font-size-caption)', fontWeight: 500 }}>
+                  Gender
+                </label>
+                <div
+                  style={{ display: 'flex', gap: 'var(--spacing-xs)' }}
+                  role="radiogroup"
+                  aria-label="Gender"
+                >
+                  {[
+                    { value: 'male', label: 'Male' },
+                    { value: 'female', label: 'Female' },
+                    { value: 'prefer_not_to_say', label: 'Prefer not to say' },
+                  ].map((g) => (
+                    <button
+                      key={g.value}
+                      type="button"
+                      role="radio"
+                      aria-checked={gender === g.value}
+                      onClick={() => setGender(g.value as any)}
+                      style={{
+                        flex: 1,
+                        padding: '10px 4px',
+                        fontSize: 'var(--font-size-caption)',
+                        borderRadius: 'var(--rounded-md)',
+                        border: `1.5px solid ${gender === g.value ? 'var(--color-brand-primary)' : 'var(--color-border-default)'}`,
+                        backgroundColor:
+                          gender === g.value
+                            ? 'var(--color-surface-overlay)'
+                            : 'var(--color-surface-card)',
+                        color:
+                          gender === g.value
+                            ? 'var(--color-brand-primary)'
+                            : 'var(--color-text-secondary)',
+                        fontWeight: gender === g.value ? 600 : 400,
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      {g.label}
+                    </button>
+                  ))}
                 </div>
               </div>
 
