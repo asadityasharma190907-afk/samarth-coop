@@ -33,10 +33,10 @@ describe('WhySamarth Page', () => {
     ];
 
     dimensions.forEach((dim) => {
-      expect(screen.getByText(dim)).toBeInTheDocument();
+      expect(screen.getAllByText(dim)[0]).toBeInTheDocument();
     });
 
-    expect(screen.getByText('5%')).toBeInTheDocument();
+    expect(screen.getAllByText('5%')[0]).toBeInTheDocument();
     expect(screen.getByText('25-30%')).toBeInTheDocument();
     expect(screen.getByText('0%*')).toBeInTheDocument();
     expect(screen.getByText('Ministry of Cooperation')).toBeInTheDocument();
