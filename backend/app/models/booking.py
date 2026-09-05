@@ -45,6 +45,9 @@ class Booking(Base):
     surge_surplus = Column(Numeric(10, 2), nullable=True, server_default=text("0"))
     is_surging = Column(Boolean, nullable=True, server_default=text("FALSE"))
     urgency = Column(String(20), nullable=True, server_default=text("'normal'"))
+    gender_preference = Column(
+        String(20), nullable=True, default="any", server_default=text("'any'")
+    )
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     citizen = relationship("User", foreign_keys=[citizen_id])

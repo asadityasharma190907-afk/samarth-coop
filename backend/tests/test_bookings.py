@@ -695,3 +695,78 @@ def test_price_preview_urgency_multipliers(citizen_token):
 
     assert float(res_normal.json()["urgency_multiplier"]) == 1.0
     assert float(res_emergency.json()["urgency_multiplier"]) == 1.35
+
+
+def test_create_booking_with_gender_preference(citizen_token):
+    token, _ = citizen_token
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # Seed 1 male worker and 1 female worker
+    db = TestingSessionLocal()
+    male_worker_id = uuid.uuid4()
+    female_worker_id = uuid.uuid4()
+    try:
+        w_male = User(
+            id=male_worker_id,
+            name="Ramesh Male",
+            phone="9777777771",
+            password_hash=hash_password("password123"),
+            role="worker",
+        )
+        w_female = User(
+            id=female_worker_id,
+            name="Sunita Female",
+            phone="9777777772",
+            password_hash=hash_password("password123"),
+            role="worker",
+        )
+        db.add_all([w_male, w_female])
+        db.flush()
+
+        p_male = WorkerProfile(
+            user_id=male_worker_id,
+            skill="painter",
+            lat=26.9124,
+            lng=75.7873,
+            rating=5.0,
+            gender="male",
+            availability=True,
+            verification_status="verified",
+        )
+        p_female = WorkerProfile(
+            user_id=female_worker_id,
+            skill="painter",
+            lat=26.9124,
+            lng=75.7873,
+            rating=4.0,
+            gender="female",
+            availability=True,
+            verification_status="verified",
+        )
+        db.add_all([p_male, p_female])
+        db.commit()
+    finally:
+        db.close()
+
+    # Create female-preferred booking
+    payload = {
+        "skill": "painter",
+        "lat": 26.9124,
+        "lng": 75.7873,
+        "gender_preference": "female",
+    }
+    response = client.post("/bookings", json=payload, headers=headers)
+    assert response.status_code == 201
+    booking_id = response.json()["booking_id"]
+    assert response.json()["gender_preference"] == "female"
+
+    # Verify that the dispatched offer went to female worker, not the higher-rated male worker
+    db = TestingSessionLocal()
+    try:
+        offer = (
+            db.query(BookingOffer).filter_by(booking_id=uuid.UUID(booking_id)).first()
+        )
+        assert offer is not None
+        assert offer.worker_id == female_worker_id
+    finally:
+        db.close()

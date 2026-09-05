@@ -31,6 +31,8 @@ export interface CreateBookingPayload {
   lat: number;
   lng: number;
   description?: string;
+  urgency?: 'normal' | 'urgent' | 'emergency';
+  gender_preference?: 'any' | 'female' | 'male';
 }
 
 export const useCreateBooking = () => {

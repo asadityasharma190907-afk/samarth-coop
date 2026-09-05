@@ -5,7 +5,9 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { SkillCategoryGrid, SKILL_CATEGORIES } from '../components/SkillCategoryGrid';
+import { PricingBreakdownCard } from '../components/PricingBreakdownCard';
 import { useCreateBooking } from '../hooks/useBooking';
+import { usePricePreview } from '../hooks/usePricePreview';
 import './Book.css';
 
 // Fix for default Leaflet icon not showing correctly in React
@@ -35,12 +37,15 @@ export function Book() {
   const [step, setStep] = useState(1);
   const [skill, setSkill] = useState<string | null>(null);
   const [position, setPosition] = useState<[number, number]>([26.9124, 75.7873]); // Default Jaipur
+  const [urgency, setUrgency] = useState<'normal' | 'urgent' | 'emergency'>('normal');
+  const [genderPreference, setGenderPreference] = useState<'any' | 'female' | 'male'>('any');
   const [description, setDescription] = useState('');
 
   const navigate = useNavigate();
   const createBooking = useCreateBooking();
+  const pricePreview = usePricePreview(skill, position[0], position[1], urgency);
 
-  const handleNext = () => setStep((s) => Math.min(s + 1, 3));
+  const handleNext = () => setStep((s) => Math.min(s + 1, 4));
   const handleBack = () => setStep((s) => Math.max(s - 1, 1));
 
   const handleUseMyLocation = () => {
@@ -59,6 +64,8 @@ export function Book() {
         skill,
         lat: position[0],
         lng: position[1],
+        urgency,
+        gender_preference: genderPreference,
         description: description || undefined,
       });
       navigate(`/booking/${result.booking_id}`);
@@ -78,7 +85,7 @@ export function Book() {
       </div>
 
       <div className="wizard-progress">
-        {[1, 2, 3].map((i) => (
+        {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
             className={`progress-step ${step === i ? 'active' : ''} ${step > i ? 'completed' : ''}`}
@@ -129,7 +136,7 @@ export function Book() {
                 Back
               </button>
               <button className="btn-primary" onClick={handleNext}>
-                Continue
+                Continue to Price Preview
               </button>
             </div>
           </div>
@@ -137,7 +144,35 @@ export function Book() {
 
         {step === 3 && (
           <div>
-            <h2 className="step-title">Review & Submit</h2>
+            <h2 className="step-title">Transparent Pricing Preview</h2>
+            <PricingBreakdownCard
+              skillLabel={skill ? getSkillLabel(skill) : ''}
+              locationText={`${position[0].toFixed(4)}, ${position[1].toFixed(4)}`}
+              urgency={urgency}
+              onUrgencyChange={setUrgency}
+              pricingData={pricePreview.data}
+              isLoading={pricePreview.isLoading}
+              error={pricePreview.error ? (pricePreview.error as Error).message : null}
+            />
+
+            <div className="wizard-actions">
+              <button className="btn-secondary" onClick={handleBack}>
+                Back
+              </button>
+              <button
+                className="btn-primary"
+                onClick={handleNext}
+                disabled={pricePreview.isLoading || !!pricePreview.error}
+              >
+                Confirm Price & Continue
+              </button>
+            </div>
+          </div>
+        )}
+
+        {step === 4 && (
+          <div>
+            <h2 className="step-title">Review & Preferences</h2>
             <div style={{ marginBottom: '24px' }}>
               <div className="summary-item">
                 <span className="summary-label">Service</span>
@@ -148,6 +183,43 @@ export function Book() {
                 <span className="summary-value">
                   {position[0].toFixed(4)}, {position[1].toFixed(4)}
                 </span>
+              </div>
+              <div className="summary-item">
+                <span className="summary-label">Estimated Fixed Price</span>
+                <span className="summary-value">
+                  {pricePreview.data
+                    ? `₹${Number(pricePreview.data.final_price).toFixed(2)}`
+                    : 'Calculated'}
+                </span>
+              </div>
+            </div>
+
+            <div className="gender-selector">
+              <label className="summary-label" style={{ display: 'block', marginBottom: '8px' }}>
+                Worker Preference (Optional)
+              </label>
+              <div className="gender-options">
+                <button
+                  type="button"
+                  className={`gender-chip ${genderPreference === 'any' ? 'active' : ''}`}
+                  onClick={() => setGenderPreference('any')}
+                >
+                  Any Worker
+                </button>
+                <button
+                  type="button"
+                  className={`gender-chip ${genderPreference === 'female' ? 'active' : ''}`}
+                  onClick={() => setGenderPreference('female')}
+                >
+                  Female Preferred
+                </button>
+                <button
+                  type="button"
+                  className={`gender-chip ${genderPreference === 'male' ? 'active' : ''}`}
+                  onClick={() => setGenderPreference('male')}
+                >
+                  Male Preferred
+                </button>
               </div>
             </div>
 

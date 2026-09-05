@@ -35,7 +35,11 @@ def get_category_price(skill: str) -> Decimal:
 
 def dispatch_first_offer(booking: Booking, db: Session) -> None:
     ranked_workers = get_ranked_workers(
-        str(booking.skill), float(str(booking.lat)), float(str(booking.lng)), db
+        str(booking.skill),
+        float(str(booking.lat)),
+        float(str(booking.lng)),
+        db,
+        gender_preference=str(booking.gender_preference or "any"),
     )
 
     if not ranked_workers:
@@ -85,6 +89,7 @@ def create_booking(
         surge_surplus=pricing.surge_surplus,
         is_surging=pricing.is_surging,
         urgency=booking_in.urgency.value,
+        gender_preference=booking_in.gender_preference,
     )
 
     db.add(new_booking)
