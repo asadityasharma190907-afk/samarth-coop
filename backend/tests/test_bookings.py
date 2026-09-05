@@ -82,7 +82,10 @@ def test_create_booking_authenticated(citizen_token, seeded_worker):
 
     assert "booking_id" in data
     assert data["status"] == "pending"
-    assert Decimal(str(data["job_price"])) == Decimal("500.00")
+    job_price = Decimal(str(data["job_price"]))
+    assert Decimal("450.00") <= job_price <= Decimal("750.00")
+    assert Decimal(str(data["base_price"])) == Decimal("500.00")
+    expected_fee = (job_price * Decimal("0.05")).quantize(Decimal("1.00"))
     assert data["skill"] == "electrician"
     assert float(data["lat"]) == pytest.approx(26.9124, abs=1e-4)
     assert float(data["lng"]) == pytest.approx(75.7873, abs=1e-4)
@@ -96,8 +99,9 @@ def test_create_booking_authenticated(citizen_token, seeded_worker):
         assert booking is not None
         assert booking.citizen_id == citizen_id
         assert booking.status == "pending"
-        assert booking.job_price == Decimal("500.00")
-        assert booking.platform_fee == Decimal("25.00")
+        assert booking.job_price == job_price
+        assert booking.platform_fee == expected_fee
+        assert booking.base_price == Decimal("500.00")
 
         # Verify offer is created
         offer = (
@@ -125,26 +129,31 @@ def test_create_booking_unauthenticated():
 
 
 def test_create_booking_price_snapshot_by_category(citizen_token):
+    """With no workers in the test DB, Fair-Surge returns P_max (1.5x base) for all skills.
+    Price is always within [P_min, P_max] -- not a hardcoded static value.
+    """
     token, _ = citizen_token
     headers = {"Authorization": f"Bearer {token}"}
 
-    # Plumber should be 450.00
+    # Plumber base=450, P_min=405, P_max=675 -- with zero supply, expect P_max
     response = client.post(
         "/bookings",
         json={"skill": "plumber", "lat": 26.9124, "lng": 75.7873},
         headers=headers,
     )
     assert response.status_code == 201
-    assert Decimal(str(response.json()["job_price"])) == Decimal("450.00")
+    plumber_price = Decimal(str(response.json()["job_price"]))
+    assert Decimal("405.00") <= plumber_price <= Decimal("675.00")
 
-    # Carpenter should be 600.00
+    # Carpenter base=500, P_min=450, P_max=750 -- with zero supply, expect P_max
     response = client.post(
         "/bookings",
         json={"skill": "carpenter", "lat": 26.9124, "lng": 75.7873},
         headers=headers,
     )
     assert response.status_code == 201
-    assert Decimal(str(response.json()["job_price"])) == Decimal("600.00")
+    carpenter_price = Decimal(str(response.json()["job_price"]))
+    assert Decimal("450.00") <= carpenter_price <= Decimal("750.00")
 
 
 def test_create_booking_validation_error(citizen_token):
@@ -275,7 +284,9 @@ def test_complete_booking_success(citizen_token, seeded_worker):
         booking = db.query(Booking).filter_by(id=uuid.UUID(booking_id)).first()
         assert booking is not None
         assert booking.status == "completed"
-        assert booking.platform_fee == Decimal("25.00")
+        assert booking.platform_fee == (booking.job_price * Decimal("0.05")).quantize(
+            Decimal("1.00")
+        )
 
         profile = db.query(WorkerProfile).filter_by(user_id=seeded_worker).first()
         assert profile is not None

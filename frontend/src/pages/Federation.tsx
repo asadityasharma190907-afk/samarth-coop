@@ -7,6 +7,7 @@ import { AuditTable } from '../components/AuditTable';
 import { EarningsChart } from '../components/EarningsChart';
 import { VerificationQueue } from '../components/VerificationQueue';
 import { DisputesQueue } from '../components/DisputesQueue';
+import { FairnessMetricsPanel } from '../components/FairnessMetricsPanel';
 import './Federation.css';
 
 interface FederationStats {
@@ -126,6 +127,10 @@ export function Federation() {
           </button>
         </div>
         <EarningsChart />
+      </section>
+
+      <section className="fairness-section">
+        <FairnessMetricsPanel />
       </section>
 
       <section className="verification-section">

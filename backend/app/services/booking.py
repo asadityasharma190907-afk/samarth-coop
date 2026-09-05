@@ -10,7 +10,9 @@ from app.models.booking_offer import BookingOffer
 from app.models.user import User
 from app.models.worker_profile import WorkerProfile
 from app.schemas.bookings import CreateBookingRequest
+from app.schemas.pricing import PricingContext
 from app.services.dispatch import get_ranked_workers
+from app.services.pricing import compute_fair_surge_price
 
 JOB_PRICES = {
     "electrician": Decimal("500.00"),
@@ -57,9 +59,17 @@ def dispatch_first_offer(booking: Booking, db: Session) -> None:
 def create_booking(
     citizen: User, booking_in: CreateBookingRequest, db: Session
 ) -> Booking:
-    # Snapshot job_price from category rate
-    job_price = get_category_price(booking_in.skill)
-    platform_fee = (job_price * Decimal("0.05")).quantize(Decimal("0.01"))
+    # Compute Fair-Surge price dynamically
+    ctx = PricingContext(
+        skill=booking_in.skill.lower().strip(),
+        lat=float(booking_in.lat),
+        lng=float(booking_in.lng),
+        urgency=booking_in.urgency.value,
+        hour_of_day=datetime.now(timezone.utc).hour,
+    )
+    pricing = compute_fair_surge_price(ctx, db)
+
+    platform_fee = (pricing.final_price * Decimal("0.05")).quantize(Decimal("0.01"))
 
     new_booking = Booking(
         citizen_id=citizen.id,
@@ -67,9 +77,14 @@ def create_booking(
         lat=booking_in.lat,
         lng=booking_in.lng,
         description=booking_in.description,
-        job_price=job_price,
+        job_price=pricing.final_price,
         platform_fee=platform_fee,
         status="pending",
+        # Fair-Surge snapshot (immutable after INSERT)
+        base_price=pricing.base_price,
+        surge_surplus=pricing.surge_surplus,
+        is_surging=pricing.is_surging,
+        urgency=booking_in.urgency.value,
     )
 
     db.add(new_booking)
