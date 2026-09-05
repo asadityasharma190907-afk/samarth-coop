@@ -19,3 +19,5 @@ class WorkerResponse(BaseModel):
     dispatch_score: Decimal
     rating_is_default: bool
     reliability_penalty_applied: bool
+    effective_radius_km: float = 5.0
+    wave_used: int = 2

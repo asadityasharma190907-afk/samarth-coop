@@ -55,6 +55,7 @@ class WorkerProfile(Base):
     kyc_payment_status = Column(
         String(20), default="pending", server_default=text("'pending'")
     )
+    last_active_at = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     user = relationship("User", back_populates="worker_profile")
