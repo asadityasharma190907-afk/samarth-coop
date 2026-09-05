@@ -58,6 +58,52 @@
   gap: var(--spacing-xs);
 }
 
+/* Citizen Trust Indicator */
+.trust-indicator-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 6px 12px;
+  border-radius: var(--rounded-md);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  margin-top: 2px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.trust-indicator-card .trust-icon {
+  flex-shrink: 0;
+}
+
+.trust-indicator-card .trust-title {
+  flex: 1;
+}
+
+.trust-indicator-card .trust-score-tag {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-overline);
+  opacity: 0.85;
+}
+
+.trust-indicator-card.trust-warning {
+  background-color: rgba(217, 119, 6, 0.12);
+  color: var(--color-status-warning);
+  border: 1px solid rgba(217, 119, 6, 0.3);
+}
+
+.trust-indicator-card.trust-caution {
+  background-color: var(--color-status-error-bg);
+  color: var(--color-status-error-text);
+  border: 1px solid var(--color-status-error-border);
+}
+
+.trust-indicator-card.trust-restricted {
+  background-color: var(--color-status-error-bg);
+  color: var(--color-status-error);
+  border: 1px solid var(--color-status-error);
+  font-weight: var(--font-weight-semibold);
+}
+
 .offer-actions {
   display: flex;
   gap: var(--spacing-md);

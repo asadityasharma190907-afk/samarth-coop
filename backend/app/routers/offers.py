@@ -108,6 +108,20 @@ def get_worker_offers(
             float(str(profile.lng)),
         )
 
+        citizen = db.query(User).filter(User.id == booking.citizen_id).first()
+        trust_score = (
+            int(citizen.citizen_trust_score)
+            if citizen and citizen.citizen_trust_score is not None
+            else 100
+        )
+        trust_level = None
+        if trust_score < 40:
+            trust_level = "restricted"
+        elif trust_score < 60:
+            trust_level = "confirm_required"
+        elif trust_score < 80:
+            trust_level = "high_cancellation"
+
         detail_data = OfferResponse.model_validate(offer).model_dump()
         detail_data.update(
             {
@@ -116,6 +130,8 @@ def get_worker_offers(
                 "lat": booking.lat,
                 "lng": booking.lng,
                 "distance_km": round(distance, 1),
+                "citizen_trust_score": trust_score,
+                "citizen_trust_level": trust_level,
             }
         )
         result.append(WorkerOfferDetail(**detail_data))
