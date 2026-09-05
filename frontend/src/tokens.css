@@ -28,9 +28,20 @@
 
   /* Status Colors */
   --color-status-success: #16a34a;
+  --color-status-success-bg: #d1fae5;
+  --color-status-success-text: #065f46;
   --color-status-warning: #d97706;
   --color-status-error: #dc2626;
+  --color-status-error-bg: #fee2e2;
+  --color-status-error-border: #fecaca;
+  --color-status-error-text: #991b1b;
   --color-status-info: #2563eb;
+  --color-status-info-bg: #dbeafe;
+  --color-status-info-text: #1e40af;
+  --color-status-neutral-bg: #f3f4f6;
+  --color-status-neutral-text: #374151;
+
+  --color-rating-star: #fbbf24;
 
   /* Dispatch Rank Colors */
   --color-dispatch-high: #1a6b47;
@@ -39,6 +50,8 @@
 
   /* Special / Welfare Fund */
   --color-welfare-fund: #7c3aed;
+  --color-welfare-fund-light: #9333ea;
+  --color-welfare-fund-dark: #5b21b6;
 
   /* Typography Fonts */
   --font-sans: 'Inter', 'Noto Sans Devanagari', sans-serif;
@@ -120,7 +133,11 @@
   --card-radius: var(--rounded-xl);
   --card-shadow: var(--shadow-1);
 
-  --welfare-counter-bg: linear-gradient(135deg, var(--color-welfare-fund), #9333ea);
+  --welfare-counter-bg: linear-gradient(
+    135deg,
+    var(--color-welfare-fund),
+    var(--color-welfare-fund-light)
+  );
   --welfare-counter-text: var(--color-text-on-brand);
   --welfare-counter-radius: var(--rounded-2xl);
 }

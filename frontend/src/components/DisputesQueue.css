@@ -79,9 +79,9 @@
 }
 
 .disputed-chip {
-  background-color: #fee2e2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
+  background-color: var(--color-status-error-bg);
+  color: var(--color-status-error);
+  border: 1px solid var(--color-status-error-border);
   padding: 4px 10px;
   border-radius: 9999px;
   font-size: 0.75rem;

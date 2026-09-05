@@ -69,3 +69,13 @@ export const useDisputeBooking = (bookingId: string) => {
     },
   });
 };
+
+export const useBookings = () => {
+  return useQuery({
+    queryKey: ['bookings'],
+    queryFn: async () => {
+      const response = (await api.get('/bookings')) as Booking[];
+      return response;
+    },
+  });
+};

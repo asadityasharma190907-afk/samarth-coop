@@ -28,6 +28,26 @@ export function Login() {
     );
   };
 
+  const handleQuickLogin = (demoPhone: string) => {
+    setPhone(demoPhone);
+    setPassword('password123');
+    loginMutation.mutate(
+      { phone: demoPhone, password: 'password123' },
+      {
+        onSuccess: (data) => {
+          localStorage.setItem('samarth_token', data.access_token);
+          if (data.role === 'worker') {
+            navigate('/worker/dashboard');
+          } else if (data.role === 'citizen') {
+            navigate('/dashboard'); // Adjusted to dashboard to match story
+          } else {
+            navigate('/federation'); // admin
+          }
+        },
+      },
+    );
+  };
+
   return (
     <div
       style={{
@@ -131,6 +151,72 @@ export function Login() {
         </button>
       </form>
 
+      <div style={{ marginTop: 'var(--spacing-xl)' }}>
+        <p
+          style={{
+            fontSize: 'var(--font-size-body-sm)',
+            color: 'var(--color-text-secondary)',
+            textAlign: 'center',
+            marginBottom: 'var(--spacing-md)',
+          }}
+        >
+          Fast Testing (Demo Accounts)
+        </p>
+        <div style={{ display: 'flex', gap: 'var(--spacing-sm)', justifyContent: 'center' }}>
+          <button
+            type="button"
+            disabled={loginMutation.isPending}
+            onClick={() => handleQuickLogin('9555555555')}
+            style={{
+              padding: '8px 12px',
+              backgroundColor: 'var(--color-surface-card)',
+              color: 'var(--color-text-primary)',
+              border: '1px solid var(--color-border-default)',
+              borderRadius: 'var(--rounded-md)',
+              fontSize: 'var(--font-size-body-sm)',
+              cursor: loginMutation.isPending ? 'not-allowed' : 'pointer',
+              opacity: loginMutation.isPending ? 0.7 : 1,
+            }}
+          >
+            Citizen
+          </button>
+          <button
+            type="button"
+            disabled={loginMutation.isPending}
+            onClick={() => handleQuickLogin('9111111111')}
+            style={{
+              padding: '8px 12px',
+              backgroundColor: 'var(--color-surface-card)',
+              color: 'var(--color-text-primary)',
+              border: '1px solid var(--color-border-default)',
+              borderRadius: 'var(--rounded-md)',
+              fontSize: 'var(--font-size-body-sm)',
+              cursor: loginMutation.isPending ? 'not-allowed' : 'pointer',
+              opacity: loginMutation.isPending ? 0.7 : 1,
+            }}
+          >
+            Worker
+          </button>
+          <button
+            type="button"
+            disabled={loginMutation.isPending}
+            onClick={() => handleQuickLogin('9000000000')}
+            style={{
+              padding: '8px 12px',
+              backgroundColor: 'var(--color-surface-card)',
+              color: 'var(--color-text-primary)',
+              border: '1px solid var(--color-border-default)',
+              borderRadius: 'var(--rounded-md)',
+              fontSize: 'var(--font-size-body-sm)',
+              cursor: loginMutation.isPending ? 'not-allowed' : 'pointer',
+              opacity: loginMutation.isPending ? 0.7 : 1,
+            }}
+          >
+            Admin
+          </button>
+        </div>
+      </div>
+
       <div style={{ textAlign: 'center', marginTop: 'var(--spacing-lg)' }}>
         <p style={{ fontSize: 'var(--font-size-body-sm)', color: 'var(--color-text-secondary)' }}>
           Don't have an account?{' '}
@@ -149,6 +235,27 @@ export function Login() {
             Register
           </a>
         </p>
+
+        <div style={{ marginTop: 'var(--spacing-md)' }}>
+          <a
+            href="/why-samarth"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/why-samarth');
+            }}
+            style={{
+              fontSize: 'var(--font-size-body-sm)',
+              color: 'var(--color-brand-primary)',
+              textDecoration: 'none',
+              fontWeight: 'var(--font-weight-medium)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 'var(--spacing-xs)',
+            }}
+          >
+            🌿 Why Samarth? (Competitive Comparison) →
+          </a>
+        </div>
       </div>
     </div>
   );

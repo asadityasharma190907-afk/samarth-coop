@@ -28,14 +28,14 @@ export function EarningsTable({ entries }: EarningsTableProps) {
           </tr>
         </thead>
         <tbody>
-          {entries.map((entry) => {
-            const date = new Date(entry.created_at).toLocaleDateString();
+          {entries.map((entry, index) => {
+            const date = new Date(entry.date).toLocaleDateString();
             const jobPrice = Number(entry.job_price);
             const platformFee = Number(entry.platform_fee);
             const payout = jobPrice - platformFee;
 
             return (
-              <tr key={entry.id}>
+              <tr key={index}>
                 <td>{date}</td>
                 <td className="capitalize">{entry.skill}</td>
                 <td className="text-right font-mono">₹{jobPrice.toFixed(2)}</td>

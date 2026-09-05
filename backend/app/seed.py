@@ -91,6 +91,16 @@ def seed_data():
             rating=Decimal("4.2"),
             availability=True,
             verification_status="verified",
+            father_name="Ramesh Kumar",
+            date_of_birth="1990-05-15",
+            domicile="Rajasthan",
+            local_address="123 Pink City, Jaipur",
+            marital_status="married",
+            experience_years=5,
+            languages_spoken="Hindi, English",
+            aadhaar_number="123456789012",
+            police_verification_status="verified",
+            kyc_payment_status="completed",
         )
         db.add(suresh_profile)
 
@@ -111,6 +121,16 @@ def seed_data():
             rating=None,
             availability=True,
             verification_status="verified",
+            father_name="Sanjay Gupta",
+            date_of_birth="1995-08-20",
+            domicile="Rajasthan",
+            local_address="456 Vaishali Nagar, Jaipur",
+            marital_status="single",
+            experience_years=2,
+            languages_spoken="Hindi",
+            aadhaar_number="234567890123",
+            police_verification_status="verified",
+            kyc_payment_status="completed",
         )
         db.add(priya_worker_profile)
 
@@ -131,6 +151,16 @@ def seed_data():
             rating=Decimal("4.5"),
             availability=True,
             verification_status="verified",
+            father_name="Mahesh Yadav",
+            date_of_birth="1988-11-10",
+            domicile="Rajasthan",
+            local_address="789 Malviya Nagar, Jaipur",
+            marital_status="married",
+            experience_years=8,
+            languages_spoken="Hindi, Rajasthani",
+            aadhaar_number="345678901234",
+            police_verification_status="verified",
+            kyc_payment_status="completed",
         )
         db.add(anil_profile)
 
@@ -151,6 +181,16 @@ def seed_data():
             rating=Decimal("4.9"),
             availability=True,
             verification_status="verified",
+            father_name="Rajendra Verma",
+            date_of_birth="1992-03-25",
+            domicile="Rajasthan",
+            local_address="101 C-Scheme, Jaipur",
+            marital_status="married",
+            experience_years=6,
+            languages_spoken="Hindi, English",
+            aadhaar_number="456789012345",
+            police_verification_status="verified",
+            kyc_payment_status="completed",
         )
         db.add(meena_profile)
 
