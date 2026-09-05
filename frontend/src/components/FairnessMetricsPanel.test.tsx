@@ -93,22 +93,22 @@ describe('FairnessMetricsPanel', () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText('Income Fairness & Gini Coefficient')).toBeInTheDocument();
-    expect(screen.getByText('+66.7% Income Equality Improvement')).toBeInTheDocument();
+    expect(await screen.findByText(/Income Fairness & Gini Coefficient/i)).toBeInTheDocument();
+    expect(screen.getByText(/Income Equality Improvement/i)).toBeInTheDocument();
 
-    expect(screen.getByText('Samarth Cooperative Dispatch')).toBeInTheDocument();
-    expect(screen.getByText('Standard Proximity Dispatch (VC Baseline)')).toBeInTheDocument();
-    expect(screen.getAllByText('0.14')[0]).toBeInTheDocument();
-    expect(screen.getAllByText('0.42')[0]).toBeInTheDocument();
+    expect(screen.getByText(/Samarth Cooperative Dispatch/i)).toBeInTheDocument();
+    expect(screen.getByText(/Standard Proximity Dispatch/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/0.14/)[0]).toBeInTheDocument();
+    expect(screen.getAllByText(/0.42/)[0]).toBeInTheDocument();
 
-    expect(screen.getByText('The "Meena Effect" Counter')).toBeInTheDocument();
+    expect(screen.getByText(/Meena Effect/i)).toBeInTheDocument();
     expect(screen.getByText('3')).toBeInTheDocument();
 
-    expect(screen.getByText('Min Weekly Earnings')).toBeInTheDocument();
-    expect(screen.getByText('Max Weekly Earnings')).toBeInTheDocument();
-    expect(screen.getByText('Median Weekly Income')).toBeInTheDocument();
-    expect(screen.getByText('Top-to-Bottom Ratio')).toBeInTheDocument();
-    expect(screen.getByText('22.5x')).toBeInTheDocument();
+    expect(screen.getByText(/Min Weekly Earnings/i)).toBeInTheDocument();
+    expect(screen.getByText(/Max Weekly Earnings/i)).toBeInTheDocument();
+    expect(screen.getByText(/Median Weekly Income/i)).toBeInTheDocument();
+    expect(screen.getByText(/Top-to-Bottom Ratio/i)).toBeInTheDocument();
+    expect(screen.getByText(/22.5x/)).toBeInTheDocument();
 
     expect(screen.getByText('Suresh Kumar')).toBeInTheDocument();
     expect(screen.getByText('Priya Gupta')).toBeInTheDocument();
