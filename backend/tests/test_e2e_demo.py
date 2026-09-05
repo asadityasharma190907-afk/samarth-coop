@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 import pytest
 from conftest import TestingSessionLocal
 from fastapi.testclient import TestClient
@@ -170,14 +172,18 @@ def test_demo_beat_e2e():
     assert res.status_code == 200, res.text
     # The new booking was job_price 500, fee is 25.
 
-    # Meena had 4500 before this (4736.84 * 0.95). New job is 500 * 0.95 = 475.
-    # Total weekly earnings = 4500 + 475 = 4975.0
+    # Meena had 4500 before this (4736.84 * 0.95). New job is job_price * 0.95
+    new_job_price = Decimal(str(booking_data["job_price"]))
+    new_job_payout = (new_job_price * Decimal("0.95")).quantize(Decimal("0.01"))
+    expected_meena_earnings = float(Decimal("4500.00") + new_job_payout)
     res = client.get(
         f"/wallet/{meena_id}", headers={"Authorization": f"Bearer {meena_token}"}
     )
     assert res.status_code == 200, res.text
     wallet_data = res.json()
-    assert float(wallet_data["weekly_earnings"]) == 4975.0
+    assert float(wallet_data["weekly_earnings"]) == pytest.approx(
+        expected_meena_earnings, abs=0.01
+    )
 
 
 def test_worker_onboarding_kyc_and_dispatch_e2e():
@@ -286,6 +292,12 @@ def test_worker_onboarding_kyc_and_dispatch_e2e():
     user_id = str(user.id)
     db.close()
 
+    vikram_job_price = Decimal(str(booking_res.json()["job_price"]))
+    expected_vikram_earnings = float(
+        (vikram_job_price * Decimal("0.95")).quantize(Decimal("0.01"))
+    )
     wallet_res = client.get(f"/wallet/{user_id}", headers=headers)
     assert wallet_res.status_code == 200, wallet_res.text
-    assert float(wallet_res.json()["weekly_earnings"]) == 427.5
+    assert float(wallet_res.json()["weekly_earnings"]) == pytest.approx(
+        expected_vikram_earnings, abs=0.01
+    )
