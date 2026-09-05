@@ -11,6 +11,7 @@ from app.models.worker_profile import WorkerProfile
 from app.schemas.analytics import (
     FairnessMetricsResponse,
     IncomeRangeStats,
+    RevenueAnalyticsResponse,
     WorkerOfferDistributionItem,
 )
 
@@ -168,4 +169,86 @@ def get_fairness_metrics(db: Session) -> FairnessMetricsResponse:
         offers_distribution=offers_distribution,
         total_active_workers=total_workers,
         total_weekly_earnings=round(total_earnings, 2),
+    )
+
+
+def get_revenue_metrics(db: Session) -> RevenueAnalyticsResponse:
+    dialect_name = db.get_bind().dialect.name
+
+    if dialect_name == "sqlite":
+        now = datetime.now(timezone.utc)
+        month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    else:
+        month_start = func.date_trunc("month", func.now())
+
+    # Get total bookings
+    total_bookings = (
+        db.query(func.count(Booking.id))
+        .filter(Booking.created_at >= month_start)
+        .scalar()
+        or 0
+    )
+
+    # Get stats for completed bookings
+    stats = (
+        db.query(
+            func.count(Booking.id).label("completed_bookings"),
+            func.coalesce(func.sum(Booking.job_price), 0).label("base_gmv"),
+            func.coalesce(func.sum(Booking.surge_surplus), 0).label("surge_revenue"),
+            func.coalesce(func.sum(Booking.platform_fee), 0).label(
+                "total_platform_fee"
+            ),
+        )
+        .filter(
+            Booking.status == "completed",
+            Booking.created_at >= month_start,
+        )
+        .first()
+    )
+
+    completed_bookings = stats.completed_bookings if stats else 0
+    base_gmv = float(stats.base_gmv) if stats else 0.0
+    surge_revenue = float(stats.surge_revenue) if stats else 0.0
+    total_platform_fee = float(stats.total_platform_fee) if stats else 0.0
+
+    gross_merchandise_value = base_gmv + surge_revenue
+
+    # 5% platform fee goes 50-50 into platform revenue and welfare fund
+    platform_revenue = total_platform_fee / 2.0
+    welfare_fund = total_platform_fee / 2.0
+
+    # PG Cost is ~2% of GMV
+    pg_cost = gross_merchandise_value * 0.02
+
+    net_platform_margin = platform_revenue - pg_cost
+
+    avg_order_value = (
+        gross_merchandise_value / completed_bookings if completed_bookings > 0 else 0.0
+    )
+
+    BASELINE_INFRA_COST_MONTHLY = 6750.00
+    avg_margin_per_booking = (
+        net_platform_margin / completed_bookings if completed_bookings > 0 else 0.0
+    )
+
+    if avg_margin_per_booking > 0:
+        breakeven_bookings = int(BASELINE_INFRA_COST_MONTHLY / avg_margin_per_booking)
+    else:
+        breakeven_bookings = 0
+
+    current_pct_of_breakeven = (net_platform_margin / BASELINE_INFRA_COST_MONTHLY) * 100
+
+    return RevenueAnalyticsResponse(
+        period="current_month",
+        total_bookings=total_bookings,
+        completed_bookings=completed_bookings,
+        gross_merchandise_value=round(gross_merchandise_value, 2),
+        platform_revenue_2_5_pct=round(platform_revenue, 2),
+        welfare_fund_collected_2_5_pct=round(welfare_fund, 2),
+        payment_gateway_cost_est_2_pct=round(pg_cost, 2),
+        net_platform_margin=round(net_platform_margin, 2),
+        avg_order_value=round(avg_order_value, 2),
+        breakeven_bookings_per_month=breakeven_bookings,
+        current_pct_of_breakeven=round(current_pct_of_breakeven, 1),
+        surge_revenue=round(surge_revenue, 2),
     )

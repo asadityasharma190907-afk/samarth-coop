@@ -107,6 +107,10 @@ development_status:
   16-3-welfare-fund-disbursement-ui: backlog
   epic-16-retrospective: optional
 
+  # EPIC 19: Business Intelligence Dashboard
+  epic-19: in-progress
+  19-1-platform-revenue-api: done
+
   # EPIC 20: Competitive Intelligence & B2G Demo
   epic-20: done
   20-1-why-samarth-competitive-comparison-page: done
