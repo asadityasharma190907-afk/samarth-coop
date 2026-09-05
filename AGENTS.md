@@ -44,7 +44,7 @@ These are Architecture Decision records — violating them without a team decisi
 2. **The accept path MUST use `with_for_update()` row lock.** Never read `booking.status` outside a transaction on the accept path. (AD-6)
 3. **`booking_offers.dispatch_score` is immutable after INSERT.** Never update it. Never recompute it in the audit trail endpoint. (AD-7)
 4. **No background task runner (Celery, APScheduler, cron).** Offer expiry is lazy-checked on every read/action. (AD-8)
-5. **Exactly 4 tables for MVP:** `users`, `worker_profiles`, `bookings`, `booking_offers`. A 5th table requires a team decision and a new Alembic migration. (AD-9)
+5. **Exactly 4 tables for MVP:** `users`, `worker_profiles`, `bookings`, `booking_offers`. (Story 16.1 team decision approved `welfare_disbursements` table for Epic 16 fund governance ledger). A 5th table requires a team decision and a new Alembic migration. (AD-9)
 6. **No UI framework (no MUI, shadcn, Ant Design).** Custom components from DESIGN.md tokens only. (AD-3)
 
 ---
