@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { SkillCategoryGrid, SKILL_CATEGORIES } from '../components/SkillCategoryGrid';
 import { PricingBreakdownCard } from '../components/PricingBreakdownCard';
+import { GenderPreferenceSelector } from '../components/GenderPreferenceSelector';
 import { useCreateBooking } from '../hooks/useBooking';
 import { usePricePreview } from '../hooks/usePricePreview';
 import './Book.css';
@@ -194,34 +195,7 @@ export function Book() {
               </div>
             </div>
 
-            <div className="gender-selector">
-              <label className="summary-label" style={{ display: 'block', marginBottom: '8px' }}>
-                Worker Preference (Optional)
-              </label>
-              <div className="gender-options">
-                <button
-                  type="button"
-                  className={`gender-chip ${genderPreference === 'any' ? 'active' : ''}`}
-                  onClick={() => setGenderPreference('any')}
-                >
-                  Any Worker
-                </button>
-                <button
-                  type="button"
-                  className={`gender-chip ${genderPreference === 'female' ? 'active' : ''}`}
-                  onClick={() => setGenderPreference('female')}
-                >
-                  Female Preferred
-                </button>
-                <button
-                  type="button"
-                  className={`gender-chip ${genderPreference === 'male' ? 'active' : ''}`}
-                  onClick={() => setGenderPreference('male')}
-                >
-                  Male Preferred
-                </button>
-              </div>
-            </div>
+            <GenderPreferenceSelector selected={genderPreference} onChange={setGenderPreference} />
 
             <div style={{ marginBottom: '24px' }}>
               <label className="summary-label" style={{ display: 'block', marginBottom: '8px' }}>
