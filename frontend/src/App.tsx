@@ -5,11 +5,15 @@ import { Register } from './pages/Register';
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
 import { WorkerDashboard } from './pages/WorkerDashboard';
+import { WorkerHome } from './pages/WorkerHome';
 import { Book } from './pages/Book';
 import { BookingStatus } from './pages/BookingStatus';
 import { WorkerOffers } from './pages/WorkerOffers';
 import { WorkerWallet } from './pages/WorkerWallet';
 import { Federation } from './pages/Federation';
+
+import { WorkerProfile } from './pages/WorkerProfile';
+import { WhySamarth } from './pages/WhySamarth';
 
 const queryClient = new QueryClient();
 
@@ -21,14 +25,17 @@ export default function App() {
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/why-samarth" element={<WhySamarth />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/book" element={<Book />} />
           <Route path="/booking/:id" element={<BookingStatus />} />
-          <Route path="/worker/dashboard" element={<WorkerDashboard />} />
-          {/* Add placeholders for other worker tabs to prevent 404s when navigating */}
-          <Route path="/worker/offers" element={<WorkerOffers />} />
-          <Route path="/worker/wallet" element={<WorkerWallet />} />
-          <Route path="/worker/profile" element={<WorkerDashboard />} />
+          <Route path="/worker" element={<WorkerDashboard />}>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<WorkerHome />} />
+            <Route path="offers" element={<WorkerOffers />} />
+            <Route path="wallet" element={<WorkerWallet />} />
+            <Route path="profile" element={<WorkerProfile />} />
+          </Route>
           <Route path="/federation" element={<Federation />} />
         </Routes>
       </BrowserRouter>

@@ -65,7 +65,7 @@
 
 .btn-approve {
   background-color: var(--color-success-main);
-  color: #ffffff;
+  color: var(--color-text-on-brand);
 }
 
 .btn-approve:hover:not(:disabled) {

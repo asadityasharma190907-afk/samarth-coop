@@ -5,7 +5,9 @@ from app.routers import (
     admin,
     auth,
     bookings,
+    enterprise,
     federation,
+    kyc,
     offers,
     wallet,
     welfare,
@@ -28,12 +30,14 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+app.include_router(kyc.router, prefix="/kyc", tags=["KYC"])
 app.include_router(workers.router, prefix="/workers", tags=["Workers"])
 app.include_router(bookings.router, prefix="/bookings", tags=["Bookings"])
 app.include_router(offers.router, prefix="/booking-offers", tags=["Offers"])
 app.include_router(wallet.router, prefix="/wallet", tags=["Wallet"])
 app.include_router(welfare.router, prefix="/welfare-fund", tags=["Welfare Fund"])
 app.include_router(federation.router, prefix="/federation", tags=["Federation"])
+app.include_router(enterprise.router, prefix="/enterprise", tags=["Enterprise"])
 app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 
 

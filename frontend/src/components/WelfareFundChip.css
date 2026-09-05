@@ -14,7 +14,7 @@
 }
 
 .welfare-chip {
-  background: linear-gradient(135deg, var(--color-welfare-fund), #9333ea);
+  background: linear-gradient(135deg, var(--color-welfare-fund), var(--color-welfare-fund-light));
   border-radius: var(--rounded-2xl);
   padding: 12px 20px;
   display: inline-flex;

@@ -17,7 +17,7 @@
 }
 
 .star-btn.active {
-  color: #fbbf24; /* Amber 400 */
+  color: var(--color-rating-star); /* Amber 400 */
 }
 
 .star-btn.disabled {

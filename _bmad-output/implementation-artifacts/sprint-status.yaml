@@ -1,6 +1,6 @@
 # Sprint Status — Samarth
 # Generated: 08-29-2026
-# Last Updated: 09-03-2026
+# Last Updated: 09-04-2026
 # Project: Samarth — Cooperative Gig Services Platform
 # Problem Statement: SIH #26089 — Ministry of Cooperation / NCCT
 # Team: 6 members (Aditya + 5)
@@ -13,7 +13,7 @@
 # Action items: open | in-progress | done
 
 generated: 08-29-2026 20:30
-last_updated: 09-03-2026 17:10
+last_updated: 09-04-2026 19:00
 project: Samarth
 project_key: SAMARTH
 tracking_system: github-issues
@@ -109,6 +109,57 @@ development_status:
   8-1-csv-export-api: done
   8-2-csv-download-button: done
   epic-8-retrospective: optional
+
+# ─────────────────────────────────────────────────────────────────────────────
+# EPIC 9: Worker KYC & Verification Infrastructure
+# ─────────────────────────────────────────────────────────────────────────────
+  epic-9: done
+  9-1-db-schema-expansion-worker-kyc: done
+  9-2-auth-api-kyc-registration: done
+  9-3-kyc-router-aadhaar-razorpay: done
+  epic-9-retrospective: optional
+
+# ─────────────────────────────────────────────────────────────────────────────
+# EPIC 10: Multi-Step Worker Onboarding & Verification UI
+# ─────────────────────────────────────────────────────────────────────────────
+  epic-10: done
+  10-1-multi-step-worker-registration-wizard: done
+  10-2-police-verified-badge: done
+  epic-10-retrospective: optional
+
+# ─────────────────────────────────────────────────────────────────────────────
+# EPIC 11: Worker & Citizen Dashboard Experience Polish
+# ─────────────────────────────────────────────────────────────────────────────
+  epic-11: done
+  11-1-worker-dashboard-nested-routing: done
+  11-2-citizen-dashboard-recent-bookings: done
+  epic-11-retrospective: optional
+
+# ─────────────────────────────────────────────────────────────────────────────
+# EPIC 12: Design System & E2E Verification
+# ─────────────────────────────────────────────────────────────────────────────
+  epic-12: done
+  12-1-design-token-refactoring: done
+  12-2-e2e-demo-verification-suite-health-check: done
+# ─────────────────────────────────────────────────────────────────────────────
+# EPIC 20: Competitive Intelligence & B2G Demo
+# ─────────────────────────────────────────────────────────────────────────────
+  epic-20: in-progress
+  20-1-why-samarth-competitive-comparison-page: done
+  20-2-b2g-bulk-booking-api: backlog
+  20-3-enterprise-b2g-demo-page: backlog
+  20-4-impact-metrics-dashboard: backlog
+  epic-20-retrospective: optional
+
+# ─────────────────────────────────────────────────────────────────────────────
+# EPIC 20: Competitive Intelligence & B2G Demo
+# ─────────────────────────────────────────────────────────────────────────────
+  epic-20: in-progress
+  20-1-why-samarth-competitive-comparison-page: done
+  20-2-b2g-bulk-booking-api: done
+  20-3-enterprise-b2g-demo-page: backlog
+  20-4-impact-metrics-dashboard: backlog
+  epic-20-retrospective: optional
 
 action_items: []
 

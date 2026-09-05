@@ -28,6 +28,24 @@ from app.services.dispatch import haversine_km
 router = APIRouter()
 
 
+@router.get("", response_model=list[BookingResponse])
+def get_recent_bookings(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    bookings = (
+        db.query(Booking)
+        .filter(
+            (Booking.citizen_id == current_user.id)
+            | (Booking.worker_id == current_user.id)
+        )
+        .order_by(Booking.created_at.desc())
+        .limit(20)
+        .all()
+    )
+    return [BookingResponse.model_validate(b) for b in bookings]
+
+
 @router.post("", response_model=BookingResponse, status_code=status.HTTP_201_CREATED)
 def post_booking(
     booking_in: CreateBookingRequest,
