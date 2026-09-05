@@ -8,6 +8,7 @@ import { EarningsChart } from '../components/EarningsChart';
 import { VerificationQueue } from '../components/VerificationQueue';
 import { DisputesQueue } from '../components/DisputesQueue';
 import { FairnessMetricsPanel } from '../components/FairnessMetricsPanel';
+import { NetworkDensityPanel } from '../components/NetworkDensityPanel';
 import './Federation.css';
 
 interface FederationStats {
@@ -29,9 +30,9 @@ interface FederationBooking {
 }
 
 export function Federation() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'impact' | 'verifications' | 'disputes'>(
-    'overview',
-  );
+  const [activeTab, setActiveTab] = useState<
+    'overview' | 'impact' | 'density' | 'verifications' | 'disputes'
+  >('overview');
   const [selectedBookingId, setSelectedBookingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterSkill, setFilterSkill] = useState('All Skills');
@@ -115,6 +116,12 @@ export function Federation() {
           Overview & Dispatch
         </button>
         <button
+          className={`federation-tab-btn ${activeTab === 'density' ? 'active' : ''}`}
+          onClick={() => setActiveTab('density')}
+        >
+          Network Density
+        </button>
+        <button
           className={`federation-tab-btn ${activeTab === 'impact' ? 'active' : ''}`}
           onClick={() => setActiveTab('impact')}
         >
@@ -133,6 +140,8 @@ export function Federation() {
           Disputes
         </button>
       </nav>
+
+      {activeTab === 'density' && <NetworkDensityPanel />}
 
       {activeTab === 'impact' && <FairnessMetricsPanel />}
 
@@ -154,6 +163,7 @@ export function Federation() {
 
       {activeTab === 'overview' && (
         <>
+          <NetworkDensityPanel />
           {statsLoading ? (
             <div className="loading-state">Loading metrics...</div>
           ) : (
