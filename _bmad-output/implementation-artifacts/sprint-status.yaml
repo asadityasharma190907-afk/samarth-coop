@@ -93,6 +93,20 @@ development_status:
   14-5-federation-dashboard-network-density-panel: done
   epic-14-retrospective: optional
 
+  # EPIC 15: Citizen Trust Score & Safety
+  epic-15: done
+  15-1-citizen-trust-score-migration: done
+  15-2-trust-score-cancellation-recomputation: done
+  15-3-worker-sees-citizen-trust-level: done
+  epic-15-retrospective: optional
+
+  # EPIC 16: Cooperative Fund Governance
+  epic-16: in-progress
+  16-1-welfare-disbursements-table: done
+  16-2-welfare-fund-disbursement-api: backlog
+  16-3-welfare-fund-disbursement-ui: backlog
+  epic-16-retrospective: optional
+
   # EPIC 20: Competitive Intelligence & B2G Demo
   epic-20: done
   20-1-why-samarth-competitive-comparison-page: done
