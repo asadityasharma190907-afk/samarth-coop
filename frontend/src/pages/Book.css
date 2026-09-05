@@ -174,6 +174,7 @@
   border-color: var(--color-brand-primary);
 }
 
+<<<<<<< HEAD
 .gender-selector {
   margin-bottom: var(--spacing-lg, 20px);
 }
@@ -206,4 +207,38 @@
   background-color: var(--color-brand-primary);
   color: var(--color-text-on-brand);
   border-color: var(--color-brand-primary);
+}
+
+.urgency-chips {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.urgency-chip {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-default);
+  background-color: var(--color-surface-card);
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.urgency-chip:hover {
+  border-color: var(--color-brand-primary-light);
+}
+
+.urgency-chip.selected {
+  border-color: var(--color-brand-primary);
+  background-color: var(--color-surface-overlay);
+  color: var(--color-brand-primary);
+  font-weight: 600;
 }

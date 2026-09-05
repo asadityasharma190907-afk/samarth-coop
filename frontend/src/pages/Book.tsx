@@ -43,6 +43,7 @@ export function Book() {
   const [urgency, setUrgency] = useState<'normal' | 'urgent' | 'emergency'>('normal');
   const [genderPreference, setGenderPreference] = useState<'any' | 'female' | 'male'>('any');
   const [description, setDescription] = useState('');
+  const [urgency, setUrgency] = useState<'normal' | 'urgent' | 'emergency'>('normal');
 
   const navigate = useNavigate();
   const createBooking = useCreateBooking();
@@ -71,6 +72,7 @@ export function Book() {
         urgency,
         gender_preference: genderPreference,
         description: description || undefined,
+        urgency,
       });
       navigate(`/booking/${result.booking_id}`);
     } catch (error) {
@@ -211,6 +213,35 @@ export function Book() {
             </div>
 
             <GenderPreferenceSelector selected={genderPreference} onChange={setGenderPreference} />
+
+            <div style={{ marginBottom: '24px' }}>
+              <label className="summary-label" style={{ display: 'block', marginBottom: '8px' }}>
+                Booking Urgency
+              </label>
+              <div className="urgency-chips">
+                <button
+                  type="button"
+                  className={`urgency-chip ${urgency === 'normal' ? 'selected' : ''}`}
+                  onClick={() => setUrgency('normal')}
+                >
+                  🕐 Standard
+                </button>
+                <button
+                  type="button"
+                  className={`urgency-chip ${urgency === 'urgent' ? 'selected' : ''}`}
+                  onClick={() => setUrgency('urgent')}
+                >
+                  ⚡ Urgent (+20%)
+                </button>
+                <button
+                  type="button"
+                  className={`urgency-chip ${urgency === 'emergency' ? 'selected' : ''}`}
+                  onClick={() => setUrgency('emergency')}
+                >
+                  🚨 Emergency (+35%)
+                </button>
+              </div>
+            </div>
 
             <div style={{ marginBottom: '24px' }}>
               <label className="summary-label" style={{ display: 'block', marginBottom: '8px' }}>

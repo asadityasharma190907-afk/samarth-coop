@@ -16,6 +16,10 @@ export interface Booking {
   status: string;
   job_price: number;
   platform_fee: number;
+  base_price?: number | null;
+  surge_surplus?: number | null;
+  is_surging?: boolean | null;
+  urgency?: string | null;
   skill: string;
   lat: number;
   lng: number;
