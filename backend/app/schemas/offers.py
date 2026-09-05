@@ -34,6 +34,8 @@ class WorkerOfferDetail(OfferResponse):
     lat: Decimal
     lng: Decimal
     distance_km: float
+    citizen_trust_score: int = 100
+    citizen_trust_level: str | None = None
 
 
 class OfferActionRequest(BaseModel):

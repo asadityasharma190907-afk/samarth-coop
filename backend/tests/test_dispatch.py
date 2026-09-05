@@ -695,3 +695,78 @@ def test_get_ranked_workers_reliability_penalty_applied():
 
     finally:
         db.close()
+
+
+def test_get_ranked_workers_gender_preference_filtering():
+    db = TestingSessionLocal()
+    try:
+        citizen = User(
+            name="Ravi", phone="9555555559", password_hash="hash", role="citizen"
+        )
+        db.add(citizen)
+        db.flush()
+
+        # Worker Male
+        w_male_u = User(
+            name="Male Worker",
+            phone="9111111119",
+            password_hash="hash",
+            role="worker",
+        )
+        db.add(w_male_u)
+        db.flush()
+        w_male_p = WorkerProfile(
+            user_id=w_male_u.id,
+            skill="electrician",
+            lat=Decimal("26.9124"),
+            lng=Decimal("75.7873"),
+            rating=Decimal("4.5"),
+            gender="male",
+            availability=True,
+            verification_status="verified",
+        )
+        db.add(w_male_p)
+
+        # Worker Female
+        w_female_u = User(
+            name="Female Worker",
+            phone="9222222229",
+            password_hash="hash",
+            role="worker",
+        )
+        db.add(w_female_u)
+        db.flush()
+        w_female_p = WorkerProfile(
+            user_id=w_female_u.id,
+            skill="electrician",
+            lat=Decimal("26.9124"),
+            lng=Decimal("75.7873"),
+            rating=Decimal("4.5"),
+            gender="female",
+            availability=True,
+            verification_status="verified",
+        )
+        db.add(w_female_p)
+        db.commit()
+
+        # 1. Any preference returns both
+        workers_any = get_ranked_workers(
+            "electrician", 26.9124, 75.7873, db, gender_preference="any"
+        )
+        assert len(workers_any) == 2
+
+        # 2. Female preference returns only female worker
+        workers_female = get_ranked_workers(
+            "electrician", 26.9124, 75.7873, db, gender_preference="female"
+        )
+        assert len(workers_female) == 1
+        assert workers_female[0]["name"] == "Female Worker"
+
+        # 3. Male preference returns only male worker
+        workers_male = get_ranked_workers(
+            "electrician", 26.9124, 75.7873, db, gender_preference="male"
+        )
+        assert len(workers_male) == 1
+        assert workers_male[0]["name"] == "Male Worker"
+    finally:
+        db.close()

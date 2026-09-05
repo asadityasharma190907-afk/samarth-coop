@@ -1,0 +1,177 @@
+.welfare-governance-panel {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--rounded-xl);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-1);
+  margin-bottom: var(--spacing-xl);
+}
+
+.welfare-panel-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border-subtle);
+  padding-bottom: var(--spacing-md);
+}
+
+.welfare-panel-header h2 {
+  margin: 0;
+  font-size: var(--font-size-h2);
+  line-height: var(--line-height-h2);
+  color: var(--color-welfare-fund-dark);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.welfare-badge {
+  background: var(--color-welfare-fund);
+  color: var(--color-text-on-brand);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  padding: 2px var(--spacing-sm);
+  border-radius: var(--rounded-full);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.welfare-stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+.welfare-stat-card {
+  background: var(--color-surface-bg);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-md);
+}
+
+.welfare-stat-card.primary {
+  background: var(--welfare-counter-bg);
+  color: var(--color-text-on-brand);
+}
+
+.welfare-stat-card.primary .welfare-stat-label {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.welfare-stat-card.primary .welfare-stat-val {
+  color: var(--color-text-on-brand);
+}
+
+.welfare-stat-label {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.welfare-stat-val {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.welfare-breakdown-section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.welfare-section-title {
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-semibold);
+  margin-top: 0;
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text-primary);
+}
+
+.welfare-bars-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.welfare-bar-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.welfare-bar-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-body-sm);
+}
+
+.welfare-category-name {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  text-transform: capitalize;
+}
+
+.welfare-category-amount {
+  font-family: var(--font-mono);
+  color: var(--color-text-secondary);
+}
+
+.welfare-bar-track {
+  height: 10px;
+  background: var(--color-border-subtle);
+  border-radius: var(--rounded-full);
+  overflow: hidden;
+}
+
+.welfare-bar-fill {
+  height: 100%;
+  background: var(--color-welfare-fund);
+  border-radius: var(--rounded-full);
+  transition: width 0.4s ease;
+}
+
+.welfare-history-section {
+  margin-top: var(--spacing-md);
+}
+
+.welfare-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-body-sm);
+}
+
+.welfare-history-table th {
+  text-align: left;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-bg);
+  border-bottom: 2px solid var(--color-border-default);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.welfare-history-table td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border-subtle);
+  color: var(--color-text-primary);
+}
+
+.welfare-history-table td.amount {
+  font-family: var(--font-mono);
+  font-weight: var(--font-weight-medium);
+}
+
+.welfare-status-verified {
+  color: var(--color-status-success);
+  font-weight: var(--font-weight-semibold);
+}
+
+.welfare-empty-state {
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--color-text-muted);
+  background: var(--color-surface-bg);
+  border-radius: var(--rounded-lg);
+  border: 1px dashed var(--color-border-default);
+}

@@ -1,0 +1,128 @@
+.pricing-breakdown-card {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg, 12px);
+  padding: var(--spacing-6, 24px);
+  margin-bottom: var(--spacing-6, 24px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.pricing-breakdown-header {
+  margin-bottom: var(--spacing-4, 16px);
+}
+
+.pricing-breakdown-title {
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-1, 4px);
+}
+
+.pricing-breakdown-subtitle {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-text-secondary);
+}
+
+.urgency-selector {
+  margin-bottom: var(--spacing-5, 20px);
+}
+
+.urgency-label {
+  display: block;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-2, 8px);
+}
+
+.urgency-options {
+  display: flex;
+  gap: var(--spacing-2, 8px);
+  flex-wrap: wrap;
+}
+
+.urgency-chip {
+  flex: 1;
+  min-width: 100px;
+  padding: var(--spacing-2, 8px) var(--spacing-3, 12px);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md, 8px);
+  background-color: var(--color-surface-bg);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.urgency-chip:hover {
+  border-color: var(--color-brand-primary);
+}
+
+.urgency-chip.active {
+  background-color: var(--color-brand-primary);
+  color: var(--color-text-on-brand);
+  border-color: var(--color-brand-primary);
+}
+
+.pricing-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 12px);
+}
+
+.pricing-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-text-secondary);
+}
+
+.pricing-row.surge {
+  color: var(--color-status-warning);
+  font-weight: 500;
+}
+
+.surge-tag {
+  background-color: var(--color-status-warning);
+  color: var(--color-text-on-brand);
+  font-size: var(--font-size-xs, 0.75rem);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm, 4px);
+  margin-left: var(--spacing-2, 8px);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.pricing-divider {
+  border: 0;
+  border-top: 1px solid var(--color-border-default);
+  margin: var(--spacing-3, 12px) 0;
+}
+
+.pricing-row.total {
+  font-size: var(--font-size-xl, 1.25rem);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.pricing-row.worker-earns {
+  color: var(--color-brand-primary);
+  font-weight: 600;
+}
+
+.pricing-row.welfare-fund {
+  color: var(--color-welfare-fund);
+  font-weight: 500;
+}
+
+.loading-state {
+  text-align: center;
+  padding: var(--spacing-6, 24px);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm, 0.875rem);
+}

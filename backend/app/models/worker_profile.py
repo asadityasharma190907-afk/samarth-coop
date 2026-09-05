@@ -41,6 +41,11 @@ class WorkerProfile(Base):
     verification_status = Column(
         String(20), default="pending", server_default=text("'pending'")
     )
+    gender = Column(
+        String(20),
+        default="prefer_not_to_say",
+        server_default=text("'prefer_not_to_say'"),
+    )
     father_name = Column(String(100), nullable=True)
     date_of_birth = Column(String(20), nullable=True)
     domicile = Column(String(100), nullable=True)

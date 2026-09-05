@@ -15,6 +15,8 @@ export interface WorkerOfferDetail {
   lat: number;
   lng: number;
   distance_km: number;
+  citizen_trust_score?: number;
+  citizen_trust_level?: string | null;
 }
 
 export const useWorkerOffers = () => {

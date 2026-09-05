@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -15,15 +16,20 @@ from app.schemas.bookings import (
     CreateBookingRequest,
     DisputeBookingRequest,
     DisputeBookingResponse,
+    PricePreviewResponse,
     RatingRequest,
+    UrgencyTier,
 )
+from app.schemas.pricing import PricingContext
 from app.services.booking import (
+    cancel_booking,
     complete_booking,
     create_booking,
     flag_booking_dispute,
     submit_rating,
 )
 from app.services.dispatch import haversine_km
+from app.services.pricing import compute_fair_surge_price
 
 router = APIRouter()
 
@@ -54,6 +60,48 @@ def post_booking(
 ):
     booking = create_booking(current_user, booking_in, db)
     return BookingResponse.model_validate(booking)
+
+
+@router.get("/price-preview", response_model=PricePreviewResponse)
+def get_price_preview(
+    skill: str,
+    lat: float,
+    lng: float,
+    urgency: UrgencyTier = UrgencyTier.normal,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    clean_skill = skill.lower().strip()
+    ctx = PricingContext(
+        skill=clean_skill,
+        lat=lat,
+        lng=lng,
+        urgency=urgency.value,
+        hour_of_day=datetime.now(timezone.utc).hour,
+    )
+    try:
+        pricing = compute_fair_surge_price(ctx, db)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
+
+    u_mult = pricing.multipliers_applied.get("u_multiplier", 1.0)
+    surge_reason = "High demand in your area" if pricing.is_surging else "Normal demand"
+
+    return PricePreviewResponse(
+        skill=clean_skill,
+        base_price=pricing.base_price,
+        final_price=pricing.final_price,
+        surge_surplus=pricing.surge_surplus,
+        is_surging=pricing.is_surging,
+        surge_reason=surge_reason,
+        urgency_multiplier=u_mult,
+        worker_earns=pricing.worker_payout,
+        welfare_fund_contribution=pricing.welfare_fund,
+        platform_fee=pricing.platform_fee,
+    )
 
 
 @router.get("/{booking_id}", response_model=BookingResponse)
@@ -139,3 +187,13 @@ def dispute_booking(
         dispute_reason=booking.dispute_reason,  # type: ignore
         message="Dispute registered. Cooperative mediation initiated.",
     )
+
+
+@router.post("/{booking_id}/cancel", response_model=BookingResponse)
+def cancel_booking_endpoint(
+    booking_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    booking = cancel_booking(booking_id, current_user.id, db)  # type: ignore
+    return BookingResponse.model_validate(booking)

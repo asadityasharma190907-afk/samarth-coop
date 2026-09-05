@@ -1,6 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
+from typing import Literal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -31,6 +32,9 @@ class CreateBookingRequest(BaseModel):
     urgency: UrgencyTier = Field(
         UrgencyTier.normal,
         description="Urgency tier: normal | urgent | emergency",
+    )
+    gender_preference: Literal["any", "female", "male"] = Field(
+        "any", description="Gender preference: any | female | male"
     )
 
 
@@ -80,3 +84,17 @@ class BookingResponse(BaseModel):
     surge_surplus: Decimal | None = None
     is_surging: bool | None = None
     urgency: str | None = None
+    gender_preference: str | None = "any"
+
+
+class PricePreviewResponse(BaseModel):
+    skill: str
+    base_price: Decimal
+    final_price: Decimal
+    surge_surplus: Decimal
+    is_surging: bool
+    surge_reason: str | None = None
+    urgency_multiplier: float
+    worker_earns: Decimal
+    welfare_fund_contribution: Decimal
+    platform_fee: Decimal

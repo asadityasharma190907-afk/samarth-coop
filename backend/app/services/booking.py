@@ -35,7 +35,11 @@ def get_category_price(skill: str) -> Decimal:
 
 def dispatch_first_offer(booking: Booking, db: Session) -> None:
     ranked_workers = get_ranked_workers(
-        str(booking.skill), float(str(booking.lat)), float(str(booking.lng)), db
+        str(booking.skill),
+        float(str(booking.lat)),
+        float(str(booking.lng)),
+        db,
+        gender_preference=str(booking.gender_preference or "any"),
     )
 
     if not ranked_workers:
@@ -85,6 +89,7 @@ def create_booking(
         surge_surplus=pricing.surge_surplus,
         is_surging=pricing.is_surging,
         urgency=booking_in.urgency.value,
+        gender_preference=booking_in.gender_preference,
     )
 
     db.add(new_booking)
@@ -215,6 +220,76 @@ def flag_booking_dispute(
 
     booking.status = "disputed"  # type: ignore
     booking.dispute_reason = reason.strip()  # type: ignore
+
+    db.commit()
+    db.refresh(booking)
+
+    return booking
+
+
+def _recompute_trust_score(citizen: User, db: Session) -> int:
+    thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
+    recent_cancellations = (
+        db.query(Booking)
+        .filter(
+            Booking.citizen_id == citizen.id,
+            Booking.status == "cancelled",
+            Booking.created_at >= thirty_days_ago,
+        )
+        .count()
+    )
+
+    completed_with_rating = (
+        db.query(Booking)
+        .filter(
+            Booking.citizen_id == citizen.id,
+            Booking.status == "completed",
+            Booking.rating.isnot(None),
+        )
+        .count()
+    )
+
+    score = 100 - (10 * recent_cancellations) + (5 * completed_with_rating)
+    return max(0, min(100, score))  # clamp to [0, 100]
+
+
+def cancel_booking(booking_id: UUID, citizen_id: UUID, db: Session) -> Booking:
+    booking = db.query(Booking).filter_by(id=booking_id, citizen_id=citizen_id).first()
+
+    if not booking:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Booking not found"
+        )
+
+    if booking.status in ["completed", "cancelled"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot cancel a completed or already cancelled booking",
+        )
+
+    # Revert worker availability if assigned
+    if booking.status == "assigned":
+        accepted_offer = (
+            db.query(BookingOffer)
+            .filter_by(booking_id=booking_id, status="accepted")
+            .first()
+        )
+        if accepted_offer:
+            worker_profile = (
+                db.query(WorkerProfile)
+                .filter_by(user_id=accepted_offer.worker_id)
+                .first()
+            )
+            if worker_profile:
+                worker_profile.availability = True  # type: ignore
+
+    booking.status = "cancelled"  # type: ignore
+    db.flush()
+
+    citizen = db.query(User).filter_by(id=citizen_id).first()
+    if citizen:
+        citizen.cancellation_count = (citizen.cancellation_count or 0) + 1  # type: ignore
+        citizen.citizen_trust_score = _recompute_trust_score(citizen, db)  # type: ignore
 
     db.commit()
     db.refresh(booking)

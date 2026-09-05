@@ -173,3 +173,37 @@
   outline: none;
   border-color: var(--color-brand-primary);
 }
+
+.gender-selector {
+  margin-bottom: var(--spacing-lg, 20px);
+}
+
+.gender-options {
+  display: flex;
+  gap: var(--spacing-sm, 8px);
+  margin-top: var(--spacing-xs, 4px);
+}
+
+.gender-chip {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--rounded-lg);
+  background-color: var(--color-surface-bg);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.gender-chip:hover {
+  border-color: var(--color-brand-primary);
+}
+
+.gender-chip.active {
+  background-color: var(--color-brand-primary);
+  color: var(--color-text-on-brand);
+  border-color: var(--color-brand-primary);
+}

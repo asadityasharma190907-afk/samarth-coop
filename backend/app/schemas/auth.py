@@ -37,6 +37,7 @@ class WorkerRegisterRequest(BaseRegisterRequest):
     skill: AllowedSkills
     lat: float = Field(..., ge=-90.0, le=90.0, json_schema_extra={"example": 26.9280})
     lng: float = Field(..., ge=-180.0, le=180.0, json_schema_extra={"example": 75.8100})
+    gender: Literal["male", "female", "prefer_not_to_say"] = "prefer_not_to_say"
     father_name: str | None = Field(None, max_length=100)
     date_of_birth: str | None = Field(None, max_length=20)
     domicile: str | None = Field(None, max_length=100)

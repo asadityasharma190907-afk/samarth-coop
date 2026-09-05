@@ -102,18 +102,28 @@ def compute_dispatch_score(
     )
 
 
-def get_ranked_workers(skill: str, lat: float, lng: float, db: Session) -> list[dict]:
+def get_ranked_workers(
+    skill: str,
+    lat: float,
+    lng: float,
+    db: Session,
+    gender_preference: str = "any",
+) -> list[dict]:
     # Query worker profiles with user detail
-    profiles = (
+    query = (
         db.query(WorkerProfile, User)
         .join(User, WorkerProfile.user_id == User.id)
         .filter(
             WorkerProfile.skill == skill,
             WorkerProfile.verification_status == "verified",
-            WorkerProfile.availability == True,
+            WorkerProfile.availability.is_(True),
         )
-        .all()
     )
+
+    if gender_preference and gender_preference != "any":
+        query = query.filter(WorkerProfile.gender == gender_preference)
+
+    profiles = query.all()
 
     ranked = []
     for profile, user in profiles:

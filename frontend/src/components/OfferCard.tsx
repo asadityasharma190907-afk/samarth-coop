@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MapPin, Clock, Check, X } from 'lucide-react';
+import { MapPin, Clock, Check, X, AlertTriangle, ShieldAlert } from 'lucide-react';
 import { WorkerOfferDetail, useOfferAction } from '../hooks/useOffers';
 import './OfferCard.css';
 
@@ -17,6 +17,36 @@ export function OfferCard({ offer }: OfferCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const startXRef = useRef<number | null>(null);
   const actionMutation = useOfferAction();
+
+  const trustScore = offer.citizen_trust_score ?? 100;
+  const showTrustWarning = trustScore < 80;
+
+  const getTrustInfo = () => {
+    if (trustScore < 40) {
+      return {
+        label: 'Restricted citizen',
+        badgeClass: 'trust-restricted',
+        icon: <ShieldAlert size={15} className="trust-icon" />,
+      };
+    }
+    if (trustScore < 60) {
+      return {
+        label: 'Confirm before accepting',
+        badgeClass: 'trust-caution',
+        icon: <AlertTriangle size={15} className="trust-icon" />,
+      };
+    }
+    if (trustScore < 80) {
+      return {
+        label: 'High cancellation history',
+        badgeClass: 'trust-warning',
+        icon: <AlertTriangle size={15} className="trust-icon" />,
+      };
+    }
+    return null;
+  };
+
+  const trustInfo = getTrustInfo();
 
   useEffect(() => {
     // Only run timer if less than 90s left initially (or we just run it always to be safe)
@@ -131,6 +161,17 @@ export function OfferCard({ offer }: OfferCardProps) {
           </span>
         </div>
       </div>
+
+      {showTrustWarning && trustInfo && (
+        <div
+          className={`trust-indicator-card ${trustInfo.badgeClass}`}
+          data-testid="citizen-trust-warning"
+        >
+          {trustInfo.icon}
+          <span className="trust-title">{trustInfo.label}</span>
+          <span className="trust-score-tag">Trust {trustScore}/100</span>
+        </div>
+      )}
 
       {showProgress && secondsLeft > 0 && (
         <div className="expiry-section">

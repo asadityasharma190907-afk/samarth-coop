@@ -94,6 +94,7 @@ def register_worker(db: Session, payload: WorkerRegisterRequest) -> User:
         skill=payload.skill,
         lat=payload.lat,
         lng=payload.lng,
+        gender=payload.gender,
         father_name=payload.father_name,
         date_of_birth=payload.date_of_birth,
         domicile=payload.domicile,
