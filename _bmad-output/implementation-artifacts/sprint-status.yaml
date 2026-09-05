@@ -151,5 +151,15 @@ development_status:
   20-4-impact-metrics-dashboard: backlog
   epic-20-retrospective: optional
 
+# ─────────────────────────────────────────────────────────────────────────────
+# EPIC 20: Competitive Intelligence & B2G Demo
+# ─────────────────────────────────────────────────────────────────────────────
+  epic-20: in-progress
+  20-1-why-samarth-competitive-comparison-page: done
+  20-2-b2g-bulk-booking-api: done
+  20-3-enterprise-b2g-demo-page: backlog
+  20-4-impact-metrics-dashboard: backlog
+  epic-20-retrospective: optional
+
 action_items: []
 
