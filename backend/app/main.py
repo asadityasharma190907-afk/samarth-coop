@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.routers import (
     admin,
+    analytics,
     auth,
     bookings,
     enterprise,
@@ -37,6 +38,7 @@ app.include_router(offers.router, prefix="/booking-offers", tags=["Offers"])
 app.include_router(wallet.router, prefix="/wallet", tags=["Wallet"])
 app.include_router(welfare.router, prefix="/welfare-fund", tags=["Welfare Fund"])
 app.include_router(federation.router, prefix="/federation", tags=["Federation"])
+app.include_router(analytics.router, prefix="/analytics", tags=["Analytics"])
 app.include_router(enterprise.router, prefix="/enterprise", tags=["Enterprise"])
 app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 
