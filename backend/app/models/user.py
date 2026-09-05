@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Column, DateTime, String, func, text
+from sqlalchemy import Column, DateTime, Integer, String, func, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
@@ -20,6 +20,10 @@ class User(Base):
     name = Column(String(100), nullable=False)
     password_hash = Column(String(255), nullable=False)
     role = Column(String(20), nullable=False)
+    cancellation_count = Column(Integer, nullable=False, default=0, server_default="0")
+    citizen_trust_score = Column(
+        Integer, nullable=False, default=100, server_default="100"
+    )
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     worker_profile = relationship(
