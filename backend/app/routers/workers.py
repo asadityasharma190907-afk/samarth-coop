@@ -1,10 +1,12 @@
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.dependencies import get_current_user
+from app.models.booking import Booking
 from app.models.user import User
 from app.models.worker_profile import WorkerProfile
 from app.schemas.workers import WorkerResponse
@@ -69,6 +71,19 @@ def get_current_worker_profile(
             status_code=status.HTTP_404_NOT_FOUND, detail="Worker profile not found"
         )
 
+    completed_jobs_count = (
+        db.query(Booking)
+        .filter(Booking.worker_id == current_user.id, Booking.status == "completed")
+        .count()
+    )
+
+    lifetime_contribution = (
+        db.query(func.sum(Booking.platform_fee))
+        .filter(Booking.worker_id == current_user.id, Booking.status == "completed")
+        .scalar()
+        or 0
+    )
+
     return {
         "id": profile.id,
         "user_id": profile.user_id,
@@ -80,4 +95,6 @@ def get_current_worker_profile(
         "verification_status": profile.verification_status,
         "last_active_at": profile.last_active_at,
         "created_at": profile.created_at,
+        "completed_jobs_count": completed_jobs_count,
+        "lifetime_welfare_fund_contribution": float(lifetime_contribution),
     }

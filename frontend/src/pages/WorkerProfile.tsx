@@ -1,5 +1,6 @@
 import React from 'react';
 import { useProfile } from '../hooks/useProfile';
+import { InsuranceStatusCard } from '../components/InsuranceStatusCard';
 
 export function WorkerProfile() {
   const { data: profile, isLoading, isError } = useProfile();
@@ -179,6 +180,13 @@ export function WorkerProfile() {
           </div>
         </div>
       </div>
+
+      {profile.verification_status === 'verified' && (
+        <InsuranceStatusCard
+          completedJobs={profile.completed_jobs_count}
+          lifetimeContribution={profile.lifetime_welfare_fund_contribution}
+        />
+      )}
     </div>
   );
 }
