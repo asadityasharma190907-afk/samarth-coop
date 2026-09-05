@@ -1,86 +1,37 @@
-# Sprint Status — Samarth
-# Generated: 08-29-2026
-# Last Updated: 09-04-2026
-# Project: Samarth — Cooperative Gig Services Platform
-# Problem Statement: SIH #26089 — Ministry of Cooperation / NCCT
-# Team: 6 members (Aditya + 5)
-# Epic source: _bmad-output/planning-artifacts/epics.md
+# ==========================================
+# BMAD Sprint Status Tracking
+# Generated: 2026-08-29
+# ==========================================
 
-# STATUS DEFINITIONS:
-# Epic Status: backlog | in-progress | done
-# Story Status: backlog | ready-for-dev | in-progress | review | done
-# Retrospective: optional | done
-# Action items: open | in-progress | done
-
-generated: 08-29-2026 20:30
-last_updated: 09-04-2026 19:00
-project: Samarth
-project_key: SAMARTH
-tracking_system: github-issues
-story_location: "_bmad-output/implementation-artifacts/stories"
-
-# ─────────────────────────────────────────────────────────────────────────────
-# EPIC 1: Project Foundation & Authentication
-# ─────────────────────────────────────────────────────────────────────────────
 development_status:
+  # EPIC 1: Foundation & Data Model
   epic-1: done
-  1-1-project-bootstrap-manual-setup: done
-  1-2-design-token-system: done
-  1-3-citizen-registration-api: done
-  1-4-worker-registration-api: done
-  1-5-login-api: done
-  1-6-citizen-registration-login-ui: done
-  1-7-worker-registration-login-ui: done
+  1-1-database-schema-and-models: done
+  1-2-authentication-and-authorization: done
   epic-1-retrospective: done
 
-# ─────────────────────────────────────────────────────────────────────────────
-# EPIC 2: Dispatch Algorithm (Milestone Gate)
-# ─────────────────────────────────────────────────────────────────────────────
+  # EPIC 2: Fair Dispatch Engine & Accept Concurrency
   epic-2: done
-  2-1-seed-data-script: done
-  2-2-weekly-earnings-subquery: done
-  2-3-reliability-penalty-computation: done
-  2-4-dispatch-score-endpoint: done
+  2-1-fair-dispatch-algorithm: done
+  2-2-booking-accept-concurrency: done
   epic-2-retrospective: done
 
-# ─────────────────────────────────────────────────────────────────────────────
-# EPIC 3: Booking & Offer Cascade
-# ─────────────────────────────────────────────────────────────────────────────
+  # EPIC 3: Citizen Booking Experience
   epic-3: done
-  3-1-create-booking-api: done
-  3-2-initial-offer-dispatch: done
-  3-3-worker-accept-row-lock: done
-  3-4-worker-decline-cascade: done
-  3-5-lazy-offer-expiry: done
-  3-6-booking-flow-ui-citizen: done
-  3-7-worker-offer-inbox-ui: done
+  3-1-citizen-booking-flow: done
   epic-3-retrospective: done
 
-# ─────────────────────────────────────────────────────────────────────────────
-# EPIC 4: Completion Economics (Wallet & Welfare Fund)
-# ─────────────────────────────────────────────────────────────────────────────
+  # EPIC 4: Worker Mobile Web Interface
   epic-4: done
-  4-1-job-completion-api: done
-  4-2-worker-wallet-api: done
-  4-3-welfare-fund-summary-api: done
-  4-4-wallet-completion-ui: done
+  4-1-worker-dashboard: done
   epic-4-retrospective: done
 
-# ─────────────────────────────────────────────────────────────────────────────
-# EPIC 5: Polish, Verification, Rating & Federation View
-# ─────────────────────────────────────────────────────────────────────────────
+  # EPIC 5: Federation Administration & Demonstration
   epic-5: done
-  5-1-worker-verification-toggle-api: done
-  5-2-citizen-rating-api: done
-  5-3-offer-audit-trail-api: done
-  5-4-rating-ui-verified-badge: done
-  5-5-federation-dashboard-ui: done
-  5-6-demo-reliability-e2e-validation: done
+  5-1-federation-analytics-dashboard: done
   epic-5-retrospective: done
 
-# ─────────────────────────────────────────────────────────────────────────────
-# EPIC 6: Demo Hardening, Verification, & Dashboard Transparency
-# ─────────────────────────────────────────────────────────────────────────────
+  # EPIC 6: Quality, Concurrency & Governance
   epic-6: done
   6-1-double-accept-concurrency: done
   6-2-lazy-expiry-test: done
@@ -90,66 +41,62 @@ development_status:
   6-6-verification-queue-ui: done
   6-7-earnings-distribution-chart: done
   6-8-audit-filtering: done
-  epic-6-retrospective: optional
 
-# ─────────────────────────────────────────────────────────────────────────────
-# EPIC 7: Dispute Resolution & Trust (Zero New Tables)
-# ─────────────────────────────────────────────────────────────────────────────
+  # EPIC 7: Dispute Resolution Framework
   epic-7: done
   7-1-dispute-migration: done
   7-2-dispute-api: done
   7-3-citizen-dispute-ui: done
   7-4-ministry-disputes-ui: done
-  epic-7-retrospective: optional
 
-# ─────────────────────────────────────────────────────────────────────────────
-# EPIC 8: Ministry Analytics Polish
-# ─────────────────────────────────────────────────────────────────────────────
+  # EPIC 8: Analytics & Data Export
   epic-8: done
-  8-1-csv-export-api: done
+  8-1-analytics-export-api: done
   8-2-csv-download-button: done
-  epic-8-retrospective: optional
 
-# ─────────────────────────────────────────────────────────────────────────────
-# EPIC 9: Worker KYC & Verification Infrastructure
-# ─────────────────────────────────────────────────────────────────────────────
+  # EPIC 9: Worker KYC & Identity Verification
   epic-9: done
-  9-1-db-schema-expansion-worker-kyc: done
-  9-2-auth-api-kyc-registration: done
-  9-3-kyc-router-aadhaar-razorpay: done
-  epic-9-retrospective: optional
+  9-1-worker-kyc-schema: done
+  9-2-kyc-auth-api-schemas: done
+  9-3-kyc-aadhaar-razorpay-endpoints: done
 
-# ─────────────────────────────────────────────────────────────────────────────
-# EPIC 10: Multi-Step Worker Onboarding & Verification UI
-# ─────────────────────────────────────────────────────────────────────────────
+  # EPIC 10: Multi-Step Worker Onboarding Wizard
   epic-10: done
-  10-1-multi-step-worker-registration-wizard: done
-  10-2-police-verified-badge: done
-  epic-10-retrospective: optional
+  10-1-multi-step-worker-onboarding-wizard: done
+  10-2-police-verified-badge-ui: done
 
-# ─────────────────────────────────────────────────────────────────────────────
-# EPIC 11: Worker & Citizen Dashboard Experience Polish
-# ─────────────────────────────────────────────────────────────────────────────
+  # EPIC 11: Dashboard Routing & UX Enhancements
   epic-11: done
   11-1-worker-dashboard-nested-routing: done
   11-2-citizen-dashboard-recent-bookings: done
-  epic-11-retrospective: optional
 
-# ─────────────────────────────────────────────────────────────────────────────
-# EPIC 12: Design System & E2E Verification
-# ─────────────────────────────────────────────────────────────────────────────
+  # EPIC 12: Design Tokens & Verification Suite Health Check
   epic-12: done
   12-1-design-token-refactoring: done
   12-2-e2e-demo-verification-suite-health-check: done
-# ─────────────────────────────────────────────────────────────────────────────
-# EPIC 20: Competitive Intelligence & B2G Demo
-# ─────────────────────────────────────────────────────────────────────────────
-  epic-20: in-progress
+
+  # EPIC 13: Fair-Surge Dynamic Pricing Engine
+  epic-13: done
+  13-1-fair-surge-pricing-engine: done
+  13-2-add-pricing-columns-migration: done
+  13-3-create-booking-dynamic-pricing: done
+  13-4-get-booking-pricing-breakdown: done
+  13-5-dynamic-pricing-transparency-ui: done
+  13-6-fair-surge-pricing-e2e-verification: done
+
+  # EPIC 14: Adaptive Radius Dispatch Engine
+  epic-14: done
+  14-1-adaptive-radius-dispatch-service: done
+  14-2-add-last-active-at-migration: done
+  14-3-worker-heartbeat-ping-endpoint: done
+  14-4-get-workers-adaptive-dispatch-router: done
+  14-5-federation-dashboard-network-density-panel: done
+  epic-14-retrospective: optional
+
+  # EPIC 20: Competitive Intelligence & B2G Demo
+  epic-20: done
   20-1-why-samarth-competitive-comparison-page: done
   20-2-b2g-bulk-booking-api: done
-  20-3-enterprise-b2g-demo-page: review
+  20-3-enterprise-b2g-demo-page: done
   20-4-impact-metrics-dashboard: done
   epic-20-retrospective: optional
-
-action_items: []
-
