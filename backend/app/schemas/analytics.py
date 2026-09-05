@@ -34,3 +34,20 @@ class FairnessMetricsResponse(BaseModel):
     offers_distribution: list[WorkerOfferDistributionItem]
     total_active_workers: int
     total_weekly_earnings: float
+
+
+class RevenueAnalyticsResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    period: str
+    total_bookings: int
+    completed_bookings: int
+    gross_merchandise_value: float
+    platform_revenue_2_5_pct: float
+    welfare_fund_collected_2_5_pct: float
+    payment_gateway_cost_est_2_pct: float
+    net_platform_margin: float
+    avg_order_value: float
+    breakeven_bookings_per_month: int
+    current_pct_of_breakeven: float
+    surge_revenue: float

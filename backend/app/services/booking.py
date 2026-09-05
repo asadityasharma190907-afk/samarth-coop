@@ -13,6 +13,7 @@ from app.schemas.bookings import CreateBookingRequest
 from app.schemas.pricing import PricingContext
 from app.services.dispatch import get_ranked_workers
 from app.services.pricing import compute_fair_surge_price
+from app.services.push import send_push_notification
 
 JOB_PRICES = {
     "electrician": Decimal("500.00"),
@@ -58,6 +59,18 @@ def dispatch_first_offer(booking: Booking, db: Session) -> None:
     db.add(offer)
     db.commit()
     db.refresh(offer)
+
+    worker_profile = (
+        db.query(WorkerProfile).filter_by(user_id=top_worker["worker_id"]).first()
+    )
+    if worker_profile and worker_profile.push_subscription:
+        price_val = int(booking.job_price) if booking.job_price else 500
+        send_push_notification(
+            subscription_raw=worker_profile.push_subscription,
+            title="Samarth -- New Job Offer",
+            body=f"{str(booking.skill).capitalize()} work -- INR {price_val}. Tap to accept.",
+            data={"offer_id": str(offer.id), "url": "/worker/offers"},
+        )
 
 
 def create_booking(

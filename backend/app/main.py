@@ -10,6 +10,7 @@ from app.routers import (
     federation,
     kyc,
     offers,
+    push,
     wallet,
     welfare,
     workers,
@@ -35,6 +36,7 @@ app.include_router(kyc.router, prefix="/kyc", tags=["KYC"])
 app.include_router(workers.router, prefix="/workers", tags=["Workers"])
 app.include_router(bookings.router, prefix="/bookings", tags=["Bookings"])
 app.include_router(offers.router, prefix="/booking-offers", tags=["Offers"])
+app.include_router(push.router, prefix="/push", tags=["Push Notifications"])
 app.include_router(wallet.router, prefix="/wallet", tags=["Wallet"])
 app.include_router(welfare.router, prefix="/welfare-fund", tags=["Welfare Fund"])
 app.include_router(federation.router, prefix="/federation", tags=["Federation"])

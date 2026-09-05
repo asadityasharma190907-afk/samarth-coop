@@ -9,6 +9,8 @@ import { PricingBreakdownCard } from '../components/PricingBreakdownCard';
 import { GenderPreferenceSelector } from '../components/GenderPreferenceSelector';
 import { useCreateBooking } from '../hooks/useBooking';
 import { usePricePreview } from '../hooks/usePricePreview';
+import { useLanguage } from '../hooks/useLanguage';
+import { LanguageToggle } from '../components/LanguageToggle';
 import './Book.css';
 
 // Fix for default Leaflet icon not showing correctly in React
@@ -45,6 +47,7 @@ export function Book() {
   const navigate = useNavigate();
   const createBooking = useCreateBooking();
   const pricePreview = usePricePreview(skill, position[0], position[1], urgency);
+  const { t } = useLanguage();
 
   const handleNext = () => setStep((s) => Math.min(s + 1, 4));
   const handleBack = () => setStep((s) => Math.max(s - 1, 1));
@@ -81,7 +84,19 @@ export function Book() {
   return (
     <div className="book-container">
       <div className="wizard-header">
-        <h1 className="wizard-title">Book a Service</h1>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 'var(--spacing-md)',
+          }}
+        >
+          <h1 className="wizard-title" style={{ margin: 0 }}>
+            {t('nav.book')}
+          </h1>
+          <LanguageToggle />
+        </div>
         <p className="wizard-subtitle">Find a cooperative worker near you.</p>
       </div>
 

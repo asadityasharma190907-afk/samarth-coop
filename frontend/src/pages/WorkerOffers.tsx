@@ -2,6 +2,7 @@ import React from 'react';
 import { Radio } from 'lucide-react';
 import { useWorkerOffers } from '../hooks/useOffers';
 import { OfferCard } from '../components/OfferCard';
+import { NotificationPermissionBanner } from '../components/NotificationPermissionBanner';
 import './WorkerOffers.css';
 
 export function WorkerOffers() {
@@ -33,6 +34,7 @@ export function WorkerOffers() {
 
   return (
     <div className="worker-offers-container">
+      <NotificationPermissionBanner />
       <div className="worker-offers-header">
         <h1 className="worker-offers-title">Job Offers</h1>
         <p className="worker-offers-subtitle">
