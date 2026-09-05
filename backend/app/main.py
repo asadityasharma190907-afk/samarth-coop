@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.routers import (
     admin,
@@ -15,12 +16,16 @@ from app.routers import (
     welfare,
     workers,
 )
+from app.services.storage import UPLOAD_DIR
 
 app = FastAPI(
     title="Samarth API",
     description="Cooperative Gig Services Platform API",
     version="1.0.0",
 )
+
+# Mount local uploads directory for photo proof serving
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 # Enable CORS for frontend on localhost:3000
 app.add_middleware(

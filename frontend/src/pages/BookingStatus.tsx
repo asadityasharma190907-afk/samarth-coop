@@ -8,6 +8,7 @@ import { VerifiedBadge } from '../components/VerifiedBadge';
 import { StarRating } from '../components/StarRating';
 import { useLanguage } from '../hooks/useLanguage';
 import { PricingBreakdown } from '../components/PricingBreakdown';
+import { PhotoProofCard } from '../components/PhotoProofCard';
 import { api } from '../lib/api';
 import './BookingStatus.css';
 
@@ -112,6 +113,13 @@ export function BookingStatus() {
             </div>
           </div>
 
+          {(booking.before_photo_url || booking.after_photo_url) && (
+            <PhotoProofCard
+              beforePhotoUrl={booking.before_photo_url}
+              afterPhotoUrl={booking.after_photo_url}
+            />
+          )}
+
           <div className="action-buttons mt-6">
             <button
               className="btn-secondary"
@@ -147,6 +155,11 @@ export function BookingStatus() {
           <h2 className="status-title text-status-success">Job Completed</h2>
           <p className="status-subtitle mb-6">Thank you for using Samarth!</p>
           <WelfareFundChip amount={booking.platform_fee || 0} />
+
+          <PhotoProofCard
+            beforePhotoUrl={booking.before_photo_url}
+            afterPhotoUrl={booking.after_photo_url}
+          />
 
           <div className="mt-8 mb-4">
             {!booking.rating && !ratingSubmitted ? (

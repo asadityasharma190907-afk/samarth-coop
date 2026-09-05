@@ -35,7 +35,13 @@ Thumbs.db
 
 # Temporary GitHub PR body drafts
 pr_body_*.md
+pr_*.md
+
+# Uploads
+backend/uploads/*
+!backend/uploads/.gitkeep
 
 # Keep BMad artifacts (they are docs, not secrets)
 # _bmad-output/ is intentionally NOT ignored
+
 
