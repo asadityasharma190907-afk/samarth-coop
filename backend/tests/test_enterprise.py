@@ -42,9 +42,9 @@ def test_create_enterprise_bulk_booking_success():
     assert data["cooperative_workers_needed"] > 0
 
     # Line item 1: 4 electricians * ₹500 * 4 days/month = ₹8,000
-    # Line item 2: 22 cleaners * ₹400 * 22 days/month = ₹193,600
+    # Line item 2: 22 cleaners * ₹350 * 22 days/month = ₹169,400
     expected_electrician_monthly = Decimal("500.00") * 4 * 4
-    expected_cleaner_monthly = Decimal("400.00") * 22 * 22
+    expected_cleaner_monthly = Decimal("350.00") * 22 * 22
     expected_total_monthly = expected_electrician_monthly + expected_cleaner_monthly
     expected_welfare = (expected_total_monthly * Decimal("0.05")).quantize(
         Decimal("0.01")

@@ -9,7 +9,7 @@ from app.schemas.enterprise import (
     BulkBookingRequest,
     BulkBookingResponse,
 )
-from app.services.booking import JOB_PRICES
+from app.services.pricing import BASE_RATES as JOB_PRICES
 
 router = APIRouter()
 
