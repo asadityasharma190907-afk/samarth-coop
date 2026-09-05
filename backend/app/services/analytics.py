@@ -11,6 +11,8 @@ from app.models.worker_profile import WorkerProfile
 from app.schemas.analytics import (
     FairnessMetricsResponse,
     IncomeRangeStats,
+    RevenueAnalyticsResponse,
+    RevenueStream,
     WorkerOfferDistributionItem,
 )
 
@@ -168,4 +170,98 @@ def get_fairness_metrics(db: Session) -> FairnessMetricsResponse:
         offers_distribution=offers_distribution,
         total_active_workers=total_workers,
         total_weekly_earnings=round(total_earnings, 2),
+    )
+
+
+def get_revenue_analytics(db: Session) -> RevenueAnalyticsResponse:
+    now = datetime.now(timezone.utc)
+    month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+    # GMV is job_price + surge_surplus
+    # Platform Revenue is platform_fee
+    # Welfare Fund is from welfare_disbursements
+
+    # Let's aggregate bookings for this month
+    bookings_query = (
+        db.query(
+            func.count(Booking.id).label("count"),
+            func.coalesce(func.sum(Booking.job_price), 0).label("job_price_sum"),
+            func.coalesce(func.sum(Booking.surge_surplus), 0).label(
+                "surge_surplus_sum"
+            ),
+            func.coalesce(func.sum(Booking.platform_fee), 0).label("platform_fee_sum"),
+        )
+        .filter(Booking.status == "completed", Booking.created_at >= month_start)
+        .first()
+    )
+
+    current_bookings = bookings_query.count if bookings_query else 0
+    job_price_sum = float(bookings_query.job_price_sum) if bookings_query else 0.0
+    surge_sum = float(bookings_query.surge_surplus_sum) if bookings_query else 0.0
+    platform_fee_sum = float(bookings_query.platform_fee_sum) if bookings_query else 0.0
+
+    gmv = job_price_sum + surge_sum
+
+    from app.models.welfare_disbursement import WelfareDisbursement
+
+    welfare_query = (
+        db.query(func.coalesce(func.sum(WelfareDisbursement.amount), 0))
+        .filter(WelfareDisbursement.disbursed_at >= month_start)
+        .scalar()
+    )
+
+    welfare_fund = float(welfare_query) if welfare_query else 0.0
+
+    avg_order_value = round(gmv / current_bookings, 2) if current_bookings > 0 else 0.0
+    blended_fee_percentage = (
+        round((platform_fee_sum / gmv) * 100, 2) if gmv > 0 else 0.0
+    )
+    net_margin_per_booking = (
+        round(platform_fee_sum / current_bookings, 2) if current_bookings > 0 else 0.0
+    )
+
+    breakeven_target_bookings = 3267
+    breakeven_percentage = round(
+        (current_bookings / breakeven_target_bookings) * 100, 1
+    )
+
+    # Revenue streams
+    # 1. Transaction fees (platform_fee)
+    # 2. Surge premium (surge_surplus)
+    # 3. B2G pilot (assuming 0 as per prompt)
+
+    transaction_fees = platform_fee_sum
+    surge_premium = surge_sum
+    b2g_pilot = 0.0
+    total_revenue = transaction_fees + surge_premium + b2g_pilot
+
+    streams = [
+        RevenueStream(
+            name="Transaction Fees",
+            amount=round(transaction_fees, 2),
+            percentage=round((transaction_fees / total_revenue) * 100, 1)
+            if total_revenue > 0
+            else 0.0,
+        ),
+        RevenueStream(
+            name="Surge Premium",
+            amount=round(surge_premium, 2),
+            percentage=round((surge_premium / total_revenue) * 100, 1)
+            if total_revenue > 0
+            else 0.0,
+        ),
+        RevenueStream(name="B2G (₹0 pilot)", amount=0.0, percentage=0.0),
+    ]
+
+    return RevenueAnalyticsResponse(
+        gmv=round(gmv, 2),
+        platform_revenue=round(platform_fee_sum, 2),
+        welfare_fund=round(welfare_fund, 2),
+        avg_order_value=avg_order_value,
+        blended_fee_percentage=blended_fee_percentage,
+        net_margin_per_booking=net_margin_per_booking,
+        breakeven_target_bookings=breakeven_target_bookings,
+        current_bookings=current_bookings,
+        breakeven_percentage=breakeven_percentage,
+        revenue_streams=streams,
     )

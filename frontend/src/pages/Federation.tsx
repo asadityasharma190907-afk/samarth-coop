@@ -9,6 +9,7 @@ import { VerificationQueue } from '../components/VerificationQueue';
 import { DisputesQueue } from '../components/DisputesQueue';
 import { FairnessMetricsPanel } from '../components/FairnessMetricsPanel';
 import { NetworkDensityPanel } from '../components/NetworkDensityPanel';
+import { RevenueAnalyticsPanel } from '../components/RevenueAnalyticsPanel';
 import './Federation.css';
 
 interface FederationStats {
@@ -31,7 +32,7 @@ interface FederationBooking {
 
 export function Federation() {
   const [activeTab, setActiveTab] = useState<
-    'overview' | 'impact' | 'density' | 'verifications' | 'disputes'
+    'overview' | 'impact' | 'density' | 'verifications' | 'disputes' | 'analytics'
   >('overview');
   const [selectedBookingId, setSelectedBookingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -139,6 +140,12 @@ export function Federation() {
         >
           Disputes
         </button>
+        <button
+          className={`federation-tab-btn ${activeTab === 'analytics' ? 'active' : ''}`}
+          onClick={() => setActiveTab('analytics')}
+        >
+          Business Analytics
+        </button>
       </nav>
 
       {activeTab === 'density' && <NetworkDensityPanel />}
@@ -160,6 +167,8 @@ export function Federation() {
           )}
         </section>
       )}
+
+      {activeTab === 'analytics' && <RevenueAnalyticsPanel />}
 
       {activeTab === 'overview' && (
         <>
