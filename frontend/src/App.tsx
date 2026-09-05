@@ -15,32 +15,35 @@ import { Enterprise } from './pages/Enterprise';
 
 import { WorkerProfile } from './pages/WorkerProfile';
 import { WhySamarth } from './pages/WhySamarth';
+import { LanguageProvider } from './hooks/useLanguage';
 
 const queryClient = new QueryClient();
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/why-samarth" element={<WhySamarth />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/book" element={<Book />} />
-          <Route path="/booking/:id" element={<BookingStatus />} />
-          <Route path="/enterprise" element={<Enterprise />} />
-          <Route path="/worker" element={<WorkerDashboard />}>
-            <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<WorkerHome />} />
-            <Route path="offers" element={<WorkerOffers />} />
-            <Route path="wallet" element={<WorkerWallet />} />
-            <Route path="profile" element={<WorkerProfile />} />
-          </Route>
-          <Route path="/federation" element={<Federation />} />
-        </Routes>
-      </BrowserRouter>
-    </QueryClientProvider>
+    <LanguageProvider>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/why-samarth" element={<WhySamarth />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/book" element={<Book />} />
+            <Route path="/booking/:id" element={<BookingStatus />} />
+            <Route path="/enterprise" element={<Enterprise />} />
+            <Route path="/worker" element={<WorkerDashboard />}>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<WorkerHome />} />
+              <Route path="offers" element={<WorkerOffers />} />
+              <Route path="wallet" element={<WorkerWallet />} />
+              <Route path="profile" element={<WorkerProfile />} />
+            </Route>
+            <Route path="/federation" element={<Federation />} />
+          </Routes>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </LanguageProvider>
   );
 }

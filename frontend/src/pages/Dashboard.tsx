@@ -1,10 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBookings } from '../hooks/useBooking';
+import { useLanguage } from '../hooks/useLanguage';
+import { LanguageToggle } from '../components/LanguageToggle';
 
 export function Dashboard() {
   const navigate = useNavigate();
   const { data: bookings, isLoading, isError } = useBookings();
+  const { t } = useLanguage();
 
   const handleLogout = () => {
     localStorage.removeItem('samarth_token');
@@ -22,9 +25,10 @@ export function Dashboard() {
         }}
       >
         <h1 style={{ fontSize: 'var(--font-size-h2)', margin: 0 }}>My Bookings</h1>
-        <div style={{ display: 'flex', gap: 'var(--spacing-md)' }}>
+        <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center' }}>
+          <LanguageToggle />
           <button className="btn-primary" onClick={() => navigate('/book')}>
-            Book New Service
+            {t('nav.book')}
           </button>
           <button className="btn-secondary" onClick={handleLogout}>
             Log out
