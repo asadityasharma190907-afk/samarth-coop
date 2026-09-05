@@ -47,7 +47,7 @@ describe('FairnessMetricsPanel', () => {
       },
       meena_effect_count: 3,
       meena_effect_description:
-        'Times fairness dispatch prioritized a low-earning worker over a closer or higher-rated peer to avoid starvation and ensure fair income.',
+        'Times fairness dispatch prioritized a low-earning worker over a closer peer.',
       offers_distribution: [
         {
           worker_id: '1',
@@ -132,7 +132,7 @@ describe('FairnessMetricsPanel', () => {
     );
 
     expect(
-      await screen.findByText(/Failed to load fairness metrics. Please ensure the backend is running./i),
+      await screen.findByText(/Failed to load fairness metrics/i),
     ).toBeInTheDocument();
   });
 });

@@ -56,7 +56,7 @@ export function FairnessMetricsPanel() {
 
   const maxWeeklyEarnings = Math.max(
     ...data.offers_distribution.map((d) => d.weekly_earnings),
-    1
+    1,
   );
 
   return (
@@ -65,7 +65,10 @@ export function FairnessMetricsPanel() {
       <div className="fairness-header">
         <div className="fairness-title-group">
           <h2>Income Fairness & Gini Coefficient</h2>
-          <p>Real-time algorithmic fairness metrics comparing cooperative dispatch vs. proximity-only dispatch</p>
+          <p>
+            Real-time algorithmic fairness metrics comparing cooperative dispatch vs. proximity-only
+            dispatch
+          </p>
         </div>
         <div className="fairness-live-badge">
           <span className="live-dot" />
@@ -111,7 +114,9 @@ export function FairnessMetricsPanel() {
         </div>
 
         <p className="gini-explanation">
-          Note: Gini index ranges from 0.0 (perfect equality) to 1.0 (perfect inequality). Samarth’s weekly earnings penalty actively redistributes dispatch priority to maintain a low Gini index.
+          Note: Gini index ranges from 0.0 (perfect equality) to 1.0 (perfect inequality). Samarth’s
+          weekly earnings penalty actively redistributes dispatch priority to maintain a low Gini
+          index.
         </p>
       </div>
 

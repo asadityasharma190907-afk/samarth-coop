@@ -29,7 +29,9 @@ interface FederationBooking {
 }
 
 export function Federation() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'impact' | 'verifications' | 'disputes'>('overview');
+  const [activeTab, setActiveTab] = useState<
+    'overview' | 'impact' | 'verifications' | 'disputes'
+  >('overview');
   const [selectedBookingId, setSelectedBookingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterSkill, setFilterSkill] = useState('All Skills');
