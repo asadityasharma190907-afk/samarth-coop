@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MapPin, Clock, Check, X, AlertTriangle, ShieldAlert } from 'lucide-react';
 import { WorkerOfferDetail, useOfferAction } from '../hooks/useOffers';
+import { useLanguage } from '../hooks/useLanguage';
 import './OfferCard.css';
 
 interface OfferCardProps {
@@ -17,6 +18,7 @@ export function OfferCard({ offer }: OfferCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const startXRef = useRef<number | null>(null);
   const actionMutation = useOfferAction();
+  const { t } = useLanguage();
 
   const trustScore = offer.citizen_trust_score ?? 100;
   const showTrustWarning = trustScore < 80;
@@ -213,14 +215,14 @@ export function OfferCard({ offer }: OfferCardProps) {
             onClick={handleDecline}
             disabled={actionMutation.isPending || secondsLeft === 0}
           >
-            <X size={18} className="mr-1 inline" /> Decline
+            <X size={18} className="mr-1 inline" /> {t('action.decline')}
           </button>
           <button
             className="btn-primary"
             onClick={() => setShowConfirm(true)}
             disabled={actionMutation.isPending || secondsLeft === 0}
           >
-            <Check size={18} className="mr-1 inline" /> Accept
+            <Check size={18} className="mr-1 inline" /> {t('action.accept')}
           </button>
         </div>
       )}
