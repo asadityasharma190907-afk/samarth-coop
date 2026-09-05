@@ -36,18 +36,27 @@ class FairnessMetricsResponse(BaseModel):
     total_weekly_earnings: float
 
 
+class RevenueStream(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    name: str
+    amount: float
+    percentage: float
+
+
 class RevenueAnalyticsResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    period: str
-    total_bookings: int
-    completed_bookings: int
-    gross_merchandise_value: float
-    platform_revenue_2_5_pct: float
-    welfare_fund_collected_2_5_pct: float
-    payment_gateway_cost_est_2_pct: float
-    net_platform_margin: float
+    gmv: float
+    platform_revenue: float
+    welfare_fund: float
+
     avg_order_value: float
-    breakeven_bookings_per_month: int
-    current_pct_of_breakeven: float
-    surge_revenue: float
+    blended_fee_percentage: float
+    net_margin_per_booking: float
+
+    breakeven_target_bookings: int
+    current_bookings: int
+    breakeven_percentage: float
+
+    revenue_streams: list[RevenueStream]
