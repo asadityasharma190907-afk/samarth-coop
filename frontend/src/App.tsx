@@ -13,6 +13,7 @@ import { WorkerWallet } from './pages/WorkerWallet';
 import { Federation } from './pages/Federation';
 
 import { WorkerProfile } from './pages/WorkerProfile';
+import { WhySamarth } from './pages/WhySamarth';
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/why-samarth" element={<WhySamarth />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/book" element={<Book />} />
           <Route path="/booking/:id" element={<BookingStatus />} />
