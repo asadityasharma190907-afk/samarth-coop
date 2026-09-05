@@ -22,19 +22,19 @@ export function useCreateBulkBooking() {
     mutationFn: async (data: EnterpriseBookingRequest): Promise<EnterpriseBookingResponse> => {
       // TODO: Replace with actual API call once POST /enterprise/bookings is implemented
       // return api.post('/enterprise/bookings', data);
-      
+
       // Mocking the backend API response for Demo purposes
       await new Promise((resolve) => setTimeout(resolve, 800));
-      
+
       let total_bookings = 0;
       let total_cost = 0;
-      
-      data.services.forEach(service => {
+
+      data.services.forEach((service) => {
         let multiplier = 1;
         if (service.schedule === 'daily') multiplier = 30;
         else if (service.schedule === 'weekly') multiplier = 4;
         else if (service.schedule === 'monthly') multiplier = 1;
-        
+
         total_bookings += service.quantity * multiplier;
         total_cost += service.quantity * multiplier * 500; // Mock cost 500 INR per booking
       });

@@ -153,9 +153,7 @@ def get_fairness_metrics(db: Session) -> FairnessMetricsResponse:
     # 4. "Meena Effect" Counter
     # Count completed bookings or offers where the assigned worker was prioritized over higher-rated/closer peers
     total_completed = (
-        db.query(func.count(Booking.id))
-        .filter(Booking.status == "completed")
-        .scalar()
+        db.query(func.count(Booking.id)).filter(Booking.status == "completed").scalar()
         or 0
     )
     meena_effect_count = max(1, total_completed - 1) if total_completed > 0 else 3

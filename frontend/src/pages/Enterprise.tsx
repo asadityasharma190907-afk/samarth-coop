@@ -15,9 +15,9 @@ interface ServiceRow {
 export function Enterprise() {
   const [institutionName, setInstitutionName] = useState('');
   const [services, setServices] = useState<ServiceRow[]>([
-    { skill: 'electrician', quantity: 1, schedule: 'daily' }
+    { skill: 'electrician', quantity: 1, schedule: 'daily' },
   ]);
-  
+
   const createBulkBooking = useCreateBulkBooking();
 
   const handleAddService = () => {
@@ -39,10 +39,10 @@ export function Enterprise() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!institutionName.trim() || services.length === 0) return;
-    
+
     createBulkBooking.mutate({
       institution_name: institutionName,
-      services
+      services,
     });
   };
 
@@ -83,7 +83,7 @@ export function Enterprise() {
 
         <div className="form-group">
           <label className="form-label">Required Services</label>
-          
+
           {services.map((service, index) => (
             <div key={index} className="service-row">
               <div>
@@ -99,22 +99,26 @@ export function Enterprise() {
                   ))}
                 </select>
               </div>
-              
+
               <div>
                 <input
                   type="number"
                   min="1"
                   className="form-input"
                   value={service.quantity}
-                  onChange={(e) => handleServiceChange(index, 'quantity', parseInt(e.target.value) || 1)}
+                  onChange={(e) =>
+                    handleServiceChange(index, 'quantity', parseInt(e.target.value) || 1)
+                  }
                 />
               </div>
-              
+
               <div>
                 <select
                   className="form-select"
                   value={service.schedule}
-                  onChange={(e) => handleServiceChange(index, 'schedule', e.target.value as Schedule)}
+                  onChange={(e) =>
+                    handleServiceChange(index, 'schedule', e.target.value as Schedule)
+                  }
                 >
                   <option value="daily">Daily</option>
                   <option value="weekly">Weekly</option>
@@ -139,12 +143,15 @@ export function Enterprise() {
 
         <div className="form-actions">
           <button type="button" className="btn-add-service" onClick={handleAddService}>
-            <Plus size={16} style={{ display: 'inline', verticalAlign: 'text-bottom', marginRight: '4px' }} />
+            <Plus
+              size={16}
+              style={{ display: 'inline', verticalAlign: 'text-bottom', marginRight: '4px' }}
+            />
             Add another service
           </button>
-          
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             className="btn-primary"
             disabled={createBulkBooking.isPending || !institutionName.trim()}
           >
@@ -161,7 +168,7 @@ export function Enterprise() {
               For {institutionName}
             </p>
           </div>
-          
+
           <div className="result-grid">
             <div className="result-item">
               <span className="result-label">Total Bookings / Month</span>
@@ -169,12 +176,10 @@ export function Enterprise() {
                 {createBulkBooking.data.total_bookings_per_month}
               </span>
             </div>
-            
+
             <div className="result-item">
               <span className="result-label">Workers Needed</span>
-              <span className="result-value">
-                {createBulkBooking.data.workers_needed}
-              </span>
+              <span className="result-value">{createBulkBooking.data.workers_needed}</span>
             </div>
 
             <div className="result-item">
@@ -183,7 +188,7 @@ export function Enterprise() {
                 {formatCurrency(createBulkBooking.data.estimated_monthly_cost)}
               </span>
             </div>
-            
+
             <div className="result-item">
               <span className="result-label">Welfare Fund Contribution</span>
               <span className="result-value welfare">

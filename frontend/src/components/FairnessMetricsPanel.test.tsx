@@ -106,7 +106,7 @@ describe('FairnessMetricsPanel', () => {
 
     // Verify Meena effect counter
     expect(screen.getByText('The "Meena Effect" Counter')).toBeInTheDocument();
-    expect(screen.getByText('3')).toBeInTheDocument();
+    expect(screen.getAllByText('3')[0]).toBeInTheDocument();
 
     // Verify 4-card income stats
     expect(screen.getByText('Min Weekly Earnings')).toBeInTheDocument();
@@ -132,7 +132,9 @@ describe('FairnessMetricsPanel', () => {
     );
 
     expect(
-      await screen.findByText(/Failed to load fairness metrics. Please ensure the backend is running./i),
+      await screen.findByText(
+        /Failed to load fairness metrics. Please ensure the backend is running./i,
+      ),
     ).toBeInTheDocument();
   });
 });

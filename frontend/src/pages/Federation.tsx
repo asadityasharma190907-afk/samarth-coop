@@ -29,7 +29,9 @@ interface FederationBooking {
 }
 
 export function Federation() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'impact' | 'verifications' | 'disputes'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'impact' | 'verifications' | 'disputes'>(
+    'overview',
+  );
   const [selectedBookingId, setSelectedBookingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterSkill, setFilterSkill] = useState('All Skills');
@@ -233,7 +235,8 @@ export function Federation() {
                       onClick={() => setSelectedBookingId(booking.id)}
                     >
                       <div className="booking-info">
-                        <strong>{booking.citizen_name}</strong> requested a <span>{booking.skill}</span>
+                        <strong>{booking.citizen_name}</strong> requested a{' '}
+                        <span>{booking.skill}</span>
                       </div>
                       <div className="booking-meta">
                         <span className={`status-badge status-${booking.status}`}>
