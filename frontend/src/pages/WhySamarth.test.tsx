@@ -38,7 +38,6 @@ describe('WhySamarth Page', () => {
       expect(screen.getByText(dim)).toBeInTheDocument();
     });
 
-    // Check key dimension values
     expect(screen.getByText('5%')).toBeInTheDocument();
     expect(screen.getByText('25-30%')).toBeInTheDocument();
     expect(screen.getByText('0%*')).toBeInTheDocument();
@@ -55,7 +54,6 @@ describe('WhySamarth Page', () => {
     ).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 2, name: /Built for Bharat/i })).toBeInTheDocument();
 
-    // Check formula and demo proof point
     expect(screen.getByText(/Score = \(5000 − WeeklyEarnings\)/i)).toBeInTheDocument();
     expect(screen.getByText(/Meena Verma/i)).toBeInTheDocument();
     expect(screen.getByText(/Suresh Kumar/i)).toBeInTheDocument();

@@ -103,11 +103,7 @@ export function WhySamarth() {
           <span>🌿 Samarth</span>
         </Link>
         <div className="why-samarth-nav-actions">
-          <button
-            onClick={() => navigate('/login')}
-            className="nav-back-link"
-            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-          >
+          <button onClick={() => navigate('/login')} className="nav-back-link">
             <ArrowLeft size={16} /> Back to Login
           </button>
           <Link to="/register" className="nav-cta-btn">
@@ -200,94 +196,18 @@ export function WhySamarth() {
               providing accidental insurance, emergency medical relief, and skill certifications
               managed directly by the district cooperative union.
             </p>
-            <div
-              style={{
-                display: 'flex',
-                gap: 'var(--spacing-md)',
-                marginTop: 'auto',
-                paddingTop: 'var(--spacing-sm)',
-              }}
-            >
-              <div
-                style={{
-                  flex: 1,
-                  background: 'var(--color-surface-bg)',
-                  padding: 'var(--spacing-sm)',
-                  borderRadius: 'var(--rounded-md)',
-                  textAlign: 'center',
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 'var(--font-size-h3)',
-                    fontWeight: 'var(--font-weight-bold)',
-                    color: 'var(--color-brand-primary)',
-                  }}
-                >
-                  95%
-                </div>
-                <div
-                  style={{
-                    fontSize: 'var(--font-size-caption)',
-                    color: 'var(--color-text-secondary)',
-                  }}
-                >
-                  Worker Payout
-                </div>
+            <div className="payout-breakdown-row">
+              <div className="payout-stat-card">
+                <div className="payout-stat-val-brand">95%</div>
+                <div className="payout-stat-lbl">Worker Payout</div>
               </div>
-              <div
-                style={{
-                  flex: 1,
-                  background: 'var(--color-surface-bg)',
-                  padding: 'var(--spacing-sm)',
-                  borderRadius: 'var(--rounded-md)',
-                  textAlign: 'center',
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 'var(--font-size-h3)',
-                    fontWeight: 'var(--font-weight-bold)',
-                    color: 'var(--color-welfare-fund)',
-                  }}
-                >
-                  2.5%
-                </div>
-                <div
-                  style={{
-                    fontSize: 'var(--font-size-caption)',
-                    color: 'var(--color-text-secondary)',
-                  }}
-                >
-                  Welfare Fund
-                </div>
+              <div className="payout-stat-card">
+                <div className="payout-stat-val-welfare">2.5%</div>
+                <div className="payout-stat-lbl">Welfare Fund</div>
               </div>
-              <div
-                style={{
-                  flex: 1,
-                  background: 'var(--color-surface-bg)',
-                  padding: 'var(--spacing-sm)',
-                  borderRadius: 'var(--rounded-md)',
-                  textAlign: 'center',
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 'var(--font-size-h3)',
-                    fontWeight: 'var(--font-weight-bold)',
-                    color: 'var(--color-text-secondary)',
-                  }}
-                >
-                  5%
-                </div>
-                <div
-                  style={{
-                    fontSize: 'var(--font-size-caption)',
-                    color: 'var(--color-text-secondary)',
-                  }}
-                >
-                  Platform Cut
-                </div>
+              <div className="payout-stat-card">
+                <div className="payout-stat-val-neutral">5%</div>
+                <div className="payout-stat-lbl">Platform Cut</div>
               </div>
             </div>
           </div>
@@ -308,25 +228,9 @@ export function WhySamarth() {
               immutable dispatch audit logs, citizens get dependable services while workers earn
               dignified, sustainable livelihoods.
             </p>
-            <div
-              style={{
-                marginTop: 'auto',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--spacing-sm)',
-                paddingTop: 'var(--spacing-sm)',
-              }}
-            >
+            <div className="district-scale-row">
               <TrendingUp size={20} color="var(--color-brand-accent)" />
-              <span
-                style={{
-                  fontSize: 'var(--font-size-body-sm)',
-                  fontWeight: 'var(--font-weight-medium)',
-                  color: 'var(--color-text-secondary)',
-                }}
-              >
-                Scalable across 750+ districts nationwide
-              </span>
+              <span className="district-scale-text">Scalable across 750+ districts nationwide</span>
             </div>
           </div>
         </section>
