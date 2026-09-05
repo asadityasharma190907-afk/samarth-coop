@@ -43,7 +43,6 @@ export function Book() {
   const [urgency, setUrgency] = useState<'normal' | 'urgent' | 'emergency'>('normal');
   const [genderPreference, setGenderPreference] = useState<'any' | 'female' | 'male'>('any');
   const [description, setDescription] = useState('');
-  const [urgency, setUrgency] = useState<'normal' | 'urgent' | 'emergency'>('normal');
 
   const navigate = useNavigate();
   const createBooking = useCreateBooking();
@@ -72,7 +71,6 @@ export function Book() {
         urgency,
         gender_preference: genderPreference,
         description: description || undefined,
-        urgency,
       });
       navigate(`/booking/${result.booking_id}`);
     } catch (error) {
