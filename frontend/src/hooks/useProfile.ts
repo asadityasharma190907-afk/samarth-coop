@@ -16,6 +16,8 @@ export interface WorkerProfile {
   experience_years?: number;
   languages_spoken?: string;
   local_address?: string;
+  completed_jobs_count: number;
+  lifetime_welfare_fund_contribution: number;
 }
 
 export function useProfile() {
