@@ -14,6 +14,24 @@ from app.schemas.pricing import PricingContext
 from app.services.dispatch import get_ranked_workers
 from app.services.pricing import compute_fair_surge_price
 
+JOB_PRICES = {
+    "electrician": Decimal("500.00"),
+    "plumber": Decimal("450.00"),
+    "carpenter": Decimal("600.00"),
+    "painter": Decimal("550.00"),
+    "cleaner": Decimal("400.00"),
+    "appliance repair": Decimal("500.00"),
+    "gardener": Decimal("350.00"),
+    "pest control": Decimal("600.00"),
+    "mechanic": Decimal("500.00"),
+    "mason": Decimal("650.00"),
+}
+DEFAULT_JOB_PRICE = Decimal("500.00")
+
+
+def get_category_price(skill: str) -> Decimal:
+    return JOB_PRICES.get(skill.lower().strip(), DEFAULT_JOB_PRICE)
+
 
 def dispatch_first_offer(booking: Booking, db: Session) -> None:
     ranked_workers = get_ranked_workers(
