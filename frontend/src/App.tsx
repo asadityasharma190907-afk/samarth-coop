@@ -11,6 +11,7 @@ import { BookingStatus } from './pages/BookingStatus';
 import { WorkerOffers } from './pages/WorkerOffers';
 import { WorkerWallet } from './pages/WorkerWallet';
 import { Federation } from './pages/Federation';
+import { Enterprise } from './pages/Enterprise';
 
 import { WorkerProfile } from './pages/WorkerProfile';
 import { WhySamarth } from './pages/WhySamarth';
@@ -29,6 +30,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/book" element={<Book />} />
           <Route path="/booking/:id" element={<BookingStatus />} />
+          <Route path="/enterprise" element={<Enterprise />} />
           <Route path="/worker" element={<WorkerDashboard />}>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<WorkerHome />} />

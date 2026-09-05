@@ -1,0 +1,243 @@
+.enterprise-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--spacing-2xl) var(--spacing-md);
+}
+
+.enterprise-header {
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+}
+
+.enterprise-title {
+  font-size: var(--font-size-h1);
+  color: var(--color-brand-primary-dark);
+  margin: 0 0 var(--spacing-sm);
+}
+
+.enterprise-subtitle {
+  font-size: var(--font-size-body-lg);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.enterprise-form {
+  background: var(--card-bg);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  padding: var(--spacing-xl);
+  box-shadow: var(--card-shadow);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-label {
+  display: block;
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text-primary);
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--rounded-md);
+  font-size: var(--font-size-body);
+  font-family: inherit;
+  color: var(--color-text-primary);
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--color-brand-primary);
+  box-shadow: 0 0 0 2px var(--color-surface-overlay);
+}
+
+.service-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: var(--spacing-md);
+  align-items: end;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px dashed var(--color-border-default);
+}
+
+.service-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.btn-remove {
+  padding: var(--spacing-sm);
+  background: transparent;
+  border: none;
+  color: var(--color-status-error);
+  cursor: pointer;
+  border-radius: var(--rounded-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-remove:hover {
+  background: var(--color-status-error-bg);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid var(--color-border-default);
+}
+
+.btn-add-service {
+  background: transparent;
+  border: 1px dashed var(--color-brand-primary);
+  color: var(--color-brand-primary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--button-secondary-radius);
+  cursor: pointer;
+  font-weight: var(--font-weight-medium);
+}
+
+.btn-add-service:hover {
+  background: var(--color-surface-overlay);
+}
+
+.btn-primary {
+  background: var(--button-primary-bg);
+  color: var(--button-primary-text);
+  border: none;
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-radius: var(--button-primary-radius);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-body-lg);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--button-primary-hover-bg);
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Result Card */
+.result-card {
+  background: var(--card-bg);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  padding: var(--spacing-2xl);
+  box-shadow: var(--shadow-2);
+}
+
+.result-header {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--color-border-subtle);
+}
+
+.result-title {
+  font-size: var(--font-size-h2);
+  color: var(--color-brand-primary-dark);
+  margin: 0;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.result-item {
+  padding: var(--spacing-md);
+  background: var(--color-surface-bg);
+  border-radius: var(--rounded-lg);
+  text-align: center;
+}
+
+.result-label {
+  display: block;
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.result-value {
+  display: block;
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.result-value.welfare {
+  color: var(--color-welfare-fund);
+}
+
+.btn-download {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  background: transparent;
+  color: var(--button-secondary-text);
+  border: var(--button-secondary-border);
+  padding: var(--spacing-md);
+  border-radius: var(--button-secondary-radius);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-body-lg);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-download:hover {
+  background: var(--button-secondary-hover-bg);
+}
+
+/* Print Styles for Static PDF Contract */
+@media print {
+  body {
+    background: white;
+  }
+
+  .enterprise-header,
+  .enterprise-form {
+    display: none !important;
+  }
+
+  .enterprise-container {
+    padding: 0;
+    max-width: 100%;
+  }
+
+  .result-card {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .btn-download {
+    display: none !important;
+  }
+
+  .result-item {
+    border: 1px solid var(--color-border-default);
+  }
+}
