@@ -73,3 +73,44 @@ def test_welfare_summary_with_bookings():
     # 5.00 + 10.00 = 15.00 (from 2 completed bookings)
     assert float(data["total_fees"]) == 15.0
     assert data["completed_bookings"] == 2
+
+
+def test_welfare_disbursement_model_creation():
+    from app.models.welfare_disbursement import WelfareDisbursement
+
+    db = TestingSessionLocal()
+    try:
+        admin_id = uuid.uuid4()
+        admin_user = User(
+            id=admin_id,
+            phone="9888888888",
+            name="Admin User",
+            password_hash="hash",
+            role="admin",
+        )
+        db.add(admin_user)
+        db.commit()
+
+        disbursement = WelfareDisbursement(
+            amount=Decimal("5000.00"),
+            category="insurance",
+            description="Group health insurance premium allocation",
+            disbursed_by=admin_id,
+        )
+        db.add(disbursement)
+        db.commit()
+        db.refresh(disbursement)
+
+        assert disbursement.id is not None
+        assert disbursement.amount == Decimal("5000.00")
+        assert disbursement.category == "insurance"
+        assert disbursement.description == "Group health insurance premium allocation"
+        assert disbursement.disbursed_by == admin_id
+        assert disbursement.disbursed_at is not None
+
+        # Query back from DB
+        fetched = db.query(WelfareDisbursement).filter_by(category="insurance").first()
+        assert fetched is not None
+        assert fetched.id == disbursement.id
+    finally:
+        db.close()
