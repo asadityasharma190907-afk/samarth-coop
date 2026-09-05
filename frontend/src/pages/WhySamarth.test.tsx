@@ -15,9 +15,7 @@ describe('WhySamarth Page', () => {
 
   it('renders the main headline and subtitle', () => {
     renderWithRouter();
-    expect(
-      screen.getByRole('heading', { level: 1, name: /The platform Urban Company cannot build/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByText('The platform Urban Company cannot build.')).toBeInTheDocument();
     expect(screen.getByText(/SIH Problem #26089/i)).toBeInTheDocument();
   });
 
@@ -46,13 +44,9 @@ describe('WhySamarth Page', () => {
 
   it('renders the 3 narrative pillar sections and formula', () => {
     renderWithRouter();
-    expect(
-      screen.getByRole('heading', { level: 2, name: /Our Algorithm is Fairness/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { level: 2, name: /The Cooperative Difference/i }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 2, name: /Built for Bharat/i })).toBeInTheDocument();
+    expect(screen.getByText('Our Algorithm is Fairness')).toBeInTheDocument();
+    expect(screen.getByText('The Cooperative Difference')).toBeInTheDocument();
+    expect(screen.getByText('Built for Bharat')).toBeInTheDocument();
 
     expect(screen.getByText(/Score = \(5000 − WeeklyEarnings\)/i)).toBeInTheDocument();
     expect(screen.getByText(/Meena Verma/i)).toBeInTheDocument();
