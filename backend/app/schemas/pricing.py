@@ -15,6 +15,8 @@ class PricingContext(BaseModel):
 class PricingResult(BaseModel):
     base_price: Decimal
     final_price: Decimal
+    surge_surplus: Decimal
+    is_surging: bool
     worker_payout: Decimal
     platform_fee: Decimal
     welfare_fund: Decimal

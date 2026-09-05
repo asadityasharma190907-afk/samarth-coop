@@ -1,6 +1,7 @@
 import uuid
 
 from sqlalchemy import (
+    Boolean,
     Column,
     DateTime,
     ForeignKey,
@@ -39,6 +40,11 @@ class Booking(Base):
         String(20), nullable=False, default="pending", server_default=text("'pending'")
     )
     dispute_reason = Column(String(500), nullable=True)
+    # Fair-Surge pricing snapshot (immutable after INSERT — AD-7)
+    base_price = Column(Numeric(10, 2), nullable=True)
+    surge_surplus = Column(Numeric(10, 2), nullable=True, server_default=text("0"))
+    is_surging = Column(Boolean, nullable=True, server_default=text("FALSE"))
+    urgency = Column(String(20), nullable=True, server_default=text("'normal'"))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     citizen = relationship("User", foreign_keys=[citizen_id])

@@ -117,6 +117,8 @@ def compute_fair_surge_price(ctx: PricingContext, db: Session) -> PricingResult:
     return PricingResult(
         base_price=base_price,
         final_price=final_price,
+        surge_surplus=surplus,
+        is_surging=surplus > 0,
         worker_payout=worker_payout,
         platform_fee=platform_fee,
         welfare_fund=welfare_fund,
