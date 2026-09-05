@@ -61,12 +61,11 @@ export function FairnessMetricsPanel() {
 
   return (
     <div className="fairness-panel-container">
-      {/* Header */}
       <div className="fairness-header">
         <div className="fairness-title-group">
           <h2>Income Fairness & Gini Coefficient</h2>
           <p>
-            Real-time algorithmic fairness metrics comparing cooperative dispatch vs. proximity-only
+            Real-time algorithmic fairness metrics comparing cooperative dispatch vs. proximity
             dispatch
           </p>
         </div>
@@ -76,7 +75,6 @@ export function FairnessMetricsPanel() {
         </div>
       </div>
 
-      {/* Gini Comparison Card */}
       <div className="gini-comparison-card">
         <div className="gini-header">
           <h3>Gini Coefficient Benchmark</h3>
@@ -86,7 +84,6 @@ export function FairnessMetricsPanel() {
         </div>
 
         <div className="gini-gauges-grid">
-          {/* Samarth Gini */}
           <div className="gini-gauge-box samarth">
             <span className="gauge-tag">Samarth Cooperative Dispatch</span>
             <span className="gauge-value">{data.samarth_gini.toFixed(2)}</span>
@@ -99,7 +96,6 @@ export function FairnessMetricsPanel() {
             <span className="gauge-caption">Equitable Distribution across active pool</span>
           </div>
 
-          {/* Proximity Only Baseline */}
           <div className="gini-gauge-box proximity">
             <span className="gauge-tag">Standard Proximity Dispatch (VC Baseline)</span>
             <span className="gauge-value">{data.proximity_gini.toFixed(2)}</span>
@@ -114,13 +110,12 @@ export function FairnessMetricsPanel() {
         </div>
 
         <p className="gini-explanation">
-          Note: Gini index ranges from 0.0 (perfect equality) to 1.0 (perfect inequality). Samarth’s
+          Note: Gini index ranges from 0.0 (perfect equality) to 1.0 (perfect inequality). Samarth
           weekly earnings penalty actively redistributes dispatch priority to maintain a low Gini
           index.
         </p>
       </div>
 
-      {/* Meena Effect Counter Banner */}
       <div className="meena-effect-banner">
         <div className="meena-counter-circle">
           <span className="counter-num">{data.meena_effect_count}</span>
@@ -130,12 +125,11 @@ export function FairnessMetricsPanel() {
           <h4>The "Meena Effect" Counter</h4>
           <p>
             {data.meena_effect_description ||
-              'Times fairness dispatch prioritized a low-earning worker over a closer or higher-rated peer to avoid starvation and ensure fair income.'}
+              'Times fairness dispatch prioritized a low-earning worker over a closer or higher-rated peer.'}
           </p>
         </div>
       </div>
 
-      {/* Income Range 4-Card Grid */}
       <div className="income-stats-grid">
         <div className="income-stat-card">
           <span className="stat-label">Min Weekly Earnings</span>
@@ -162,7 +156,6 @@ export function FairnessMetricsPanel() {
         </div>
       </div>
 
-      {/* Offers & Booking Distribution Table */}
       <div className="offers-distribution-card">
         <div className="offers-header">
           <h3>Worker Dispatch Distribution</h3>

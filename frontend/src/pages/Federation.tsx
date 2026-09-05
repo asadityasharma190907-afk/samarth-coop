@@ -29,9 +29,6 @@ interface FederationBooking {
 }
 
 export function Federation() {
-  const [activeTab, setActiveTab] = useState<
-    'overview' | 'impact' | 'verifications' | 'disputes'
-  >('overview');
   const [selectedBookingId, setSelectedBookingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterSkill, setFilterSkill] = useState('All Skills');
@@ -104,171 +101,134 @@ export function Federation() {
     <div className="federation-container animate-fade-in">
       <header className="federation-header">
         <h1>Ministry / NCCT Federation Dashboard</h1>
-        <p>Live metrics, fairness analytics, and transparency audit logs</p>
+        <p>Live metrics and transparency audit logs</p>
       </header>
 
-      <nav className="federation-nav-tabs" aria-label="Dashboard sections">
-        <button
-          className={`federation-tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
-          onClick={() => setActiveTab('overview')}
-        >
-          Overview & Dispatch
-        </button>
-        <button
-          className={`federation-tab-btn ${activeTab === 'impact' ? 'active' : ''}`}
-          onClick={() => setActiveTab('impact')}
-        >
-          Impact & Income Fairness
-        </button>
-        <button
-          className={`federation-tab-btn ${activeTab === 'verifications' ? 'active' : ''}`}
-          onClick={() => setActiveTab('verifications')}
-        >
-          Verification Queue
-        </button>
-        <button
-          className={`federation-tab-btn ${activeTab === 'disputes' ? 'active' : ''}`}
-          onClick={() => setActiveTab('disputes')}
-        >
-          Disputes
-        </button>
-      </nav>
-
-      {activeTab === 'impact' && <FairnessMetricsPanel />}
-
-      {activeTab === 'verifications' && (
-        <section className="verification-section">
-          <VerificationQueue />
-        </section>
+      {statsLoading ? (
+        <div className="loading-state">Loading metrics...</div>
+      ) : (
+        <div className="stats-grid">
+          <StatCounter label="Registered Workers" value={stats?.registered_workers || 0} />
+          <StatCounter label="Completed Bookings" value={stats?.completed_bookings || 0} />
+          <StatCounter
+            label="Cooperative Welfare Fund"
+            value={stats?.welfare_fund_total || 0}
+            prefix="₹"
+            isViolet={true}
+          />
+        </div>
       )}
 
-      {activeTab === 'disputes' && (
-        <section className="disputes-section">
-          {bookingsLoading ? (
-            <div className="loading-state">Loading active disputes...</div>
-          ) : (
-            <DisputesQueue bookings={bookings || []} />
-          )}
-        </section>
-      )}
+      <section className="earnings-section">
+        <div className="earnings-section-actions">
+          <button className="btn-download-csv" onClick={handleDownloadCSV} disabled={isDownloading}>
+            <Download size={16} />
+            {isDownloading ? 'Generating CSV...' : 'Download CSV Report'}
+          </button>
+        </div>
+        <EarningsChart />
+      </section>
 
-      {activeTab === 'overview' && (
-        <>
-          {statsLoading ? (
-            <div className="loading-state">Loading metrics...</div>
-          ) : (
-            <div className="stats-grid">
-              <StatCounter label="Registered Workers" value={stats?.registered_workers || 0} />
-              <StatCounter label="Completed Bookings" value={stats?.completed_bookings || 0} />
-              <StatCounter
-                label="Cooperative Welfare Fund"
-                value={stats?.welfare_fund_total || 0}
-                prefix="₹"
-                isViolet={true}
-              />
-            </div>
-          )}
+      <section className="fairness-section">
+        <FairnessMetricsPanel />
+      </section>
 
-          <section className="earnings-section">
-            <div className="earnings-section-actions">
-              <button
-                className="btn-download-csv"
-                onClick={handleDownloadCSV}
-                disabled={isDownloading}
+      <section className="verification-section">
+        <VerificationQueue />
+      </section>
+
+      <section className="disputes-section" style={{ marginTop: 'var(--spacing-6)' }}>
+        {bookingsLoading ? (
+          <div className="loading-state">Loading active disputes...</div>
+        ) : (
+          <DisputesQueue bookings={bookings || []} />
+        )}
+      </section>
+
+      <div className="dashboard-content">
+        <section className="bookings-section">
+          <h2>Recent Bookings</h2>
+
+          <div className="filter-toolbar">
+            <input
+              type="text"
+              placeholder="Search by citizen name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+
+            <div className="filter-controls">
+              <select
+                value={filterSkill}
+                onChange={(e) => setFilterSkill(e.target.value)}
+                className="skill-select"
               >
-                <Download size={16} />
-                {isDownloading ? 'Generating CSV...' : 'Download CSV Report'}
-              </button>
-            </div>
-            <EarningsChart />
-          </section>
+                <option value="All Skills">All Skills</option>
+                {uniqueSkills.map((skill) => (
+                  <option key={skill} value={skill}>
+                    {skill}
+                  </option>
+                ))}
+              </select>
 
-          <div className="dashboard-content">
-            <section className="bookings-section">
-              <h2>Recent Bookings</h2>
-
-              <div className="filter-toolbar">
-                <input
-                  type="text"
-                  placeholder="Search by citizen name..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="search-input"
-                />
-
-                <div className="filter-controls">
-                  <select
-                    value={filterSkill}
-                    onChange={(e) => setFilterSkill(e.target.value)}
-                    className="skill-select"
+              <div className="status-chips">
+                {['All', 'Completed', 'Assigned', 'Cancelled', 'Pending'].map((status) => (
+                  <button
+                    key={status}
+                    className={`status-chip ${filterStatus === status ? 'active' : ''}`}
+                    onClick={() => setFilterStatus(status)}
                   >
-                    <option value="All Skills">All Skills</option>
-                    {uniqueSkills.map((skill) => (
-                      <option key={skill} value={skill}>
-                        {skill}
-                      </option>
-                    ))}
-                  </select>
+                    {status}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
 
-                  <div className="status-chips">
-                    {['All', 'Completed', 'Assigned', 'Cancelled', 'Pending'].map((status) => (
-                      <button
-                        key={status}
-                        className={`status-chip ${filterStatus === status ? 'active' : ''}`}
-                        onClick={() => setFilterStatus(status)}
-                      >
-                        {status}
-                      </button>
-                    ))}
+          {bookingsLoading ? (
+            <div className="loading-state">Loading bookings...</div>
+          ) : (
+            <div className="bookings-list">
+              {filteredBookings.map((booking) => (
+                <div
+                  key={booking.id}
+                  className={`booking-item ${selectedBookingId === booking.id ? 'active' : ''}`}
+                  onClick={() => setSelectedBookingId(booking.id)}
+                >
+                  <div className="booking-info">
+                    <strong>{booking.citizen_name}</strong> requested a <span>{booking.skill}</span>
+                  </div>
+                  <div className="booking-meta">
+                    <span className={`status-badge status-${booking.status}`}>
+                      {booking.status}
+                    </span>
+                    <span className="time">
+                      {new Date(booking.created_at).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
-              </div>
+              ))}
+              {filteredBookings.length === 0 && <p>No matching bookings found.</p>}
+            </div>
+          )}
+        </section>
 
-              {bookingsLoading ? (
-                <div className="loading-state">Loading bookings...</div>
-              ) : (
-                <div className="bookings-list">
-                  {filteredBookings.map((booking) => (
-                    <div
-                      key={booking.id}
-                      className={`booking-item ${selectedBookingId === booking.id ? 'active' : ''}`}
-                      onClick={() => setSelectedBookingId(booking.id)}
-                    >
-                      <div className="booking-info">
-                        <strong>{booking.citizen_name}</strong> requested a <span>{booking.skill}</span>
-                      </div>
-                      <div className="booking-meta">
-                        <span className={`status-badge status-${booking.status}`}>
-                          {booking.status}
-                        </span>
-                        <span className="time">
-                          {new Date(booking.created_at).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                  {filteredBookings.length === 0 && <p>No matching bookings found.</p>}
-                </div>
-              )}
-            </section>
+        <section className="audit-section">
+          <h2>Dispatch Audit Trail</h2>
+          <p className="audit-subtitle">
+            Click a booking on the left to see the dispatch algorithm decisions.
+          </p>
 
-            <section className="audit-section">
-              <h2>Dispatch Audit Trail</h2>
-              <p className="audit-subtitle">
-                Click a booking on the left to see the dispatch algorithm decisions.
-              </p>
-
-              {selectedBookingId ? (
-                <AuditTable bookingId={selectedBookingId} />
-              ) : (
-                <div className="empty-audit-state">
-                  <p>Select a booking to view its audit trail.</p>
-                </div>
-              )}
-            </section>
-          </div>
-        </>
-      )}
+          {selectedBookingId ? (
+            <AuditTable bookingId={selectedBookingId} />
+          ) : (
+            <div className="empty-audit-state">
+              <p>Select a booking to view its audit trail.</p>
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   );
 }
