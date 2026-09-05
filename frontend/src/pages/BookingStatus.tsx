@@ -6,6 +6,7 @@ import { DisputeModal } from '../components/DisputeModal';
 import { WelfareFundChip } from '../components/WelfareFundChip';
 import { VerifiedBadge } from '../components/VerifiedBadge';
 import { StarRating } from '../components/StarRating';
+import { PricingBreakdown } from '../components/PricingBreakdown';
 import { api } from '../lib/api';
 import './BookingStatus.css';
 
@@ -70,6 +71,7 @@ export function BookingStatus() {
 
   return (
     <div className="status-container">
+      <PricingBreakdown booking={booking} />
       {isSearching && (
         <div className="status-card">
           <div className="pulse-ring">

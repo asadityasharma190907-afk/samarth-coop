@@ -16,6 +16,10 @@ export interface Booking {
   status: string;
   job_price: number;
   platform_fee: number;
+  base_price?: number | null;
+  surge_surplus?: number | null;
+  is_surging?: boolean | null;
+  urgency?: string | null;
   skill: string;
   lat: number;
   lng: number;
@@ -31,6 +35,7 @@ export interface CreateBookingPayload {
   lat: number;
   lng: number;
   description?: string;
+  urgency?: 'normal' | 'urgent' | 'emergency';
 }
 
 export const useCreateBooking = () => {

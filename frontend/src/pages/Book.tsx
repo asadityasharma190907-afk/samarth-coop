@@ -36,6 +36,7 @@ export function Book() {
   const [skill, setSkill] = useState<string | null>(null);
   const [position, setPosition] = useState<[number, number]>([26.9124, 75.7873]); // Default Jaipur
   const [description, setDescription] = useState('');
+  const [urgency, setUrgency] = useState<'normal' | 'urgent' | 'emergency'>('normal');
 
   const navigate = useNavigate();
   const createBooking = useCreateBooking();
@@ -60,6 +61,7 @@ export function Book() {
         lat: position[0],
         lng: position[1],
         description: description || undefined,
+        urgency,
       });
       navigate(`/booking/${result.booking_id}`);
     } catch (error) {
@@ -148,6 +150,35 @@ export function Book() {
                 <span className="summary-value">
                   {position[0].toFixed(4)}, {position[1].toFixed(4)}
                 </span>
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '24px' }}>
+              <label className="summary-label" style={{ display: 'block', marginBottom: '8px' }}>
+                Booking Urgency
+              </label>
+              <div className="urgency-chips">
+                <button
+                  type="button"
+                  className={`urgency-chip ${urgency === 'normal' ? 'selected' : ''}`}
+                  onClick={() => setUrgency('normal')}
+                >
+                  🕐 Standard
+                </button>
+                <button
+                  type="button"
+                  className={`urgency-chip ${urgency === 'urgent' ? 'selected' : ''}`}
+                  onClick={() => setUrgency('urgent')}
+                >
+                  ⚡ Urgent (+20%)
+                </button>
+                <button
+                  type="button"
+                  className={`urgency-chip ${urgency === 'emergency' ? 'selected' : ''}`}
+                  onClick={() => setUrgency('emergency')}
+                >
+                  🚨 Emergency (+35%)
+                </button>
               </div>
             </div>
 
