@@ -503,3 +503,117 @@ def test_rate_booking_unauthorized(citizen_token):
         f"/bookings/{fake_id}/rating", json=rate_payload, headers=citizen_headers
     )
     assert rate_response.status_code == 404
+
+
+def test_citizen_cancel_booking_success(citizen_token, seeded_worker):
+    token, citizen_id = citizen_token
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # Create booking
+    payload = {
+        "skill": "electrician",
+        "lat": 26.9124,
+        "lng": 75.7873,
+    }
+    response = client.post("/bookings", json=payload, headers=headers)
+    booking_id = response.json()["booking_id"]
+
+    db = TestingSessionLocal()
+    try:
+        # Assign it manually to verify worker availability reverts
+        offer = (
+            db.query(BookingOffer).filter_by(booking_id=uuid.UUID(booking_id)).first()
+        )
+        offer.status = "accepted"  # type: ignore
+        booking = db.query(Booking).filter_by(id=uuid.UUID(booking_id)).first()
+        booking.status = "assigned"  # type: ignore
+        booking.worker_id = seeded_worker
+        profile = db.query(WorkerProfile).filter_by(user_id=seeded_worker).first()
+        profile.availability = False  # type: ignore
+        db.commit()
+    finally:
+        db.close()
+
+    cancel_response = client.post(f"/bookings/{booking_id}/cancel", headers=headers)
+    assert cancel_response.status_code == 200
+
+    db = TestingSessionLocal()
+    try:
+        booking = db.query(Booking).filter_by(id=uuid.UUID(booking_id)).first()
+        assert booking.status == "cancelled"
+
+        citizen = db.query(User).filter_by(id=citizen_id).first()
+        assert citizen.cancellation_count == 1
+        # score = 100 - (10 * 1) + (5 * 0) = 90
+        assert citizen.citizen_trust_score == 90
+
+        profile = db.query(WorkerProfile).filter_by(user_id=seeded_worker).first()
+        assert profile.availability is True
+    finally:
+        db.close()
+
+
+def test_citizen_cancel_three_bookings_trust_score(citizen_token, seeded_worker):
+    token, citizen_id = citizen_token
+    headers = {"Authorization": f"Bearer {token}"}
+
+    for _ in range(3):
+        payload = {
+            "skill": "electrician",
+            "lat": 26.9124,
+            "lng": 75.7873,
+        }
+        response = client.post("/bookings", json=payload, headers=headers)
+        booking_id = response.json()["booking_id"]
+
+        # We must make the worker available again so next booking doesn't fail
+        db = TestingSessionLocal()
+        try:
+            profile = db.query(WorkerProfile).filter_by(user_id=seeded_worker).first()
+            if profile:
+                profile.availability = True  # type: ignore
+            db.commit()
+        finally:
+            db.close()
+
+        client.post(f"/bookings/{booking_id}/cancel", headers=headers)
+
+    db = TestingSessionLocal()
+    try:
+        citizen = db.query(User).filter_by(id=citizen_id).first()
+        assert citizen.cancellation_count == 3
+        # score = 100 - (10 * 3) + 0 = 70
+        assert citizen.citizen_trust_score == 70
+    finally:
+        db.close()
+
+
+def test_cancel_completed_booking_fails(citizen_token, seeded_worker):
+    token, citizen_id = citizen_token
+    headers = {"Authorization": f"Bearer {token}"}
+
+    db = TestingSessionLocal()
+    booking_id = uuid.uuid4()
+    try:
+        booking = Booking(
+            id=booking_id,
+            citizen_id=citizen_id,
+            worker_id=seeded_worker,
+            skill="electrician",
+            lat=26.9,
+            lng=75.7,
+            job_price=500,
+            status="completed",
+            rating=4,
+        )
+        db.add(booking)
+        db.commit()
+    finally:
+        db.close()
+
+    cancel_response = client.post(f"/bookings/{booking_id}/cancel", headers=headers)
+    assert cancel_response.status_code == 400
+    assert (
+        cancel_response.json()["detail"]
+        == "Cannot cancel a completed or already cancelled booking"
+    )

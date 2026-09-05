@@ -18,6 +18,7 @@ from app.schemas.bookings import (
     RatingRequest,
 )
 from app.services.booking import (
+    cancel_booking,
     complete_booking,
     create_booking,
     flag_booking_dispute,
@@ -139,3 +140,13 @@ def dispute_booking(
         dispute_reason=booking.dispute_reason,  # type: ignore
         message="Dispute registered. Cooperative mediation initiated.",
     )
+
+
+@router.post("/{booking_id}/cancel", response_model=BookingResponse)
+def cancel_booking_endpoint(
+    booking_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    booking = cancel_booking(booking_id, current_user.id, db)  # type: ignore
+    return BookingResponse.model_validate(booking)
