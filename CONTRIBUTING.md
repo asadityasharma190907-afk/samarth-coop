@@ -57,11 +57,35 @@ git rebase origin/master
 ```
 If you encounter conflicts, resolve them, `git add` the resolved files, and run `git rebase --continue`. Once rebased, you may need to force-push to your remote branch (`git push --force-with-lease`).
 
-## Git Hooks
+## Git Hooks and QA Checks
 
-Our repository uses a `pre-push` git hook to prevent failing CI builds. **You must configure this once on your local machine**:
+Our repository enforces a `pre-push` git hook to prevent failing CI builds. **You must configure this once on your local machine**:
 
 ```bash
 git config core.hooksPath .githooks
 ```
-This ensures `.\qa_check.ps1` runs automatically before any `git push` to save CI minutes.
+This ensures the QA script runs automatically before any `git push` to save CI minutes.
+
+### Running QA Checks Manually
+You can run the QA checks manually to verify formatting and tests before pushing:
+- **macOS / Linux**:
+  ```bash
+  ./qa_check.sh
+  ```
+  *(To auto-fix formatting, run `./qa_check.sh --fix`)*
+
+- **Windows**:
+  ```powershell
+  .\qa_check.ps1
+  ```
+  *(To auto-fix formatting, run `.\qa_check.ps1 -Fix`)*
+
+## Vitest Snapshots
+
+If you intentionally modify a UI component, tests might fail with a snapshot mismatch. You must update the snapshots locally and commit them.
+
+To update snapshots, run:
+```bash
+cd frontend
+npm run test -- -u
+```
