@@ -80,3 +80,16 @@ class BookingResponse(BaseModel):
     surge_surplus: Decimal | None = None
     is_surging: bool | None = None
     urgency: str | None = None
+
+
+class PricePreviewResponse(BaseModel):
+    skill: str
+    base_price: Decimal
+    final_price: Decimal
+    surge_surplus: Decimal
+    is_surging: bool
+    surge_reason: str | None = None
+    urgency_multiplier: float
+    worker_earns: Decimal
+    welfare_fund_contribution: Decimal
+    platform_fee: Decimal

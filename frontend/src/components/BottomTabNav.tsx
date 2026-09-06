@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useLanguage } from '../hooks/useLanguage';
 
 const TABS = [
   { id: 'home', label: 'Home', icon: '🏠', path: '/worker/dashboard' },
@@ -11,6 +12,7 @@ const TABS = [
 export function BottomTabNav() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useLanguage();
 
   return (
     <div
@@ -64,7 +66,7 @@ export function BottomTabNav() {
                 fontWeight: isActive ? 'var(--font-weight-semibold)' : 'var(--font-weight-medium)',
               }}
             >
-              {tab.label}
+              {tab.id !== 'home' ? t(`nav.${tab.id}`) : tab.label}
             </span>
           </button>
         );

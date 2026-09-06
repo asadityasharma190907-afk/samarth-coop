@@ -6,6 +6,7 @@ import { DisputeModal } from '../components/DisputeModal';
 import { WelfareFundChip } from '../components/WelfareFundChip';
 import { VerifiedBadge } from '../components/VerifiedBadge';
 import { StarRating } from '../components/StarRating';
+import { useLanguage } from '../hooks/useLanguage';
 import { api } from '../lib/api';
 import './BookingStatus.css';
 
@@ -16,6 +17,7 @@ export function BookingStatus() {
   const [ratingSubmitted, setRatingSubmitted] = useState(false);
   const [isSubmittingRating, setIsSubmittingRating] = useState(false);
   const [isDisputeModalOpen, setIsDisputeModalOpen] = useState(false);
+  const { t } = useLanguage();
 
   const disputeMutation = useDisputeBooking(id || '');
 
@@ -75,7 +77,7 @@ export function BookingStatus() {
           <div className="pulse-ring">
             <Search className="w-8 h-8 text-brand-primary" />
           </div>
-          <h2 className="status-title">Finding a cooperative worker for you...</h2>
+          <h2 className="status-title">{t('status.pending')}</h2>
           <p className="status-subtitle">
             We are looking for the best {booking.skill} nearby. Please wait.
           </p>

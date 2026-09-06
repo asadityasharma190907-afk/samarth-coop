@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MapPin, Clock, Check, X } from 'lucide-react';
+import { MapPin, Clock, Check, X, AlertTriangle, ShieldAlert } from 'lucide-react';
 import { WorkerOfferDetail, useOfferAction } from '../hooks/useOffers';
+import { useLanguage } from '../hooks/useLanguage';
 import './OfferCard.css';
 
 interface OfferCardProps {
@@ -17,6 +18,37 @@ export function OfferCard({ offer }: OfferCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const startXRef = useRef<number | null>(null);
   const actionMutation = useOfferAction();
+  const { t } = useLanguage();
+
+  const trustScore = offer.citizen_trust_score ?? 100;
+  const showTrustWarning = trustScore < 80;
+
+  const getTrustInfo = () => {
+    if (trustScore < 40) {
+      return {
+        label: 'Restricted citizen',
+        badgeClass: 'trust-restricted',
+        icon: <ShieldAlert size={15} className="trust-icon" />,
+      };
+    }
+    if (trustScore < 60) {
+      return {
+        label: 'Confirm before accepting',
+        badgeClass: 'trust-caution',
+        icon: <AlertTriangle size={15} className="trust-icon" />,
+      };
+    }
+    if (trustScore < 80) {
+      return {
+        label: 'High cancellation history',
+        badgeClass: 'trust-warning',
+        icon: <AlertTriangle size={15} className="trust-icon" />,
+      };
+    }
+    return null;
+  };
+
+  const trustInfo = getTrustInfo();
 
   useEffect(() => {
     // Only run timer if less than 90s left initially (or we just run it always to be safe)
@@ -132,6 +164,17 @@ export function OfferCard({ offer }: OfferCardProps) {
         </div>
       </div>
 
+      {showTrustWarning && trustInfo && (
+        <div
+          className={`trust-indicator-card ${trustInfo.badgeClass}`}
+          data-testid="citizen-trust-warning"
+        >
+          {trustInfo.icon}
+          <span className="trust-title">{trustInfo.label}</span>
+          <span className="trust-score-tag">Trust {trustScore}/100</span>
+        </div>
+      )}
+
       {showProgress && secondsLeft > 0 && (
         <div className="expiry-section">
           <div className="expiry-progress-container">
@@ -172,14 +215,14 @@ export function OfferCard({ offer }: OfferCardProps) {
             onClick={handleDecline}
             disabled={actionMutation.isPending || secondsLeft === 0}
           >
-            <X size={18} className="mr-1 inline" /> Decline
+            <X size={18} className="mr-1 inline" /> {t('action.decline')}
           </button>
           <button
             className="btn-primary"
             onClick={() => setShowConfirm(true)}
             disabled={actionMutation.isPending || secondsLeft === 0}
           >
-            <Check size={18} className="mr-1 inline" /> Accept
+            <Check size={18} className="mr-1 inline" /> {t('action.accept')}
           </button>
         </div>
       )}

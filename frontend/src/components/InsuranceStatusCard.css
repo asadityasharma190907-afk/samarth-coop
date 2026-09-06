@@ -1,0 +1,60 @@
+.insurance-card {
+  background-color: var(--color-surface-card);
+  border-radius: var(--rounded-lg);
+  border: 1px solid var(--color-border-default);
+  box-shadow: var(--shadow-1);
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+}
+
+.insurance-card h2 {
+  margin: 0 0 var(--spacing-md);
+  font-size: var(--font-size-h3);
+}
+
+.insurance-section {
+  margin-bottom: var(--spacing-lg);
+}
+
+.insurance-section:last-child {
+  margin-bottom: 0;
+}
+
+.insurance-section h3 {
+  margin: 0 0 var(--spacing-xs);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+}
+
+.insurance-detail {
+  margin: var(--spacing-xs) 0;
+  font-size: var(--font-size-body);
+  color: var(--color-text-secondary);
+}
+
+.insurance-detail strong {
+  color: var(--color-text-primary);
+}
+
+.progress-container {
+  margin-top: var(--spacing-sm);
+  background-color: var(--color-border-default);
+  border-radius: var(--rounded-full);
+  height: 8px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.progress-bar {
+  background-color: var(--color-brand-primary);
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  display: block;
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-caption);
+  color: var(--color-text-secondary);
+  text-align: right;
+}

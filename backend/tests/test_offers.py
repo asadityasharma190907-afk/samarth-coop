@@ -343,3 +343,64 @@ def test_lazy_expiry_on_action(worker_with_offer):
         )  # Because there are no more workers to cascade to
     finally:
         db.close()
+
+
+def test_worker_offers_citizen_trust_tiers(worker_with_offer):
+    token, _, booking_id, _ = worker_with_offer
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # Case 1: Citizen trust score = 100 (Normal / >= 80)
+    response = client.get("/booking-offers/worker", headers=headers)
+    assert response.status_code == 200
+    offers = response.json()
+    assert len(offers) == 1
+    assert offers[0]["citizen_trust_score"] == 100
+    assert offers[0]["citizen_trust_level"] is None
+
+    # Case 2: Citizen trust score = 70 (60-79 -> high_cancellation)
+    db = TestingSessionLocal()
+    try:
+        booking = db.query(Booking).filter_by(id=booking_id).first()
+        citizen = db.query(User).filter_by(id=booking.citizen_id).first()
+        citizen.citizen_trust_score = 70
+        db.commit()
+    finally:
+        db.close()
+
+    response = client.get("/booking-offers/worker", headers=headers)
+    assert response.status_code == 200
+    offers = response.json()
+    assert offers[0]["citizen_trust_score"] == 70
+    assert offers[0]["citizen_trust_level"] == "high_cancellation"
+
+    # Case 3: Citizen trust score = 50 (40-59 -> confirm_required)
+    db = TestingSessionLocal()
+    try:
+        booking = db.query(Booking).filter_by(id=booking_id).first()
+        citizen = db.query(User).filter_by(id=booking.citizen_id).first()
+        citizen.citizen_trust_score = 50
+        db.commit()
+    finally:
+        db.close()
+
+    response = client.get("/booking-offers/worker", headers=headers)
+    assert response.status_code == 200
+    offers = response.json()
+    assert offers[0]["citizen_trust_score"] == 50
+    assert offers[0]["citizen_trust_level"] == "confirm_required"
+
+    # Case 4: Citizen trust score = 30 (< 40 -> restricted)
+    db = TestingSessionLocal()
+    try:
+        booking = db.query(Booking).filter_by(id=booking_id).first()
+        citizen = db.query(User).filter_by(id=booking.citizen_id).first()
+        citizen.citizen_trust_score = 30
+        db.commit()
+    finally:
+        db.close()
+
+    response = client.get("/booking-offers/worker", headers=headers)
+    assert response.status_code == 200
+    offers = response.json()
+    assert offers[0]["citizen_trust_score"] == 30
+    assert offers[0]["citizen_trust_level"] == "restricted"

@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 import { BottomTabNav } from '../components/BottomTabNav';
+import { useLanguage } from '../hooks/useLanguage';
+import { LanguageToggle } from '../components/LanguageToggle';
 
 const TABS = [
   { id: 'home', label: 'Home', icon: '🏠', path: '/worker/dashboard' },
@@ -12,6 +14,7 @@ const TABS = [
 export function WorkerDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useLanguage();
 
   const handleLogout = () => {
     localStorage.removeItem('samarth_token');
@@ -47,6 +50,10 @@ export function WorkerDashboard() {
           Samarth Pro
         </h2>
 
+        <div style={{ marginBottom: 'var(--spacing-md)' }}>
+          <LanguageToggle />
+        </div>
+
         <nav
           style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)', flex: 1 }}
         >
@@ -75,7 +82,7 @@ export function WorkerDashboard() {
                 }}
               >
                 <span>{tab.icon}</span>
-                {tab.label}
+                {tab.id !== 'home' ? t(`nav.${tab.id}`) : tab.label}
               </button>
             );
           })}

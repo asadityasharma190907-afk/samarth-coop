@@ -11,6 +11,7 @@ import {
   Car,
   HardHat,
 } from 'lucide-react';
+import { useLanguage } from '../hooks/useLanguage';
 import './SkillCategoryGrid.css';
 
 export const SKILL_CATEGORIES = [
@@ -32,6 +33,8 @@ interface Props {
 }
 
 export function SkillCategoryGrid({ selectedSkill, onSelect }: Props) {
+  const { t } = useLanguage();
+
   return (
     <div className="skill-grid">
       {SKILL_CATEGORIES.map((category) => {
@@ -46,7 +49,11 @@ export function SkillCategoryGrid({ selectedSkill, onSelect }: Props) {
             type="button"
           >
             <Icon />
-            <span className="skill-label">{category.label}</span>
+            <span className="skill-label">
+              {['electrician', 'plumber', 'carpenter', 'cleaner'].includes(category.id)
+                ? t(`skill.${category.id}`)
+                : category.label}
+            </span>
           </button>
         );
       })}
