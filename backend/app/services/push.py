@@ -12,6 +12,8 @@ try:
     PYWEBPUSH_AVAILABLE = True
 except ImportError:
     PYWEBPUSH_AVAILABLE = False
+    webpush = None
+
 
 
 def send_push_notification(

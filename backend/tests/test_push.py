@@ -1,4 +1,5 @@
 import json
+from unittest.mock import patch
 
 from conftest import TestingSessionLocal
 from fastapi.testclient import TestClient
@@ -91,14 +92,17 @@ def test_send_push_notification_service():
         "keys": {"p256dh": "test-p256dh", "auth": "test-auth"},
     }
 
-    # Test with string JSON
-    result = send_push_notification(
-        subscription_raw=json.dumps(sub_info),
-        title="Samarth -- Test Offer",
-        body="Test job alert body",
-        data={"url": "/worker/offers"},
-    )
-    assert result is True
+    # Test with string JSON (mocking webpush so invalid dummy keys don't throw WebPushException)
+    with patch("app.services.push.webpush") as mock_webpush:
+        mock_webpush.return_value = None
+        result = send_push_notification(
+            subscription_raw=json.dumps(sub_info),
+            title="Samarth -- Test Offer",
+            body="Test job alert body",
+            data={"url": "/worker/offers"},
+        )
+        assert result is True
 
     # Test with empty subscription
     assert send_push_notification(None, "Title", "Body") is False
+
