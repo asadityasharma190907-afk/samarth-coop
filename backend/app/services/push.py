@@ -15,7 +15,6 @@ except ImportError:
     webpush = None
 
 
-
 def send_push_notification(
     subscription_raw: str | dict[str, Any] | None,
     title: str,

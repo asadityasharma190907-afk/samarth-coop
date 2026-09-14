@@ -105,4 +105,3 @@ def test_send_push_notification_service():
 
     # Test with empty subscription
     assert send_push_notification(None, "Title", "Body") is False
-
