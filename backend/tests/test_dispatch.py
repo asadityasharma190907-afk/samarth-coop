@@ -8,10 +8,165 @@ from app.models.booking import Booking
 from app.models.booking_offer import BookingOffer
 from app.models.user import User
 from app.services.dispatch import (
+    compute_acceptance_rate,
+    compute_completion_rate,
+    compute_lifetime_jobs,
     compute_reliability_penalty,
+    compute_tier,
     compute_weekly_earnings,
     get_ranked_workers,
 )
+
+
+def test_compute_acceptance_rate():
+    db = TestingSessionLocal()
+    try:
+        worker = User(
+            name="WorkerAcc",
+            phone="9000000001",
+            password_hash="hash",
+            role="worker",
+        )
+        citizen = User(
+            name="CitizenAcc",
+            phone="9000000002",
+            password_hash="hash",
+            role="citizen",
+        )
+        db.add_all([worker, citizen])
+        db.flush()
+
+        # Cold start: zero offers -> 1.0
+        assert compute_acceptance_rate(worker.id, db) == 1.0
+
+        # Add booking
+        booking = Booking(
+            citizen_id=citizen.id,
+            skill="electrician",
+            lat=Decimal("26.9124"),
+            lng=Decimal("75.7873"),
+            job_price=Decimal("100.00"),
+            status="pending",
+        )
+        db.add(booking)
+        db.flush()
+
+        # 4 offers: 3 accepted, 1 declined
+        expires = datetime.now(timezone.utc) + timedelta(minutes=1)
+        o1 = BookingOffer(
+            booking_id=booking.id,
+            worker_id=worker.id,
+            rank_at_offer=1,
+            dispatch_score=Decimal(100),
+            status="accepted",
+            expires_at=expires,
+        )
+        o2 = BookingOffer(
+            booking_id=booking.id,
+            worker_id=worker.id,
+            rank_at_offer=1,
+            dispatch_score=Decimal(100),
+            status="accepted",
+            expires_at=expires,
+        )
+        o3 = BookingOffer(
+            booking_id=booking.id,
+            worker_id=worker.id,
+            rank_at_offer=1,
+            dispatch_score=Decimal(100),
+            status="accepted",
+            expires_at=expires,
+        )
+        o4 = BookingOffer(
+            booking_id=booking.id,
+            worker_id=worker.id,
+            rank_at_offer=1,
+            dispatch_score=Decimal(100),
+            status="declined",
+            expires_at=expires,
+        )
+        db.add_all([o1, o2, o3, o4])
+        db.commit()
+
+        # 3/4 = 0.75
+        assert compute_acceptance_rate(worker.id, db) == 0.75
+    finally:
+        db.close()
+
+
+def test_compute_completion_rate_and_lifetime_jobs():
+    db = TestingSessionLocal()
+    try:
+        worker = User(
+            name="WorkerComp",
+            phone="9000000003",
+            password_hash="hash",
+            role="worker",
+        )
+        citizen = User(
+            name="CitizenComp",
+            phone="9000000004",
+            password_hash="hash",
+            role="citizen",
+        )
+        db.add_all([worker, citizen])
+        db.flush()
+
+        # Cold start
+        assert compute_completion_rate(worker.id, db) == 1.0
+        assert compute_lifetime_jobs(worker.id, db) == 0
+
+        # Add assigned bookings: 4 completed, 1 cancelled
+        for _ in range(4):
+            db.add(
+                Booking(
+                    citizen_id=citizen.id,
+                    worker_id=worker.id,
+                    skill="plumber",
+                    lat=Decimal("26.9124"),
+                    lng=Decimal("75.7873"),
+                    job_price=Decimal("200.00"),
+                    status="completed",
+                )
+            )
+        db.add(
+            Booking(
+                citizen_id=citizen.id,
+                worker_id=worker.id,
+                skill="plumber",
+                lat=Decimal("26.9124"),
+                lng=Decimal("75.7873"),
+                job_price=Decimal("200.00"),
+                status="cancelled",
+            )
+        )
+        db.commit()
+
+        # Completion rate: 4 completed / 5 total assigned = 0.8
+        assert compute_completion_rate(worker.id, db) == 0.8
+        # Lifetime completed jobs = 4
+        assert compute_lifetime_jobs(worker.id, db) == 4
+    finally:
+        db.close()
+
+
+def test_compute_tier_boundaries():
+    # Bronze cases
+    assert compute_tier(0, 1.0, 1.0) == "Bronze"
+    assert compute_tier(4, 1.0, 1.0) == "Bronze"
+    assert compute_tier(5, 0.59, 1.0) == "Bronze"  # Below 0.60 acceptance rate
+
+    # Silver cases
+    assert compute_tier(5, 0.60, 0.80) == "Silver"
+    assert compute_tier(19, 0.74, 0.89) == "Silver"
+
+    # Gold cases
+    assert compute_tier(20, 0.75, 0.90) == "Gold"
+    assert compute_tier(49, 0.84, 0.94) == "Gold"
+
+    # Platinum cases
+    assert compute_tier(50, 0.85, 0.95) == "Platinum"
+    assert compute_tier(100, 1.0, 1.0) == "Platinum"
 
 
 def test_compute_weekly_earnings_no_bookings():
