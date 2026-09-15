@@ -154,8 +154,8 @@ def test_reliability_penalty_grace_period():
         db.add(booking)
         db.flush()
 
-        # Less than 5 offers total (grace period)
-        for i in range(4):
+        # 2 rejections (grace period <= 2)
+        for i in range(2):
             offer = BookingOffer(
                 booking_id=booking.id,
                 worker_id=worker.id,
@@ -169,12 +169,12 @@ def test_reliability_penalty_grace_period():
         db.commit()
 
         penalty = compute_reliability_penalty(worker.id, db)
-        assert penalty is False
+        assert penalty == Decimal(0)
     finally:
         db.close()
 
 
-def test_reliability_penalty_applied():
+def test_reliability_penalty_graduated_deduction():
     db = TestingSessionLocal()
     try:
         citizen = User(
@@ -197,15 +197,10 @@ def test_reliability_penalty_applied():
         db.add(booking)
         db.flush()
 
-        # 6 offers, 2 accepted (acceptance rate = 33.3% < 50%) -> penalty should apply
-        statuses = [
-            "accepted",
-            "accepted",
-            "declined",
-            "declined",
-            "declined",
-            "declined",
-        ]
+        # 3 rejections -> 500 penalty
+        # 4 rejections -> 1000 penalty
+        # 5 rejections -> 1500 penalty
+        statuses = ["declined", "expired", "declined", "expired", "declined"]
         for i, status in enumerate(statuses):
             offer = BookingOffer(
                 booking_id=booking.id,
@@ -214,57 +209,23 @@ def test_reliability_penalty_applied():
                 dispatch_score=Decimal("1000.00"),
                 status=status,
                 expires_at=datetime.now(timezone.utc) + timedelta(minutes=10),
-                created_at=datetime.now(timezone.utc) - timedelta(minutes=i),
+                created_at=datetime.now(timezone.utc) - timedelta(minutes=(10 - i)),
             )
             db.add(offer)
-        db.commit()
+            db.flush()
 
-        penalty = compute_reliability_penalty(worker.id, db)
-        assert penalty is True
-    finally:
-        db.close()
-
-
-def test_reliability_penalty_exactly_fifty_percent():
-    db = TestingSessionLocal()
-    try:
-        citizen = User(
-            name="Ravi", phone="9555555555", password_hash="hash", role="citizen"
-        )
-        worker = User(
-            name="Suresh", phone="9111111111", password_hash="hash", role="worker"
-        )
-        db.add_all([citizen, worker])
-        db.flush()
-
-        booking = Booking(
-            citizen_id=citizen.id,
-            skill="electrician",
-            lat=26.9280,
-            lng=75.8100,
-            job_price=Decimal("500.00"),
-            status="pending",
-        )
-        db.add(booking)
-        db.flush()
-
-        # 10 offers, 5 accepted (exactly 50%) -> no penalty
-        statuses = ["accepted"] * 5 + ["declined"] * 5
-        for i, status in enumerate(statuses):
-            offer = BookingOffer(
-                booking_id=booking.id,
-                worker_id=worker.id,
-                rank_at_offer=1,
-                dispatch_score=Decimal("1000.00"),
-                status=status,
-                expires_at=datetime.now(timezone.utc) + timedelta(minutes=10),
-                created_at=datetime.now(timezone.utc) - timedelta(minutes=i),
-            )
-            db.add(offer)
-        db.commit()
-
-        penalty = compute_reliability_penalty(worker.id, db)
-        assert penalty is False
+            if i + 1 == 3:
+                db.commit()
+                penalty = compute_reliability_penalty(worker.id, db)
+                assert penalty == Decimal(500)
+            elif i + 1 == 4:
+                db.commit()
+                penalty = compute_reliability_penalty(worker.id, db)
+                assert penalty == Decimal(1000)
+            elif i + 1 == 5:
+                db.commit()
+                penalty = compute_reliability_penalty(worker.id, db)
+                assert penalty == Decimal(1500)
     finally:
         db.close()
 
@@ -293,29 +254,22 @@ def test_reliability_penalty_evaluates_only_last_ten():
         db.flush()
 
         # Total 12 offers.
-        # Older 2 are accepted (not in last 10).
-        # Last 10 has 4 accepted, 6 declined (acceptance rate = 40% < 50%) -> penalty applies
-        # We insert from oldest to newest (newest has smaller created_at delta, i.e. created_at is closer to now).
-        # So created_at = now - i minutes, where i goes from 11 down to 0.
-        # i = 11: accepted (oldest, rank 12)
-        # i = 10: accepted (old old, rank 11)
-        # last 10 (i=9 to 0): 4 accepted, 6 declined
+        # Older 2 are declined (not in last 10).
+        # Last 10 has 8 accepted, 2 declined (rejections = 2 in last 10) -> penalty = Decimal(0)
         statuses = [
-            "accepted",  # i = 11
-            "accepted",  # i = 10
-            "accepted",  # i = 9 (in last 10)
-            "accepted",  # i = 8 (in last 10)
-            "accepted",  # i = 7 (in last 10)
-            "accepted",  # i = 6 (in last 10)
-            "declined",  # i = 5 (in last 10)
-            "declined",  # i = 4 (in last 10)
-            "declined",  # i = 3 (in last 10)
-            "declined",  # i = 2 (in last 10)
-            "declined",  # i = 1 (in last 10)
-            "declined",  # i = 0 (newest, in last 10)
+            "declined",  # i = 11 (oldest, rank 12)
+            "declined",  # i = 10 (oldest, rank 11)
+            "accepted",  # i = 9
+            "accepted",  # i = 8
+            "accepted",  # i = 7
+            "accepted",  # i = 6
+            "accepted",  # i = 5
+            "accepted",  # i = 4
+            "accepted",  # i = 3
+            "accepted",  # i = 2
+            "declined",  # i = 1
+            "declined",  # i = 0 (newest)
         ]
-        # Reverse status order so list represents oldest to newest (since delta = 11 - idx minutes)
-        # So status[0] gets delta = 11 minutes (oldest). status[11] gets delta = 0 minutes (newest).
         for i, status in enumerate(statuses):
             offer = BookingOffer(
                 booking_id=booking.id,
@@ -330,7 +284,7 @@ def test_reliability_penalty_evaluates_only_last_ten():
         db.commit()
 
         penalty = compute_reliability_penalty(worker.id, db)
-        assert penalty is True
+        assert penalty == Decimal(0)
     finally:
         db.close()
 
@@ -684,10 +638,10 @@ def test_get_ranked_workers_reliability_penalty_applied():
         assert workers[0]["name"] == "Reliable Worker"
         assert workers[1]["name"] == "Unreliable Worker"
 
-        # Verify score difference is exactly 3000
+        # Verify score difference is exactly 1500 (5 rejections -> 3 * 500 = 1500 deduction)
         score_A = float(workers[0]["dispatch_score"])
         score_B = float(workers[1]["dispatch_score"])
-        assert abs(score_A - score_B - 3000.0) < 0.01
+        assert abs(score_A - score_B - 1500.0) < 0.01
 
         # Verify flags
         assert workers[0]["reliability_penalty_applied"] is False

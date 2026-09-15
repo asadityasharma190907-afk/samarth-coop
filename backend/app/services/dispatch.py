@@ -45,11 +45,13 @@ def compute_weekly_earnings(worker_id: UUID, db: Session) -> Decimal:
     return Decimal(str(result))
 
 
-def compute_reliability_penalty(worker_id: UUID, db: Session) -> bool:
+def compute_reliability_penalty(worker_id: UUID, db: Session) -> Decimal:
     """
-    Checks if a worker should be penalized for declining/ignoring too many offers.
-    Returns True if worker has >= 5 total offers AND acceptance rate in last 10 is < 50%.
-    Returns False otherwise.
+    Calculates a graduated point deduction based on recent offer rejections.
+    Queries up to 10 most recent offers for worker_id.
+    Counts rejections (status in ["declined", "expired"]).
+    If rejections <= 2: returns Decimal(0) (grace period).
+    If rejections >= 3: returns Decimal((rejections - 2) * 500).
     """
     recent = (
         db.query(BookingOffer)
@@ -59,13 +61,12 @@ def compute_reliability_penalty(worker_id: UUID, db: Session) -> bool:
         .all()
     )
 
-    if len(recent) < 5:
-        return False  # Grace period
+    rejections = sum(1 for o in recent if o.status in ("declined", "expired"))
 
-    accepted = sum(1 for o in recent if o.status == "accepted")
+    if rejections <= 2:
+        return Decimal(0)
 
-    # Check if acceptance rate is strictly less than 50%
-    return (accepted / len(recent)) < 0.5
+    return Decimal((rejections - 2) * 500)
 
 
 # Math imports for haversine
@@ -90,10 +91,13 @@ def compute_dispatch_score(
     weekly_earnings: Decimal,
     rating: float | None,
     distance_km: float,
-    reliability_penalty: bool,
+    reliability_penalty: Decimal | bool = Decimal(0),
 ) -> Decimal:
     effective_rating = Decimal(str(rating)) if rating is not None else Decimal("4.0")
-    penalty = Decimal(3000) if reliability_penalty else Decimal(0)
+    if isinstance(reliability_penalty, bool):
+        penalty = Decimal(3000) if reliability_penalty else Decimal(0)
+    else:
+        penalty = Decimal(str(reliability_penalty))
     return (
         (Decimal(5000) - weekly_earnings) * 2
         + Decimal(1000) * effective_rating
@@ -146,7 +150,7 @@ def get_ranked_workers(skill: str, lat: float, lng: float, db: Session) -> list[
                 "weekly_earnings": weekly_earnings,
                 "dispatch_score": dispatch_score,
                 "rating_is_default": profile.rating is None,
-                "reliability_penalty_applied": reliability_penalty,
+                "reliability_penalty_applied": reliability_penalty > Decimal(0),
             }
         )
 
