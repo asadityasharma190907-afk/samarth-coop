@@ -52,7 +52,7 @@ def test_subscribe_push_as_worker():
         profile = db.query(WorkerProfile).first()
         assert profile is not None
         assert profile.push_subscription is not None
-        stored_sub = json.loads(profile.push_subscription)
+        stored_sub = json.loads(str(profile.push_subscription))
         assert (
             stored_sub["endpoint"]
             == "https://fcm.googleapis.com/fcm/send/test-token-123"
