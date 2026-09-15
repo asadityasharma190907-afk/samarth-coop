@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
+from typing import Any
 from uuid import UUID
 
 from sqlalchemy import func
@@ -9,12 +10,12 @@ from app.models.booking import Booking
 from app.models.booking_offer import BookingOffer
 
 
-def compute_weekly_earnings(worker_id: UUID, db: Session) -> Decimal:
+def compute_weekly_earnings(worker_id: UUID | Any, db: Session) -> Decimal:
     """
     Calculates how much a worker earned this week from completed bookings.
     Uses date_trunc('week', NOW()) on PostgreSQL, with a Python-computed timezone-aware fallback for SQLite.
     """
-    dialect_name = db.bind.dialect.name
+    dialect_name = db.bind.dialect.name if db.bind is not None else "postgresql"
 
     if dialect_name == "sqlite":
         # Calculate Monday of the current week at 00:00:00 UTC
@@ -45,7 +46,7 @@ def compute_weekly_earnings(worker_id: UUID, db: Session) -> Decimal:
     return Decimal(str(result))
 
 
-def compute_reliability_penalty(worker_id: UUID, db: Session) -> bool:
+def compute_reliability_penalty(worker_id: UUID | Any, db: Session) -> bool:
     """
     Checks if a worker should be penalized for declining/ignoring too many offers.
     Returns True if worker has >= 5 total offers AND acceptance rate in last 10 is < 50%.
@@ -66,6 +67,91 @@ def compute_reliability_penalty(worker_id: UUID, db: Session) -> bool:
 
     # Check if acceptance rate is strictly less than 50%
     return (accepted / len(recent)) < 0.5
+
+
+def compute_acceptance_rate(worker_id: UUID | Any, db: Session) -> float:
+    """
+    Calculates the ratio of accepted offers to total offers sent to a worker.
+    Returns 1.0 (100%) as a neutral cold-start default if total_offers == 0.
+    """
+    total_offers = (
+        db.query(func.count(BookingOffer.id))
+        .filter(BookingOffer.worker_id == worker_id)
+        .scalar()
+        or 0
+    )
+    if total_offers == 0:
+        return 1.0
+
+    accepted_offers = (
+        db.query(func.count(BookingOffer.id))
+        .filter(
+            BookingOffer.worker_id == worker_id,
+            BookingOffer.status == "accepted",
+        )
+        .scalar()
+        or 0
+    )
+    return float(accepted_offers / total_offers)
+
+
+def compute_completion_rate(worker_id: UUID | Any, db: Session) -> float:
+    """
+    Calculates the ratio of completed jobs to total assigned jobs for a worker.
+    Returns 1.0 (100%) as a neutral cold-start default if total_assigned == 0.
+    """
+    total_assigned = (
+        db.query(func.count(Booking.id)).filter(Booking.worker_id == worker_id).scalar()
+        or 0
+    )
+    if total_assigned == 0:
+        return 1.0
+
+    completed_jobs = (
+        db.query(func.count(Booking.id))
+        .filter(
+            Booking.worker_id == worker_id,
+            Booking.status == "completed",
+        )
+        .scalar()
+        or 0
+    )
+    return float(completed_jobs / total_assigned)
+
+
+def compute_lifetime_jobs(worker_id: UUID | Any, db: Session) -> int:
+    """
+    Counts the total number of completed jobs for a worker over their lifetime.
+    """
+    completed_jobs = (
+        db.query(func.count(Booking.id))
+        .filter(
+            Booking.worker_id == worker_id,
+            Booking.status == "completed",
+        )
+        .scalar()
+        or 0
+    )
+    return int(completed_jobs)
+
+
+def compute_tier(
+    lifetime_jobs: int, acceptance_rate: float, completion_rate: float
+) -> str:
+    """
+    Determines a worker's tier (Bronze, Silver, Gold, Platinum) based on:
+    - Platinum: >= 50 lifetime jobs, >= 85% acceptance rate, >= 95% completion rate
+    - Gold:     >= 20 lifetime jobs, >= 75% acceptance rate, >= 90% completion rate
+    - Silver:   >= 5 lifetime jobs,  >= 60% acceptance rate, >= 80% completion rate
+    - Bronze:   Default for < 5 jobs or below silver performance thresholds
+    """
+    if lifetime_jobs >= 50 and acceptance_rate >= 0.85 and completion_rate >= 0.95:
+        return "Platinum"
+    if lifetime_jobs >= 20 and acceptance_rate >= 0.75 and completion_rate >= 0.90:
+        return "Gold"
+    if lifetime_jobs >= 5 and acceptance_rate >= 0.60 and completion_rate >= 0.80:
+        return "Silver"
+    return "Bronze"
 
 
 # Math imports for haversine

@@ -7,11 +7,12 @@ from app.config import settings
 logger = logging.getLogger(__name__)
 
 try:
-    from pywebpush import webpush
+    from pywebpush import webpush  # type: ignore
 
     PYWEBPUSH_AVAILABLE = True
 except ImportError:
     PYWEBPUSH_AVAILABLE = False
+    webpush = None
 
 
 def send_push_notification(
@@ -49,7 +50,7 @@ def send_push_notification(
         "data": data or {},
     }
 
-    if not PYWEBPUSH_AVAILABLE:
+    if not PYWEBPUSH_AVAILABLE or webpush is None:
         logger.info(f"[Mock Push Notification] Sent '{title}' to {endpoint}")
         return True
 
